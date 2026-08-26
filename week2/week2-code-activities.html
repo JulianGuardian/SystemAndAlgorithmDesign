@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 2 Activities – Recursion & Backtracking | Algoritmia Aplicada</title>
+<style>
+  :root{--udes-blue:#003087;--udes-blue-dark:#001f5c;--udes-blue-light:#1a4fa0;--udes-gold:#C8A028;--bg:#f4f6fb;--surface:#fff;--surface2:#eef2fa;--text:#1a1a2e;--text-muted:#5a6070;--border:#d0d8ea;--code-bg:#1e2340;--code-text:#e8eaf0;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  .top-nav{background:var(--udes-blue-dark);color:#fff;padding:0.6rem 2rem;display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;}
+  .top-nav .course-label{color:var(--udes-gold);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;}
+  .lesson-breadcrumb{display:flex;gap:1.2rem;align-items:center;}
+  .lesson-breadcrumb .prev{color:#aab4cc;}
+  .lesson-breadcrumb .current{background:var(--udes-gold);color:#000;font-weight:700;padding:0.2rem 0.7rem;border-radius:4px;}
+  header{background:linear-gradient(135deg,var(--udes-blue) 0%,var(--udes-blue-light) 100%);color:#fff;padding:2.5rem 2rem;text-align:center;border-bottom:4px solid var(--udes-gold);}
+  header .block-tag{display:inline-block;background:var(--udes-gold);color:#000;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:0.25rem 0.9rem;border-radius:20px;margin-bottom:1rem;}
+  header h1{font-size:2rem;font-weight:800;margin-bottom:0.4rem;}
+  header p.subtitle{font-size:1rem;color:#b8ccee;}
+  .container{max-width:900px;margin:0 auto;padding:2rem 1.5rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.8rem 2rem;margin-bottom:2rem;box-shadow:0 2px 8px rgba(0,48,135,0.06);}
+  .card h2{color:var(--udes-blue);font-size:1.3rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--udes-gold);}
+  .card h3{color:var(--udes-blue-dark);font-size:1.05rem;margin:1.3rem 0 0.5rem;}
+  .quiz-q{background:var(--surface2);border-left:4px solid var(--udes-blue);border-radius:0 8px 8px 0;padding:1rem 1.2rem;margin:1.2rem 0;}
+  .quiz-q .q-num{font-size:0.78rem;font-weight:700;color:var(--udes-gold);text-transform:uppercase;letter-spacing:0.08em;}
+  .options{list-style:none;padding:0;margin-top:0.8rem;}
+  .options li{padding:0.45rem 0.8rem;margin:0.3rem 0;border-radius:6px;border:1px solid var(--border);cursor:pointer;transition:background 0.15s;}
+  .options li:hover{background:var(--surface2);}
+  .options li.selected{background:#ddeaff;border-color:var(--udes-blue);}
+  .options li.correct{background:#e8f5e9;border-color:#2e7d32;color:#1b5e20;font-weight:600;}
+  .options li.wrong{background:#ffebee;border-color:#c62828;color:#b71c1c;}
+  .reveal-btn{margin-top:0.8rem;padding:0.4rem 1.1rem;background:var(--udes-blue);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:0.87rem;font-weight:600;}
+  .explanation{display:none;margin-top:0.8rem;padding:0.8rem 1rem;background:#fffde7;border-left:3px solid var(--udes-gold);border-radius:0 6px 6px 0;font-size:0.92rem;}
+  .problem{border:1px solid var(--border);border-radius:8px;margin:1rem 0;overflow:hidden;}
+  .problem-header{background:var(--udes-blue);color:#fff;padding:0.7rem 1.2rem;display:flex;justify-content:space-between;align-items:center;}
+  .problem-header h4{font-size:1rem;font-weight:700;}
+  .difficulty{font-size:0.75rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:12px;}
+  .easy{background:#c8e6c9;color:#1b5e20;} .medium{background:#fff3e0;color:#e65100;}
+  .problem-body{padding:1.2rem;}
+  .problem-body p{margin-bottom:0.8rem;font-size:0.95rem;}
+  .lc-link{display:inline-block;background:var(--udes-gold);color:#000;font-weight:700;font-size:0.82rem;padding:0.3rem 0.9rem;border-radius:5px;text-decoration:none;margin-top:0.5rem;}
+  .hint-box{background:#e3f2fd;border-left:3px solid #1565c0;border-radius:0 6px 6px 0;padding:0.7rem 1rem;margin-top:0.8rem;font-size:0.9rem;}
+  .hint-toggle{cursor:pointer;color:var(--udes-blue);font-weight:600;font-size:0.88rem;border:none;background:none;padding:0;}
+  .hint-content{display:none;margin-top:0.5rem;}
+  .tag{display:inline-block;background:#e3ebfa;color:var(--udes-blue);border-radius:4px;padding:0.15rem 0.55rem;font-size:0.78rem;font-weight:600;margin:0.15rem;}
+  .checklist{list-style:none;padding:0;}
+  .checklist li{padding:0.5rem 0.8rem;margin:0.3rem 0;display:flex;align-items:flex-start;gap:0.7rem;border-radius:6px;background:var(--surface2);}
+  .checklist input[type=checkbox]{margin-top:0.3rem;accent-color:var(--udes-blue);width:16px;height:16px;flex-shrink:0;}
+  .code-block{background:var(--code-bg);color:var(--code-text);border-radius:8px;padding:1rem 1.2rem;overflow-x:auto;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:0.87rem;line-height:1.65;margin:0.8rem 0;}
+  .kw{color:#c678dd;} .fn{color:#61afef;} .cm{color:#7f848e;font-style:italic;} .nu{color:#d19a66;}
+  #score-bar{background:var(--udes-blue-dark);color:#fff;text-align:center;padding:1rem;position:sticky;top:0;z-index:100;font-size:0.95rem;}
+  #score-bar span{color:var(--udes-gold);font-weight:800;font-size:1.1rem;}
+  footer{background:var(--udes-blue-dark);color:#8899bb;text-align:center;padding:1.2rem;font-size:0.82rem;margin-top:3rem;}
+  footer strong{color:var(--udes-gold);}
+</style>
+</head>
+<body>
+<nav class="top-nav">
+  <span class="course-label">Algoritmia Aplicada y Diseño Moderno de Sistemas</span>
+  <div class="lesson-breadcrumb">
+    <span class="prev">⬅ Week 1: Searching Patterns</span>
+    <span class="current">Week 2 · Activities</span>
+    <span>→ Week 3: Arrays &amp; Strings</span>
+  </div>
+</nav>
+<div id="score-bar">Quiz score: <span id="score">0 / 0</span> correct</div>
+<header>
+  <div class="block-tag">Block 1 – Foundations · Week 2 Activities</div>
+  <h1>Activities &amp; Problem Set</h1>
+  <p class="subtitle">Recursion Quiz · Permutations · Subsets · Backtracking</p>
+</header>
+
+<main class="container">
+
+  <div class="card">
+    <h2>⚡ Part A — Recursion Quick Quiz</h2>
+
+    <div class="quiz-q" id="q1">
+      <div class="q-num">Question 1</div>
+      <p><strong>What is the output of <code>factorial(0)</code> given the typical recursive definition?</strong></p>
+      <ul class="options" data-correct="b">
+        <li data-val="a">0</li>
+        <li data-val="b">1</li>
+        <li data-val="c">Infinite recursion</li>
+        <li data-val="d">Undefined</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q1')">Reveal answer</button>
+      <div class="explanation" id="q1-exp">By convention 0! = 1. The base case handles n ≤ 1 and returns 1, so factorial(0) = <strong>1</strong>.</div>
+    </div>
+
+    <div class="quiz-q" id="q2">
+      <div class="q-num">Question 2</div>
+      <p><strong>How many permutations does the string "ABCD" (4 unique chars) have?</strong></p>
+      <ul class="options" data-correct="c">
+        <li data-val="a">8</li>
+        <li data-val="b">16</li>
+        <li data-val="c">24</li>
+        <li data-val="d">48</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q2')">Reveal answer</button>
+      <div class="explanation" id="q2-exp">4! = 4×3×2×1 = <strong>24</strong>. General rule: n distinct characters → n! permutations.</div>
+    </div>
+
+    <div class="quiz-q" id="q3">
+      <div class="q-num">Question 3</div>
+      <p><strong>How many subsets does the set {1, 2, 3, 4} have?</strong></p>
+      <ul class="options" data-correct="d">
+        <li data-val="a">8</li>
+        <li data-val="b">12</li>
+        <li data-val="c">15</li>
+        <li data-val="d">16</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q3')">Reveal answer</button>
+      <div class="explanation" id="q3-exp">2⁴ = <strong>16</strong>. Each element has 2 choices (in/out), so for n elements there are 2ⁿ subsets (including the empty set).</div>
+    </div>
+
+    <div class="quiz-q" id="q4">
+      <div class="q-num">Question 4</div>
+      <p><strong>What is the space complexity of a recursive function with n recursive calls and no extra data structures?</strong></p>
+      <ul class="options" data-correct="b">
+        <li data-val="a">O(1)</li>
+        <li data-val="b">O(n) — call stack depth</li>
+        <li data-val="c">O(n²)</li>
+        <li data-val="d">O(log n)</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q4')">Reveal answer</button>
+      <div class="explanation" id="q4-exp">Each recursive call adds a frame to the call stack. With n calls in a linear chain, the maximum stack depth is n → <strong>O(n) space</strong>.</div>
+    </div>
+
+    <div class="quiz-q" id="q5">
+      <div class="q-num">Question 5</div>
+      <p><strong>In the backtracking template, what is the purpose of the "UNCHOOSE" step?</strong></p>
+      <ul class="options" data-correct="a">
+        <li data-val="a">Restore state so the next sibling branch starts from a clean state</li>
+        <li data-val="b">Terminate the recursion early</li>
+        <li data-val="c">Save memory by deleting the result</li>
+        <li data-val="d">Skip invalid branches</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q5')">Reveal answer</button>
+      <div class="explanation" id="q5-exp">After exploring one path, we must <strong>undo the last decision</strong> (pop from current, re-add to remaining) so the parent loop can try the next option with an unmodified state. Without unchoose, state leaks across siblings.</div>
+    </div>
+  </div>
+
+  <!-- PROBLEMS -->
+  <div class="card">
+    <h2>💻 Part B — LeetCode Problem Set</h2>
+
+    <div class="problem">
+      <div class="problem-header">
+        <h4>#78 · Subsets</h4>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="problem-body">
+        <p>Given an integer array of unique elements, return all possible subsets (the power set). The solution set must not contain duplicate subsets.</p>
+        <p><span class="tag">Backtracking</span> <span class="tag">O(n·2ⁿ)</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h1')">💡 Show hint</button>
+        <div class="hint-content hint-box" id="h1">Record <code>current</code> at every node (not just leaves). Use a <code>start</code> index so you only consider elements after the last chosen one.</div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/subsets/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+
+    <div class="problem">
+      <div class="problem-header">
+        <h4>#46 · Permutations</h4>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="problem-body">
+        <p>Given an array of distinct integers, return all possible permutations in any order.</p>
+        <p><span class="tag">Backtracking</span> <span class="tag">O(n·n!)</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h2')">💡 Show hint</button>
+        <div class="hint-content hint-box" id="h2">Pass a <code>used</code> boolean array instead of slicing. At each level, try every unused element, mark it used, recurse, unmark (backtrack).</div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/permutations/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+
+    <div class="problem">
+      <div class="problem-header">
+        <h4>#39 · Combination Sum</h4>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="problem-body">
+        <p>Given an array of distinct candidate integers and a target, return all unique combinations that sum to target. The same number may be used multiple times.</p>
+        <p><span class="tag">Backtracking</span> <span class="tag">Pruning</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h3')">💡 Show hint</button>
+        <div class="hint-content hint-box" id="h3">Sort candidates first. In the recursive loop, start from the same index (not i+1) to allow reuse. Prune by checking if <code>remaining &lt; 0</code> after subtracting.</div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/combination-sum/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+
+    <div class="problem">
+      <div class="problem-header">
+        <h4>#206 · Reverse Linked List (Recursive version)</h4>
+        <span class="difficulty easy">Easy</span>
+      </div>
+      <div class="problem-body">
+        <p>Reverse a singly linked list. Solve it both iteratively and recursively, then compare the space complexity of each approach.</p>
+        <p><span class="tag">Recursion</span> <span class="tag">O(n) space recursive</span> <span class="tag">O(1) space iterative</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h4')">💡 Show hint</button>
+        <div class="hint-content hint-box" id="h4">Recursive: <code>head.next.next = head; head.next = None; return new_head</code>. The base case is <code>head is None or head.next is None</code>.</div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/reverse-linked-list/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+
+    <div class="problem">
+      <div class="problem-header">
+        <h4>#90 · Subsets II — Bonus (handles duplicates)</h4>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="problem-body">
+        <p>Same as Subsets, but the input may contain duplicates. Return all subsets without duplicate subsets.</p>
+        <p><span class="tag">Backtracking</span> <span class="tag">Duplicate pruning</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h5')">💡 Show hint</button>
+        <div class="hint-content hint-box" id="h5">Sort the array first. In the loop, skip <code>nums[i] == nums[i-1]</code> when <code>i &gt; start</code> to avoid re-using the same value at the same level of the tree.</div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/subsets-ii/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRACING EXERCISE -->
+  <div class="card">
+    <h2>✏️ Part C — Trace Exercise (In-class)</h2>
+    <p style="font-size:0.93rem;margin-bottom:1rem;">Manually trace the call tree for the code below with input <code>['X','Y']</code>. Draw each recursive call, the state of <code>current</code> at each node, and circle the base-case nodes. Compare your drawing with a partner.</p>
+<pre class="code-block">
+<span class="kw">def</span> <span class="fn">backtrack</span>(current, remaining):
+    <span class="kw">if</span> <span class="kw">not</span> remaining:
+        print(current)
+        <span class="kw">return</span>
+    <span class="kw">for</span> i <span class="kw">in</span> range(len(remaining)):
+        current.append(remaining[i])
+        <span class="fn">backtrack</span>(current, remaining[:i] + remaining[i+<span class="nu">1</span>:])
+        current.pop()
+
+<span class="fn">backtrack</span>([], [<span class="st">'X'</span>, <span class="st">'Y'</span>])
+</pre>
+    <p style="font-size:0.9rem;color:var(--text-muted);margin-top:0.8rem;">Expected output: <code>['X','Y']</code> then <code>['Y','X']</code>. How many total function calls happened?</p>
+  </div>
+
+  <!-- PEER REVIEW -->
+  <div class="card">
+    <h2>🤝 Part D — Peer Review Checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span><strong>Base case present:</strong> Is there a base case that stops the recursion?</span></li>
+      <li><input type="checkbox"><span><strong>Backtrack step:</strong> Does the code explicitly undo the "choose" step (e.g., <code>current.pop()</code>)?</span></li>
+      <li><input type="checkbox"><span><strong>No mutation leaks:</strong> Is a copy (<code>list(current)</code>) appended to results, not a reference?</span></li>
+      <li><input type="checkbox"><span><strong>Complexity stated:</strong> Are both time and space complexity correctly identified?</span></li>
+      <li><input type="checkbox"><span><strong>Edge cases tested:</strong> Empty input, single element, duplicates (if applicable)?</span></li>
+      <li><input type="checkbox"><span><strong>One improvement suggestion</strong> written by the reviewer.</span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>📝 Part E — Weekly Reflection</h2>
+    <ol style="margin-left:1.4rem;line-height:2.2;font-size:0.95rem;">
+      <li>Solve LeetCode #77 Combinations. How does pruning (<code>limit = n - (k - len(current)) + 2</code>) improve performance?</li>
+      <li>Explain in writing: why does the recursive reversal of a linked list have O(n) space even though we allocate no variables?</li>
+      <li>Find a real-world use of backtracking (Sudoku solver, GPS routing, scheduling). Write 3 sentences describing how the pattern applies.</li>
+    </ol>
+  </div>
+
+</main>
+
+<footer>
+  <strong>Algoritmia Aplicada y Diseño Moderno de Sistemas</strong> · UDES · Block 1 – Week 2 Activities · Professor: Jorge Galvis
+</footer>
+
+<script>
+  let answered=0, correct=0;
+  function revealQuiz(qid){
+    const block=document.getElementById(qid);
+    const correctVal=block.querySelector('.options').dataset.correct;
+    const selected=block.querySelector('li.selected');
+    if(!selected){alert('Please select an answer first.');return;}
+    block.querySelectorAll('.options li').forEach(li=>{
+      if(li.dataset.val===correctVal)li.classList.add('correct');
+      else if(li.classList.contains('selected'))li.classList.add('wrong');
+    });
+    document.getElementById(qid+'-exp').style.display='block';
+    if(!block.dataset.counted){
+      answered++;
+      if(selected.dataset.val===correctVal)correct++;
+      block.dataset.counted='1';
+      document.getElementById('score').textContent=correct+' / '+answered;
+    }
+    block.querySelector('.reveal-btn').disabled=true;
+  }
+  document.querySelectorAll('.options').forEach(ul=>{
+    ul.querySelectorAll('li').forEach(li=>{
+      li.addEventListener('click',()=>{
+        if(ul.closest('.quiz-q').dataset.counted)return;
+        ul.querySelectorAll('li').forEach(x=>x.classList.remove('selected'));
+        li.classList.add('selected');
+      });
+    });
+  });
+  function toggleHint(id){const el=document.getElementById(id);el.style.display=el.style.display==='block'?'none':'block';}
+  document.querySelectorAll('.checklist input').forEach((cb,i)=>{
+    const key='w2-cb-'+i;
+    cb.checked=sessionStorage.getItem(key)==='1';
+    cb.addEventListener('change',()=>sessionStorage.setItem(key,cb.checked?'1':'0'));
+  });
+</script>
+</body>
+</html>
