@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 1 Activities – Complexity & Searching | Algoritmia Aplicada</title>
+<style>
+  :root {
+    --udes-blue:#003087; --udes-blue-dark:#001f5c; --udes-blue-light:#1a4fa0;
+    --udes-gold:#C8A028; --udes-gold-light:#f0c84a;
+    --bg:#f4f6fb; --surface:#ffffff; --surface2:#eef2fa;
+    --text:#1a1a2e; --text-muted:#5a6070; --border:#d0d8ea;
+    --code-bg:#1e2340; --code-text:#e8eaf0;
+    --success:#2e7d32; --warn:#e65100; --danger:#c62828;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  .top-nav{background:var(--udes-blue-dark);color:#fff;padding:0.6rem 2rem;display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;}
+  .top-nav .course-label{color:var(--udes-gold);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;}
+  .lesson-breadcrumb{display:flex;gap:1.2rem;align-items:center;}
+  .lesson-breadcrumb .prev{color:#aab4cc;}
+  .lesson-breadcrumb .current{background:var(--udes-gold);color:#000;font-weight:700;padding:0.2rem 0.7rem;border-radius:4px;}
+  header{background:linear-gradient(135deg,var(--udes-blue) 0%,var(--udes-blue-light) 100%);color:#fff;padding:2.5rem 2rem;text-align:center;border-bottom:4px solid var(--udes-gold);}
+  header .block-tag{display:inline-block;background:var(--udes-gold);color:#000;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:0.25rem 0.9rem;border-radius:20px;margin-bottom:1rem;}
+  header h1{font-size:2rem;font-weight:800;margin-bottom:0.4rem;}
+  header p.subtitle{font-size:1rem;color:#b8ccee;}
+  .container{max-width:900px;margin:0 auto;padding:2rem 1.5rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.8rem 2rem;margin-bottom:2rem;box-shadow:0 2px 8px rgba(0,48,135,0.06);}
+  .card h2{color:var(--udes-blue);font-size:1.3rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--udes-gold);}
+  .card h3{color:var(--udes-blue-dark);font-size:1.05rem;margin:1.3rem 0 0.5rem;}
+  /* Quiz */
+  .quiz-q{background:var(--surface2);border-left:4px solid var(--udes-blue);border-radius:0 8px 8px 0;padding:1rem 1.2rem;margin:1.2rem 0;}
+  .quiz-q .q-num{font-size:0.78rem;font-weight:700;color:var(--udes-gold);text-transform:uppercase;letter-spacing:0.08em;}
+  .options{list-style:none;padding:0;margin-top:0.8rem;}
+  .options li{padding:0.45rem 0.8rem;margin:0.3rem 0;border-radius:6px;border:1px solid var(--border);cursor:pointer;transition:background 0.15s;}
+  .options li:hover{background:var(--surface2);}
+  .options li.correct{background:#e8f5e9;border-color:#2e7d32;color:#1b5e20;font-weight:600;}
+  .options li.wrong{background:#ffebee;border-color:#c62828;color:#b71c1c;}
+  .reveal-btn{margin-top:0.8rem;padding:0.4rem 1.1rem;background:var(--udes-blue);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:0.87rem;font-weight:600;}
+  .reveal-btn:hover{background:var(--udes-blue-light);}
+  .explanation{display:none;margin-top:0.8rem;padding:0.8rem 1rem;background:#fffde7;border-left:3px solid var(--udes-gold);border-radius:0 6px 6px 0;font-size:0.92rem;}
+  /* Problem cards */
+  .problem{border:1px solid var(--border);border-radius:8px;margin:1rem 0;overflow:hidden;}
+  .problem-header{background:var(--udes-blue);color:#fff;padding:0.7rem 1.2rem;display:flex;justify-content:space-between;align-items:center;}
+  .problem-header h4{font-size:1rem;font-weight:700;}
+  .difficulty{font-size:0.75rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:12px;}
+  .easy{background:#c8e6c9;color:#1b5e20;}
+  .medium{background:#fff3e0;color:#e65100;}
+  .problem-body{padding:1.2rem;}
+  .problem-body p{margin-bottom:0.8rem;font-size:0.95rem;}
+  .lc-link{display:inline-block;background:var(--udes-gold);color:#000;font-weight:700;font-size:0.82rem;padding:0.3rem 0.9rem;border-radius:5px;text-decoration:none;margin-top:0.5rem;}
+  .lc-link:hover{background:var(--udes-gold-light);}
+  .hint-box{background:#e3f2fd;border-left:3px solid #1565c0;border-radius:0 6px 6px 0;padding:0.7rem 1rem;margin-top:0.8rem;font-size:0.9rem;}
+  .hint-toggle{cursor:pointer;color:var(--udes-blue);font-weight:600;font-size:0.88rem;border:none;background:none;padding:0;}
+  .hint-content{display:none;margin-top:0.5rem;}
+  /* Checklist */
+  .checklist{list-style:none;padding:0;}
+  .checklist li{padding:0.5rem 0.8rem;margin:0.3rem 0;display:flex;align-items:flex-start;gap:0.7rem;border-radius:6px;background:var(--surface2);}
+  .checklist input[type=checkbox]{margin-top:0.3rem;accent-color:var(--udes-blue);width:16px;height:16px;flex-shrink:0;}
+  /* Code */
+  .code-block{background:var(--code-bg);color:var(--code-text);border-radius:8px;padding:1.1rem 1.3rem;overflow-x:auto;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:0.87rem;line-height:1.65;margin:0.8rem 0;}
+  .kw{color:#c678dd;} .fn{color:#61afef;} .cm{color:#7f848e;font-style:italic;} .st{color:#98c379;} .nu{color:#d19a66;}
+  /* Tags */
+  .tag{display:inline-block;background:#e3ebfa;color:var(--udes-blue);border-radius:4px;padding:0.15rem 0.55rem;font-size:0.78rem;font-weight:600;margin:0.15rem;}
+  /* Score bar */
+  #score-bar{background:var(--udes-blue-dark);color:#fff;text-align:center;padding:1rem;position:sticky;top:0;z-index:100;font-size:0.95rem;}
+  #score-bar span{color:var(--udes-gold);font-weight:800;font-size:1.1rem;}
+  footer{background:var(--udes-blue-dark);color:#8899bb;text-align:center;padding:1.2rem;font-size:0.82rem;margin-top:3rem;}
+  footer strong{color:var(--udes-gold);}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <span class="course-label">Algoritmia Aplicada y Diseño Moderno de Sistemas</span>
+  <div class="lesson-breadcrumb">
+    <span class="prev">⬅ Course Start</span>
+    <span class="current">Week 1 · Activities</span>
+    <span>→ Week 2: Recursion</span>
+  </div>
+</nav>
+
+<div id="score-bar">Quiz score: <span id="score">0 / 0</span> correct</div>
+
+<header>
+  <div class="block-tag">Block 1 – Foundations · Week 1 Activities</div>
+  <h1>Activities &amp; Problem Set</h1>
+  <p class="subtitle">Big O Quiz · Binary Search · Two Pointers · Sliding Window</p>
+</header>
+
+<main class="container">
+
+  <!-- PART A: BIG O QUIZ -->
+  <div class="card">
+    <h2>⚡ Part A — Big O Quick Quiz</h2>
+    <p style="color:var(--text-muted);font-size:0.9rem;">Select an answer, then click <strong>Reveal</strong> to check your reasoning. Your score is tracked in the sticky bar above.</p>
+
+    <!-- Q1 -->
+    <div class="quiz-q" id="q1">
+      <div class="q-num">Question 1</div>
+      <p><strong>What is the time complexity of the following snippet?</strong></p>
+      <div class="code-block">
+<span class="kw">for</span> i <span class="kw">in</span> range(n):
+    <span class="kw">for</span> j <span class="kw">in</span> range(n):
+        print(i, j)
+      </div>
+      <ul class="options" data-correct="b">
+        <li data-val="a">O(n)</li>
+        <li data-val="b">O(n²)</li>
+        <li data-val="c">O(log n)</li>
+        <li data-val="d">O(n log n)</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q1')">Reveal answer</button>
+      <div class="explanation" id="q1-exp">
+        Two nested loops each running n times → n × n = <strong>O(n²)</strong>. Every element pair (i,j) is visited exactly once.
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="quiz-q" id="q2">
+      <div class="q-num">Question 2</div>
+      <p><strong>A function calls itself recursively halving the input each time and does O(1) work per call. What is its time complexity?</strong></p>
+      <ul class="options" data-correct="c">
+        <li data-val="a">O(n)</li>
+        <li data-val="b">O(n²)</li>
+        <li data-val="c">O(log n)</li>
+        <li data-val="d">O(1)</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q2')">Reveal answer</button>
+      <div class="explanation" id="q2-exp">
+        Halving n repeatedly: n → n/2 → n/4 → ... → 1. This takes <strong>log₂(n)</strong> steps. Each step does O(1) work → total <strong>O(log n)</strong>. This is the hallmark of binary search.
+      </div>
+    </div>
+
+    <!-- Q3 -->
+    <div class="quiz-q" id="q3">
+      <div class="q-num">Question 3</div>
+      <p><strong>Which Big O class grows the <em>slowest</em>?</strong></p>
+      <ul class="options" data-correct="a">
+        <li data-val="a">O(log n)</li>
+        <li data-val="b">O(n)</li>
+        <li data-val="c">O(n log n)</li>
+        <li data-val="d">O(√n)</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q3')">Reveal answer</button>
+      <div class="explanation" id="q3-exp">
+        Among the options: log n &lt; √n &lt; n &lt; n log n. <strong>O(log n)</strong> grows the slowest. For n=1,000,000: log n ≈ 20, √n = 1000, n = 1,000,000.
+      </div>
+    </div>
+
+    <!-- Q4 -->
+    <div class="quiz-q" id="q4">
+      <div class="q-num">Question 4</div>
+      <p><strong>Simplify: O(3n² + 100n + 500). What is the tightest Big O?</strong></p>
+      <ul class="options" data-correct="b">
+        <li data-val="a">O(n)</li>
+        <li data-val="b">O(n²)</li>
+        <li data-val="c">O(3n²)</li>
+        <li data-val="d">O(n³)</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q4')">Reveal answer</button>
+      <div class="explanation" id="q4-exp">
+        Drop constants (3) and lower-order terms (100n, 500). The dominant term is n². Answer: <strong>O(n²)</strong>.
+      </div>
+    </div>
+
+    <!-- Q5 -->
+    <div class="quiz-q" id="q5">
+      <div class="q-num">Question 5</div>
+      <p><strong>An algorithm creates a new list of size n inside a loop that runs n times. What is the space complexity?</strong></p>
+      <ul class="options" data-correct="c">
+        <li data-val="a">O(1)</li>
+        <li data-val="b">O(n)</li>
+        <li data-val="c">O(n²)</li>
+        <li data-val="d">O(log n)</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q5')">Reveal answer</button>
+      <div class="explanation" id="q5-exp">
+        Each of the n iterations allocates a list of size n. Total memory = n × n = <strong>O(n²)</strong>. If those lists were discarded inside the loop body the answer would be O(n), but if they're accumulated (e.g. appended to an outer list) it's O(n²).
+      </div>
+    </div>
+  </div>
+
+  <!-- PART B: LEETCODE PROBLEMS -->
+  <div class="card">
+    <h2>💻 Part B — LeetCode Problem Set</h2>
+    <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1.2rem;">Attempt each problem on LeetCode. After solving, check the hint and reflect on your complexity analysis before moving on. Use <strong>Python</strong>.</p>
+
+    <!-- P1 -->
+    <div class="problem">
+      <div class="problem-header">
+        <h4>#704 · Binary Search</h4>
+        <span class="difficulty easy">Easy</span>
+      </div>
+      <div class="problem-body">
+        <p>Given a sorted array of integers <code>nums</code> and a target, return the index of target or <code>-1</code> if not found. You <strong>must</strong> write an O(log n) algorithm.</p>
+        <p><strong>Key concepts:</strong> <span class="tag">Binary Search</span> <span class="tag">O(log n)</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h1')">💡 Show hint</button>
+        <div class="hint-content hint-box" id="h1">
+          Maintain <code>lo</code> and <code>hi</code> pointers. Compute <code>mid = lo + (hi-lo)//2</code>. Compare <code>nums[mid]</code> to target and move one pointer. Stop when <code>lo > hi</code>.
+        </div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/binary-search/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+
+    <!-- P2 -->
+    <div class="problem">
+      <div class="problem-header">
+        <h4>#167 · Two Sum II — Input Array Is Sorted</h4>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="problem-body">
+        <p>Given a 1-indexed sorted array, find two numbers that add up to a target and return their indices. Use O(1) extra space.</p>
+        <p><strong>Key concepts:</strong> <span class="tag">Two Pointers</span> <span class="tag">O(n)</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h2')">💡 Show hint</button>
+        <div class="hint-content hint-box" id="h2">
+          Place <code>lo=0</code>, <code>hi=len-1</code>. If sum is too big, decrement hi (smaller right value). If too small, increment lo (bigger left value).
+        </div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+
+    <!-- P3 -->
+    <div class="problem">
+      <div class="problem-header">
+        <h4>#3 · Longest Substring Without Repeating Characters</h4>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="problem-body">
+        <p>Given a string, find the length of the longest substring without repeating characters.</p>
+        <p><strong>Key concepts:</strong> <span class="tag">Sliding Window</span> <span class="tag">Hash Map</span> <span class="tag">O(n)</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h3')">💡 Show hint</button>
+        <div class="hint-content hint-box" id="h3">
+          Use a dictionary to map each character to its last seen index. When you find a repeat, advance <code>lo</code> to <code>last_seen[ch]+1</code> (only if that position is within the window).
+        </div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/longest-substring-without-repeating-characters/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+
+    <!-- P4 -->
+    <div class="problem">
+      <div class="problem-header">
+        <h4>#209 · Minimum Size Subarray Sum</h4>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="problem-body">
+        <p>Given an array of positive integers and a target sum, return the <em>minimum</em> length of a contiguous subarray whose sum is ≥ target. Return 0 if no such subarray exists.</p>
+        <p><strong>Key concepts:</strong> <span class="tag">Sliding Window (variable)</span> <span class="tag">O(n)</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h4')">💡 Show hint</button>
+        <div class="hint-content hint-box" id="h4">
+          Expand <code>hi</code> adding to a running sum. When sum ≥ target, record the window length, then shrink from <code>lo</code> and keep shrinking as long as the condition holds. All positive numbers means shrinking always reduces the sum.
+        </div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/minimum-size-subarray-sum/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+
+    <!-- P5 BONUS -->
+    <div class="problem">
+      <div class="problem-header">
+        <h4>#153 · Find Minimum in Rotated Sorted Array (Bonus)</h4>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="problem-body">
+        <p>A sorted array was rotated at an unknown pivot. Find the minimum in O(log n) — do <strong>not</strong> use a linear scan.</p>
+        <p><strong>Key concepts:</strong> <span class="tag">Binary Search on answer space</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h5')">💡 Show hint</button>
+        <div class="hint-content hint-box" id="h5">
+          Compare <code>nums[mid]</code> to <code>nums[hi]</code>. If <code>nums[mid] &gt; nums[hi]</code>, the minimum is in the right half. Otherwise it's in the left half (inclusive of mid).
+        </div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- PART C: PEER REVIEW CHECKLIST -->
+  <div class="card">
+    <h2>🤝 Part C — Peer Review Checklist</h2>
+    <p style="font-size:0.92rem;color:var(--text-muted);margin-bottom:1rem;">After solving, swap code with a classmate. Use this checklist to review their solution. Both reviewers sign off before submitting.</p>
+    <ul class="checklist">
+      <li><input type="checkbox"> <span><strong>Correctness:</strong> Does the solution pass the provided examples and edge cases (empty array, single element, all duplicates)?</span></li>
+      <li><input type="checkbox"> <span><strong>Complexity stated:</strong> Did the author explicitly state time AND space complexity in a comment?</span></li>
+      <li><input type="checkbox"> <span><strong>No brute force:</strong> For binary search problems, is there a nested loop that could be eliminated?</span></li>
+      <li><input type="checkbox"> <span><strong>Off-by-one safe:</strong> Verify loop conditions (<code>lo &lt;= hi</code> vs <code>lo &lt; hi</code>) are correct and boundaries are handled.</span></li>
+      <li><input type="checkbox"> <span><strong>Variable names:</strong> Are variables named clearly? (<code>lo/hi</code>, <code>left/right</code>, not <code>a/b</code>)</span></li>
+      <li><input type="checkbox"> <span><strong>Overflow prevention:</strong> For binary search, is mid computed as <code>lo + (hi-lo)//2</code>?</span></li>
+      <li><input type="checkbox"> <span><strong>One improvement suggestion:</strong> Write at least one concrete suggestion for improving the solution.</span></li>
+    </ul>
+    <p style="margin-top:1rem;font-size:0.9rem;color:var(--text-muted);">Submit your GitHub username + LeetCode submission link on the course Moodle page.</p>
+  </div>
+
+  <!-- PART D: WEEKLY REFLECTION -->
+  <div class="card">
+    <h2>📝 Part D — Weekly Reflection (Independent Work)</h2>
+    <p style="font-size:0.92rem;">Before next class, complete the following in your personal notebook or GitHub repo README:</p>
+    <ol style="margin-left:1.4rem;line-height:2.2;font-size:0.95rem;">
+      <li>Write in your own words when you would choose sliding window over two pointers.</li>
+      <li>Find one real-world algorithm that uses binary search (not just array search — think log scale decisions).</li>
+      <li>Solve LeetCode #35 "Search Insert Position" and analyze its complexity.</li>
+    </ol>
+  </div>
+
+</main>
+
+<footer>
+  <strong>Algoritmia Aplicada y Diseño Moderno de Sistemas</strong> · UDES · Block 1 – Week 1 Activities · Professor: Jorge Galvis
+</footer>
+
+<script>
+  let answered = 0, correct = 0;
+
+  function revealQuiz(qid) {
+    const block = document.getElementById(qid);
+    const correctVal = block.querySelector('.options').dataset.correct;
+    const items = block.querySelectorAll('.options li');
+    let userPicked = false;
+    items.forEach(li => {
+      if (li.classList.contains('selected')) userPicked = true;
+    });
+    if (!userPicked) { alert('Please select an answer first.'); return; }
+    items.forEach(li => {
+      if (li.dataset.val === correctVal) li.classList.add('correct');
+      else if (li.classList.contains('selected')) li.classList.add('wrong');
+    });
+    document.getElementById(qid + '-exp').style.display = 'block';
+    block.querySelector('.reveal-btn').disabled = true;
+  }
+
+  document.querySelectorAll('.options').forEach(ul => {
+    ul.querySelectorAll('li').forEach(li => {
+      li.addEventListener('click', () => {
+        if (ul.dataset.locked) return;
+        ul.querySelectorAll('li').forEach(x => x.classList.remove('selected'));
+        li.classList.add('selected');
+      });
+    });
+  });
+
+  // Track score on reveal
+  document.querySelectorAll('.reveal-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const block = btn.closest('.quiz-q');
+      const correctVal = block.querySelector('.options').dataset.correct;
+      const selected = block.querySelector('li.selected');
+      if (!selected) return;
+      if (!block.dataset.counted) {
+        answered++;
+        if (selected.dataset.val === correctVal) correct++;
+        block.dataset.counted = '1';
+        document.getElementById('score').textContent = correct + ' / ' + answered;
+      }
+    }, { once: false });
+  });
+
+  function toggleHint(id) {
+    const el = document.getElementById(id);
+    el.style.display = el.style.display === 'block' ? 'none' : 'block';
+  }
+
+  // Checkbox persistence via sessionStorage
+  document.querySelectorAll('.checklist input').forEach((cb, i) => {
+    const key = 'w1-cb-' + i;
+    cb.checked = sessionStorage.getItem(key) === '1';
+    cb.addEventListener('change', () => sessionStorage.setItem(key, cb.checked ? '1' : '0'));
+  });
+</script>
+</body>
+</html>

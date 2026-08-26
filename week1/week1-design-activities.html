@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 1 Design Activities – System Design Intro | Algoritmia Aplicada</title>
+<style>
+  :root{--udes-blue:#003087;--udes-blue-dark:#001f5c;--udes-blue-light:#1a4fa0;--udes-gold:#C8A028;--bg:#f4f6fb;--surface:#fff;--surface2:#eef2fa;--text:#1a1a2e;--text-muted:#5a6070;--border:#d0d8ea;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  .top-nav{background:var(--udes-blue-dark);color:#fff;padding:0.6rem 2rem;display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;}
+  .course-label{color:var(--udes-gold);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;}
+  .lesson-breadcrumb{display:flex;gap:1.2rem;align-items:center;}
+  .prev{color:#aab4cc;}.current{background:var(--udes-gold);color:#000;font-weight:700;padding:0.2rem 0.7rem;border-radius:4px;}
+  header{background:linear-gradient(135deg,var(--udes-blue) 0%,var(--udes-blue-light) 100%);color:#fff;padding:2.5rem 2rem;text-align:center;border-bottom:4px solid var(--udes-gold);}
+  .block-tag{display:inline-block;background:var(--udes-gold);color:#000;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:0.25rem 0.9rem;border-radius:20px;margin-bottom:1rem;}
+  header h1{font-size:2rem;font-weight:800;margin-bottom:0.4rem;} header p.subtitle{font-size:1rem;color:#b8ccee;}
+  .container{max-width:900px;margin:0 auto;padding:2rem 1.5rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.8rem 2rem;margin-bottom:2rem;box-shadow:0 2px 8px rgba(0,48,135,0.06);}
+  .card h2{color:var(--udes-blue);font-size:1.3rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--udes-gold);}
+  .card h3{color:var(--udes-blue-dark);font-size:1.05rem;margin:1.3rem 0 0.5rem;}
+  .quiz-q{background:var(--surface2);border-left:4px solid var(--udes-blue);border-radius:0 8px 8px 0;padding:1rem 1.2rem;margin:1.2rem 0;}
+  .quiz-q .q-num{font-size:0.78rem;font-weight:700;color:var(--udes-gold);text-transform:uppercase;}
+  .options{list-style:none;padding:0;margin-top:0.8rem;}
+  .options li{padding:0.45rem 0.8rem;margin:0.3rem 0;border-radius:6px;border:1px solid var(--border);cursor:pointer;transition:background 0.15s;}
+  .options li:hover{background:var(--surface2);}
+  .options li.selected{background:#ddeaff;border-color:var(--udes-blue);}
+  .options li.correct{background:#e8f5e9;border-color:#2e7d32;color:#1b5e20;font-weight:600;}
+  .options li.wrong{background:#ffebee;border-color:#c62828;color:#b71c1c;}
+  .reveal-btn{margin-top:0.8rem;padding:0.4rem 1.1rem;background:var(--udes-blue);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:0.87rem;font-weight:600;}
+  .explanation{display:none;margin-top:0.8rem;padding:0.8rem 1rem;background:#fffde7;border-left:3px solid var(--udes-gold);border-radius:0 6px 6px 0;font-size:0.92rem;}
+  .activity-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:1.4rem;margin:1rem 0;}
+  .activity-box h4{color:var(--udes-blue);margin-bottom:0.6rem;}
+  .checklist{list-style:none;padding:0;}
+  .checklist li{padding:0.5rem 0.8rem;margin:0.3rem 0;display:flex;align-items:flex-start;gap:0.7rem;border-radius:6px;background:var(--surface2);}
+  .checklist input[type=checkbox]{margin-top:0.3rem;accent-color:var(--udes-blue);width:16px;height:16px;flex-shrink:0;}
+  .scenario{background:#e3f2fd;border:1px solid #90caf9;border-radius:8px;padding:1.2rem 1.4rem;margin:1rem 0;}
+  .scenario h4{color:#0d47a1;margin-bottom:0.5rem;}
+  #score-bar{background:var(--udes-blue-dark);color:#fff;text-align:center;padding:1rem;position:sticky;top:0;z-index:100;font-size:0.95rem;}
+  #score-bar span{color:var(--udes-gold);font-weight:800;font-size:1.1rem;}
+  footer{background:var(--udes-blue-dark);color:#8899bb;text-align:center;padding:1.2rem;font-size:0.82rem;margin-top:3rem;}
+  footer strong{color:var(--udes-gold);}
+</style>
+</head>
+<body>
+<nav class="top-nav">
+  <span class="course-label">Algoritmia Aplicada y Diseño Moderno de Sistemas</span>
+  <div class="lesson-breadcrumb">
+    <span class="prev">⬅ Course Start</span>
+    <span class="current">Week 1 · Design Activities</span>
+    <span>→ Week 2: Building Blocks</span>
+  </div>
+</nav>
+<div id="score-bar">Quiz score: <span id="score">0 / 0</span> correct</div>
+<header>
+  <div class="block-tag">Block 1 – Foundations · Week 1 Design Activities</div>
+  <h1>System Design Activities</h1>
+  <p class="subtitle">Concepts Quiz · Scale Estimation · Whiteboard Practice</p>
+</header>
+
+<main class="container">
+  <div class="card">
+    <h2>⚡ Part A — Concepts Quiz</h2>
+
+    <div class="quiz-q" id="q1">
+      <div class="q-num">Question 1</div>
+      <p><strong>Which requirement is NON-functional?</strong></p>
+      <ul class="options" data-correct="c">
+        <li data-val="a">Users can post a tweet</li>
+        <li data-val="b">Users can follow other users</li>
+        <li data-val="c">The API must respond in under 200ms for 99% of requests</li>
+        <li data-val="d">Users can search by hashtag</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q1')">Reveal</button>
+      <div class="explanation" id="q1-exp"><strong>Response latency</strong> is a non-functional requirement — it describes how well the system performs, not what it does. Options A, B, D describe features the system offers (functional).</div>
+    </div>
+
+    <div class="quiz-q" id="q2">
+      <div class="q-num">Question 2</div>
+      <p><strong>A service promises 99.9% availability. Approximately how much downtime is allowed per year?</strong></p>
+      <ul class="options" data-correct="b">
+        <li data-val="a">~1 hour</li>
+        <li data-val="b">~8.7 hours</li>
+        <li data-val="c">~44 hours</li>
+        <li data-val="d">~87 hours</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q2')">Reveal</button>
+      <div class="explanation" id="q2-exp">99.9% = 0.1% downtime. 0.001 × 365 × 24 = <strong>~8.76 hours</strong> per year. 99.99% = ~52 min/year. 99.999% ("five nines") = ~5 min/year.</div>
+    </div>
+
+    <div class="quiz-q" id="q3">
+      <div class="q-num">Question 3</div>
+      <p><strong>In the 6-step framework, what should you do IMMEDIATELY after clarifying requirements?</strong></p>
+      <ul class="options" data-correct="b">
+        <li data-val="a">Choose the database</li>
+        <li data-val="b">Estimate the scale (QPS, storage)</li>
+        <li data-val="c">Draw the architecture diagram</li>
+        <li data-val="d">Define the API endpoints</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q3')">Reveal</button>
+      <div class="explanation" id="q3-exp"><strong>Estimate scale</strong> — knowing the QPS and storage requirements directly determines whether you need caching, sharding, CDN, etc. Every architecture decision flows from scale.</div>
+    </div>
+
+    <div class="quiz-q" id="q4">
+      <div class="q-num">Question 4</div>
+      <p><strong>What does "horizontally scalable" mean?</strong></p>
+      <ul class="options" data-correct="a">
+        <li data-val="a">You handle more load by adding more servers of the same type</li>
+        <li data-val="b">You handle more load by adding more RAM/CPU to a single server</li>
+        <li data-val="c">The system scales only for read traffic, not writes</li>
+        <li data-val="d">The system replicates data across geographic regions</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q4')">Reveal</button>
+      <div class="explanation" id="q4-exp"><strong>Horizontal scaling (scale out)</strong> = add more machines. <strong>Vertical scaling (scale up)</strong> = bigger machine. Horizontal is preferred for large-scale systems because it has no single-machine ceiling.</div>
+    </div>
+
+    <div class="quiz-q" id="q5">
+      <div class="q-num">Question 5</div>
+      <p><strong>A service has 10M DAU, each making 5 API requests per day. What is the approximate QPS?</strong></p>
+      <ul class="options" data-correct="c">
+        <li data-val="a">~58 QPS</li>
+        <li data-val="b">~580 QPS</li>
+        <li data-val="c">~580 QPS</li>
+        <li data-val="d">~5,800 QPS</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q5')">Reveal</button>
+      <div class="explanation" id="q5-exp">10M × 5 = 50M requests/day. 50M ÷ 86,400 sec ≈ <strong>578 QPS ≈ 580 QPS</strong>. Rule of thumb: 1M requests/day ≈ 12 QPS.</div>
+    </div>
+  </div>
+
+  <!-- ESTIMATION WORKSHOP -->
+  <div class="card">
+    <h2>🧮 Part B — Estimation Workshop (In-class)</h2>
+    <p style="font-size:0.93rem;margin-bottom:1rem;">Work in pairs. For each scenario, estimate the required numbers. Show your work (don't just write the answer).</p>
+
+    <div class="scenario">
+      <h4>Scenario 1 — Photo sharing app (like Instagram)</h4>
+      <ul style="margin-left:1.4rem;line-height:2.2;font-size:0.94rem;">
+        <li>50M DAU. Each user views 20 photos/day and uploads 1 photo/week.</li>
+        <li>Average photo size: 2 MB compressed.</li>
+        <li>Estimate: (a) read QPS, (b) write QPS, (c) storage per year.</li>
+      </ul>
+    </div>
+
+    <div class="scenario">
+      <h4>Scenario 2 — Chat application (like WhatsApp)</h4>
+      <ul style="margin-left:1.4rem;line-height:2.2;font-size:0.94rem;">
+        <li>200M DAU. Each user sends 40 messages/day. Average message = 100 bytes.</li>
+        <li>Messages must be delivered in under 1 second.</li>
+        <li>Estimate: (a) messages/sec, (b) storage per year (text only), (c) what makes this design hard vs. a URL shortener?</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- WHITEBOARD EXERCISE -->
+  <div class="card">
+    <h2>🖊️ Part C — Whiteboard Practice</h2>
+    <p style="font-size:0.93rem;margin-bottom:1rem;">Using the 6-step framework, spend 15 minutes designing a simple "Pastebin" (text paste sharing) service in pairs. One person explains, one draws. Then swap roles and critique.</p>
+
+    <div class="activity-box">
+      <h4>Pastebin requirements (use these):</h4>
+      <ul style="margin-left:1.4rem;line-height:2;font-size:0.94rem;">
+        <li><strong>Functional:</strong> User pastes text → gets a short URL. Anyone with the URL can read the paste. Pastes expire after 24h by default.</li>
+        <li><strong>Non-functional:</strong> 10M pastes/day. Reads 10× more common than writes. Paste max size = 1MB. 99.9% availability.</li>
+      </ul>
+    </div>
+
+    <h3>Design Checklist</h3>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>Did you list functional AND non-functional requirements before drawing?</span></li>
+      <li><input type="checkbox"><span>Did you estimate QPS and storage before choosing a database?</span></li>
+      <li><input type="checkbox"><span>Did you draw: client, load balancer, app server, database?</span></li>
+      <li><input type="checkbox"><span>Did you identify at least one bottleneck and propose a solution?</span></li>
+      <li><input type="checkbox"><span>Did you define at least two API endpoints (create paste, get paste)?</span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>📝 Part D — Weekly Reflection</h2>
+    <ol style="margin-left:1.4rem;line-height:2.2;font-size:0.95rem;">
+      <li>Research: what is the difference between <em>latency</em> and <em>throughput</em>? Give a real-world analogy for each.</li>
+      <li>Calculate: if a data center has 99.95% availability, how many minutes of downtime are allowed per month?</li>
+      <li>Read: ByteByteGo article "A Framework for System Design Interviews" (available on bytebytego.com — free).</li>
+    </ol>
+  </div>
+</main>
+<footer><strong>Algoritmia Aplicada y Diseño Moderno de Sistemas</strong> · UDES · Block 1 – Week 1 Design Activities · Professor: Jorge Galvis</footer>
+<script>
+  let answered=0,correct=0;
+  function revealQuiz(qid){
+    const block=document.getElementById(qid);
+    const correctVal=block.querySelector('.options').dataset.correct;
+    const selected=block.querySelector('li.selected');
+    if(!selected){alert('Please select an answer first.');return;}
+    block.querySelectorAll('.options li').forEach(li=>{
+      if(li.dataset.val===correctVal)li.classList.add('correct');
+      else if(li.classList.contains('selected'))li.classList.add('wrong');
+    });
+    document.getElementById(qid+'-exp').style.display='block';
+    if(!block.dataset.counted){
+      answered++;
+      if(selected.dataset.val===correctVal)correct++;
+      block.dataset.counted='1';
+      document.getElementById('score').textContent=correct+' / '+answered;
+    }
+    block.querySelector('.reveal-btn').disabled=true;
+  }
+  document.querySelectorAll('.options').forEach(ul=>{
+    ul.querySelectorAll('li').forEach(li=>{
+      li.addEventListener('click',()=>{
+        if(ul.closest('.quiz-q').dataset.counted)return;
+        ul.querySelectorAll('li').forEach(x=>x.classList.remove('selected'));
+        li.classList.add('selected');
+      });
+    });
+  });
+  document.querySelectorAll('.checklist input').forEach((cb,i)=>{
+    cb.checked=sessionStorage.getItem('w1d-cb-'+i)==='1';
+    cb.addEventListener('change',()=>sessionStorage.setItem('w1d-cb-'+i,cb.checked?'1':'0'));
+  });
+</script>
+</body>
+</html>
