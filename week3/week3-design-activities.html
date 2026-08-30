@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 3 Design Activities – Databases | Algoritmia Aplicada</title>
+<style>
+  :root{--udes-blue:#003087;--udes-blue-dark:#001f5c;--udes-blue-light:#1a4fa0;--udes-gold:#C8A028;--bg:#f4f6fb;--surface:#fff;--surface2:#eef2fa;--text:#1a1a2e;--text-muted:#5a6070;--border:#d0d8ea;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  .top-nav{background:var(--udes-blue-dark);color:#fff;padding:0.6rem 2rem;display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;}
+  .course-label{color:var(--udes-gold);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;}
+  .lesson-breadcrumb{display:flex;gap:1.2rem;align-items:center;}
+  .prev{color:#aab4cc;}.current{background:var(--udes-gold);color:#000;font-weight:700;padding:0.2rem 0.7rem;border-radius:4px;}
+  header{background:linear-gradient(135deg,var(--udes-blue) 0%,var(--udes-blue-light) 100%);color:#fff;padding:2.5rem 2rem;text-align:center;border-bottom:4px solid var(--udes-gold);}
+  .block-tag{display:inline-block;background:var(--udes-gold);color:#000;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:0.25rem 0.9rem;border-radius:20px;margin-bottom:1rem;}
+  header h1{font-size:2rem;font-weight:800;margin-bottom:0.4rem;} header p.subtitle{font-size:1rem;color:#b8ccee;}
+  .container{max-width:900px;margin:0 auto;padding:2rem 1.5rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.8rem 2rem;margin-bottom:2rem;box-shadow:0 2px 8px rgba(0,48,135,0.06);}
+  .card h2{color:var(--udes-blue);font-size:1.3rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--udes-gold);}
+  .quiz-q{background:var(--surface2);border-left:4px solid var(--udes-blue);border-radius:0 8px 8px 0;padding:1rem 1.2rem;margin:1.2rem 0;}
+  .quiz-q .q-num{font-size:0.78rem;font-weight:700;color:var(--udes-gold);text-transform:uppercase;}
+  .options{list-style:none;padding:0;margin-top:0.8rem;}
+  .options li{padding:0.45rem 0.8rem;margin:0.3rem 0;border-radius:6px;border:1px solid var(--border);cursor:pointer;transition:background 0.15s;}
+  .options li:hover{background:var(--surface2);}
+  .options li.selected{background:#ddeaff;border-color:var(--udes-blue);}
+  .options li.correct{background:#e8f5e9;border-color:#2e7d32;color:#1b5e20;font-weight:600;}
+  .options li.wrong{background:#ffebee;border-color:#c62828;color:#b71c1c;}
+  .reveal-btn{margin-top:0.8rem;padding:0.4rem 1.1rem;background:var(--udes-blue);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:0.87rem;font-weight:600;}
+  .explanation{display:none;margin-top:0.8rem;padding:0.8rem 1rem;background:#fffde7;border-left:3px solid var(--udes-gold);border-radius:0 6px 6px 0;font-size:0.92rem;}
+  .scenario{background:#e3f2fd;border:1px solid #90caf9;border-radius:8px;padding:1.2rem 1.4rem;margin:1rem 0;}
+  .scenario h4{color:#0d47a1;margin-bottom:0.5rem;}
+  .checklist{list-style:none;padding:0;}
+  .checklist li{padding:0.5rem 0.8rem;margin:0.3rem 0;display:flex;align-items:flex-start;gap:0.7rem;border-radius:6px;background:var(--surface2);}
+  .checklist input[type=checkbox]{margin-top:0.3rem;accent-color:var(--udes-blue);width:16px;height:16px;flex-shrink:0;}
+  #score-bar{background:var(--udes-blue-dark);color:#fff;text-align:center;padding:1rem;position:sticky;top:0;z-index:100;font-size:0.95rem;}
+  #score-bar span{color:var(--udes-gold);font-weight:800;font-size:1.1rem;}
+  footer{background:var(--udes-blue-dark);color:#8899bb;text-align:center;padding:1.2rem;font-size:0.82rem;margin-top:3rem;}
+  footer strong{color:var(--udes-gold);}
+</style>
+</head>
+<body>
+<nav class="top-nav">
+  <span class="course-label">Algoritmia Aplicada y Diseño Moderno de Sistemas</span>
+  <div class="lesson-breadcrumb">
+    <span class="prev">⬅ Week 2: Building Blocks</span>
+    <span class="current">Week 3 · Design Activities</span>
+    <span>→ Week 4: URL Shortener</span>
+  </div>
+</nav>
+<div id="score-bar">Quiz score: <span id="score">0 / 0</span> correct</div>
+<header>
+  <div class="block-tag">Block 1 – Foundations · Week 3 Design Activities</div>
+  <h1>Database Design Activities</h1>
+  <p class="subtitle">SQL vs NoSQL · Indexing · CAP Theorem · Sharding Workshop</p>
+</header>
+
+<main class="container">
+  <div class="card">
+    <h2>⚡ Part A — Quiz</h2>
+
+    <div class="quiz-q" id="q1">
+      <div class="q-num">Question 1</div>
+      <p><strong>A banking system must guarantee that money debited from one account is always credited to another (even on failure). Which property ensures this?</strong></p>
+      <ul class="options" data-correct="a">
+        <li data-val="a">Atomicity (A in ACID)</li>
+        <li data-val="b">Availability (A in CAP)</li>
+        <li data-val="c">Eventual Consistency (BASE)</li>
+        <li data-val="d">Partition Tolerance</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q1')">Reveal</button>
+      <div class="explanation" id="q1-exp"><strong>Atomicity</strong> — a transaction either fully commits or fully rolls back. If the credit fails, the debit is reversed. This is ACID's "all-or-nothing" guarantee, critical for financial data.</div>
+    </div>
+
+    <div class="quiz-q" id="q2">
+      <div class="q-num">Question 2</div>
+      <p><strong>Your query: <code>SELECT * FROM orders WHERE user_id = 42 AND created_at > '2024-01-01'</code>. Which index would be MOST useful?</strong></p>
+      <ul class="options" data-correct="c">
+        <li data-val="a">Single index on created_at</li>
+        <li data-val="b">Single index on user_id</li>
+        <li data-val="c">Composite index on (user_id, created_at)</li>
+        <li data-val="d">No index needed — use a full table scan</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q2')">Reveal</button>
+      <div class="explanation" id="q2-exp"><strong>Composite index on (user_id, created_at)</strong> — filters by user_id first (high cardinality, eliminates most rows), then further filters by date range using the second column. A single index on user_id helps but still needs to scan all orders for that user to filter by date.</div>
+    </div>
+
+    <div class="quiz-q" id="q3">
+      <div class="q-num">Question 3</div>
+      <p><strong>In the CAP theorem, during a network partition a CP system will:</strong></p>
+      <ul class="options" data-correct="b">
+        <li data-val="a">Return stale data rather than an error</li>
+        <li data-val="b">Return an error or reject the request rather than return inconsistent data</li>
+        <li data-val="c">Route all traffic to the fastest available node</li>
+        <li data-val="d">Automatically heal the partition before responding</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q3')">Reveal</button>
+      <div class="explanation" id="q3-exp"><strong>Return an error</strong> — CP systems sacrifice Availability to maintain Consistency. If the system cannot guarantee the latest data, it refuses to respond rather than return stale data. Example: HBase, Zookeeper.</div>
+    </div>
+
+    <div class="quiz-q" id="q4">
+      <div class="q-num">Question 4</div>
+      <p><strong>Hash-based sharding with 4 shards. user_id=17 goes to which shard?</strong></p>
+      <ul class="options" data-correct="b">
+        <li data-val="a">Shard 0</li>
+        <li data-val="b">Shard 1</li>
+        <li data-val="c">Shard 2</li>
+        <li data-val="d">Shard 3</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q4')">Reveal</button>
+      <div class="explanation" id="q4-exp">17 % 4 = <strong>1</strong> → Shard 1. Hash-based sharding distributes evenly by taking the modulo of the key against the number of shards.</div>
+    </div>
+
+    <div class="quiz-q" id="q5">
+      <div class="q-num">Question 5</div>
+      <p><strong>Primary-replica replication improves which type of traffic?</strong></p>
+      <ul class="options" data-correct="a">
+        <li data-val="a">Read throughput (can distribute reads to replicas)</li>
+        <li data-val="b">Write throughput (can write to any replica)</li>
+        <li data-val="c">Both equally</li>
+        <li data-val="d">Neither — it only improves availability</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q5')">Reveal</button>
+      <div class="explanation" id="q5-exp"><strong>Read throughput</strong> — reads can go to any replica, distributing the load. Writes still go only to the primary (replicas are read-only). Replication also improves availability as a side benefit.</div>
+    </div>
+  </div>
+
+  <!-- WORKSHOP: DB SELECTION -->
+  <div class="card">
+    <h2>🗄️ Part B — Database Selection Workshop</h2>
+    <p style="font-size:0.93rem;margin-bottom:1rem;">For each system below, choose a database type and justify your choice. There may be more than one valid answer — justify your trade-offs.</p>
+
+    <div class="scenario">
+      <h4>System 1 — Social media posts</h4>
+      <p style="font-size:0.94rem;">Users create posts with text, images, tags. 500M posts/day. Need to query "posts by user" and "posts by tag." Posts are never updated after creation. High read/write ratio 80/20.</p>
+      <p style="font-size:0.93rem;"><strong>Consider:</strong> Do you need joins between users and posts? Does schema flexibility matter? Would you use the same DB for user profiles vs. posts?</p>
+    </div>
+
+    <div class="scenario">
+      <h4>System 2 — E-commerce checkout</h4>
+      <p style="font-size:0.94rem;">Order creation deducts inventory AND charges a credit card. Failed charges must roll back inventory. Moderate traffic (10,000 orders/hour). Order history must be queryable by date range.</p>
+      <p style="font-size:0.93rem;"><strong>Consider:</strong> Which ACID property is critical here? Would NoSQL work? What index would you add for the date-range query?</p>
+    </div>
+
+    <div class="scenario">
+      <h4>System 3 — Real-time leaderboard</h4>
+      <p style="font-size:0.94rem;">A game tracks scores for 10M players. Every score update must be immediately reflected in the top-100 leaderboard. 100,000 score updates/sec. Leaderboard is read by 1M users/sec.</p>
+      <p style="font-size:0.93rem;"><strong>Consider:</strong> Would a traditional DB work? What Redis data structure is ideal? Would you use Redis as the primary store or a cache in front of a DB?</p>
+    </div>
+  </div>
+
+  <!-- PEER REVIEW -->
+  <div class="card">
+    <h2>🤝 Part C — Peer Review Checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>DB choice justified with a specific reason (not just "NoSQL is faster")?</span></li>
+      <li><input type="checkbox"><span>Index specified by column name, not just "add an index"?</span></li>
+      <li><input type="checkbox"><span>Replication lag acknowledged if using async replication?</span></li>
+      <li><input type="checkbox"><span>Sharding strategy named (hash/range/directory) and shard key justified?</span></li>
+      <li><input type="checkbox"><span>CAP trade-off stated: is this system CP or AP during a partition?</span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>📝 Part D — Weekly Reflection</h2>
+    <ol style="margin-left:1.4rem;line-height:2.2;font-size:0.95rem;">
+      <li>Research: what is "consistent hashing" and how does it solve the resharding problem in hash-based sharding?</li>
+      <li>Draw a diagram: a primary DB with 2 replicas, showing which nodes handle reads, which handles writes, and what happens if the primary fails.</li>
+      <li>Given a 1TB database table growing at 100GB/month, estimate when you would need to shard. What would your shard key be if the table is user transactions?</li>
+    </ol>
+  </div>
+</main>
+<footer><strong>Algoritmia Aplicada y Diseño Moderno de Sistemas</strong> · UDES · Block 1 – Week 3 Design Activities · Professor: Jorge Galvis</footer>
+<script>
+  let answered=0,correct=0;
+  function revealQuiz(qid){
+    const block=document.getElementById(qid);
+    const correctVal=block.querySelector('.options').dataset.correct;
+    const selected=block.querySelector('li.selected');
+    if(!selected){alert('Please select an answer first.');return;}
+    block.querySelectorAll('.options li').forEach(li=>{
+      if(li.dataset.val===correctVal)li.classList.add('correct');
+      else if(li.classList.contains('selected'))li.classList.add('wrong');
+    });
+    document.getElementById(qid+'-exp').style.display='block';
+    if(!block.dataset.counted){
+      answered++;
+      if(selected.dataset.val===correctVal)correct++;
+      block.dataset.counted='1';
+      document.getElementById('score').textContent=correct+' / '+answered;
+    }
+    block.querySelector('.reveal-btn').disabled=true;
+  }
+  document.querySelectorAll('.options').forEach(ul=>{
+    ul.querySelectorAll('li').forEach(li=>{
+      li.addEventListener('click',()=>{
+        if(ul.closest('.quiz-q').dataset.counted)return;
+        ul.querySelectorAll('li').forEach(x=>x.classList.remove('selected'));
+        li.classList.add('selected');
+      });
+    });
+  });
+  document.querySelectorAll('.checklist input').forEach((cb,i)=>{
+    cb.checked=sessionStorage.getItem('w3d-cb-'+i)==='1';
+    cb.addEventListener('change',()=>sessionStorage.setItem('w3d-cb-'+i,cb.checked?'1':'0'));
+  });
+</script>
+</body>
+</html>

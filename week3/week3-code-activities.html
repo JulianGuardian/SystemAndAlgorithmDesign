@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 3 Activities – Arrays & Strings | Algoritmia Aplicada</title>
+<style>
+  :root{--udes-blue:#003087;--udes-blue-dark:#001f5c;--udes-blue-light:#1a4fa0;--udes-gold:#C8A028;--bg:#f4f6fb;--surface:#fff;--surface2:#eef2fa;--text:#1a1a2e;--text-muted:#5a6070;--border:#d0d8ea;--code-bg:#1e2340;--code-text:#e8eaf0;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  .top-nav{background:var(--udes-blue-dark);color:#fff;padding:0.6rem 2rem;display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;}
+  .course-label{color:var(--udes-gold);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;}
+  .lesson-breadcrumb{display:flex;gap:1.2rem;align-items:center;}
+  .prev{color:#aab4cc;} .current{background:var(--udes-gold);color:#000;font-weight:700;padding:0.2rem 0.7rem;border-radius:4px;}
+  header{background:linear-gradient(135deg,var(--udes-blue) 0%,var(--udes-blue-light) 100%);color:#fff;padding:2.5rem 2rem;text-align:center;border-bottom:4px solid var(--udes-gold);}
+  .block-tag{display:inline-block;background:var(--udes-gold);color:#000;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:0.25rem 0.9rem;border-radius:20px;margin-bottom:1rem;}
+  header h1{font-size:2rem;font-weight:800;margin-bottom:0.4rem;} header p.subtitle{font-size:1rem;color:#b8ccee;}
+  .container{max-width:900px;margin:0 auto;padding:2rem 1.5rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.8rem 2rem;margin-bottom:2rem;box-shadow:0 2px 8px rgba(0,48,135,0.06);}
+  .card h2{color:var(--udes-blue);font-size:1.3rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--udes-gold);}
+  .quiz-q{background:var(--surface2);border-left:4px solid var(--udes-blue);border-radius:0 8px 8px 0;padding:1rem 1.2rem;margin:1.2rem 0;}
+  .quiz-q .q-num{font-size:0.78rem;font-weight:700;color:var(--udes-gold);text-transform:uppercase;}
+  .options{list-style:none;padding:0;margin-top:0.8rem;}
+  .options li{padding:0.45rem 0.8rem;margin:0.3rem 0;border-radius:6px;border:1px solid var(--border);cursor:pointer;transition:background 0.15s;}
+  .options li:hover{background:var(--surface2);}
+  .options li.selected{background:#ddeaff;border-color:var(--udes-blue);}
+  .options li.correct{background:#e8f5e9;border-color:#2e7d32;color:#1b5e20;font-weight:600;}
+  .options li.wrong{background:#ffebee;border-color:#c62828;color:#b71c1c;}
+  .reveal-btn{margin-top:0.8rem;padding:0.4rem 1.1rem;background:var(--udes-blue);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:0.87rem;font-weight:600;}
+  .explanation{display:none;margin-top:0.8rem;padding:0.8rem 1rem;background:#fffde7;border-left:3px solid var(--udes-gold);border-radius:0 6px 6px 0;font-size:0.92rem;}
+  .problem{border:1px solid var(--border);border-radius:8px;margin:1rem 0;overflow:hidden;}
+  .problem-header{background:var(--udes-blue);color:#fff;padding:0.7rem 1.2rem;display:flex;justify-content:space-between;align-items:center;}
+  .problem-header h4{font-size:1rem;font-weight:700;}
+  .difficulty{font-size:0.75rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:12px;}
+  .easy{background:#c8e6c9;color:#1b5e20;} .medium{background:#fff3e0;color:#e65100;}
+  .problem-body{padding:1.2rem;} .problem-body p{margin-bottom:0.8rem;font-size:0.95rem;}
+  .lc-link{display:inline-block;background:var(--udes-gold);color:#000;font-weight:700;font-size:0.82rem;padding:0.3rem 0.9rem;border-radius:5px;text-decoration:none;margin-top:0.5rem;}
+  .hint-box{background:#e3f2fd;border-left:3px solid #1565c0;border-radius:0 6px 6px 0;padding:0.7rem 1rem;margin-top:0.8rem;font-size:0.9rem;}
+  .hint-toggle{cursor:pointer;color:var(--udes-blue);font-weight:600;font-size:0.88rem;border:none;background:none;padding:0;}
+  .hint-content{display:none;margin-top:0.5rem;}
+  .tag{display:inline-block;background:#e3ebfa;color:var(--udes-blue);border-radius:4px;padding:0.15rem 0.55rem;font-size:0.78rem;font-weight:600;margin:0.15rem;}
+  .checklist{list-style:none;padding:0;}
+  .checklist li{padding:0.5rem 0.8rem;margin:0.3rem 0;display:flex;align-items:flex-start;gap:0.7rem;border-radius:6px;background:var(--surface2);}
+  .checklist input[type=checkbox]{margin-top:0.3rem;accent-color:var(--udes-blue);width:16px;height:16px;flex-shrink:0;}
+  #score-bar{background:var(--udes-blue-dark);color:#fff;text-align:center;padding:1rem;position:sticky;top:0;z-index:100;font-size:0.95rem;}
+  #score-bar span{color:var(--udes-gold);font-weight:800;font-size:1.1rem;}
+  footer{background:var(--udes-blue-dark);color:#8899bb;text-align:center;padding:1.2rem;font-size:0.82rem;margin-top:3rem;}
+  footer strong{color:var(--udes-gold);}
+</style>
+</head>
+<body>
+<nav class="top-nav">
+  <span class="course-label">Algoritmia Aplicada y Diseño Moderno de Sistemas</span>
+  <div class="lesson-breadcrumb">
+    <span class="prev">⬅ Week 2: Recursion</span>
+    <span class="current">Week 3 · Activities</span>
+    <span>→ Week 4: Hash Tables &amp; Linked Lists</span>
+  </div>
+</nav>
+<div id="score-bar">Quiz score: <span id="score">0 / 0</span> correct</div>
+<header>
+  <div class="block-tag">Block 1 – Foundations · Week 3 Activities</div>
+  <h1>Activities &amp; Problem Set</h1>
+  <p class="subtitle">Arrays &amp; Strings Quiz · Prefix Sum · Anagrams · Matrix Traversal</p>
+</header>
+
+<main class="container">
+  <div class="card">
+    <h2>⚡ Part A — Quick Quiz</h2>
+
+    <div class="quiz-q" id="q1">
+      <div class="q-num">Question 1</div>
+      <p><strong>Given prefix = [0,3,4,8,9,14,23], what is the sum of elements at indices 2 to 4 (0-indexed)?</strong></p>
+      <ul class="options" data-correct="b">
+        <li data-val="a">9</li><li data-val="b">10</li><li data-val="c">14</li><li data-val="d">6</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q1')">Reveal</button>
+      <div class="explanation" id="q1-exp">prefix[5] − prefix[2] = 14 − 4 = <strong>10</strong>. Indices 2,3,4 hold values 4,1,5 which sum to 10.</div>
+    </div>
+
+    <div class="quiz-q" id="q2">
+      <div class="q-num">Question 2</div>
+      <p><strong>Are "listen" and "silent" anagrams?</strong></p>
+      <ul class="options" data-correct="a">
+        <li data-val="a">Yes</li><li data-val="b">No</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q2')">Reveal</button>
+      <div class="explanation" id="q2-exp"><strong>Yes.</strong> Both contain exactly: e×1, i×1, l×1, n×1, s×1, t×1. Their character frequency maps are identical.</div>
+    </div>
+
+    <div class="quiz-q" id="q3">
+      <div class="q-num">Question 3</div>
+      <p><strong>What is the time complexity of building a prefix sum array of length n?</strong></p>
+      <ul class="options" data-correct="b">
+        <li data-val="a">O(1)</li><li data-val="b">O(n)</li><li data-val="c">O(n²)</li><li data-val="d">O(log n)</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q3')">Reveal</button>
+      <div class="explanation" id="q3-exp"><strong>O(n)</strong> — one pass through the array to compute cumulative sums. Each query afterwards is O(1).</div>
+    </div>
+
+    <div class="quiz-q" id="q4">
+      <div class="q-num">Question 4</div>
+      <p><strong>How many cells does a spiral traversal of an m×n matrix visit?</strong></p>
+      <ul class="options" data-correct="c">
+        <li data-val="a">m + n</li><li data-val="b">m × n − 1</li><li data-val="c">m × n</li><li data-val="d">2(m+n)−4</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q4')">Reveal</button>
+      <div class="explanation" id="q4-exp"><strong>m × n</strong> — every cell is visited exactly once regardless of traversal order.</div>
+    </div>
+
+    <div class="quiz-q" id="q5">
+      <div class="q-num">Question 5</div>
+      <p><strong>When comparing two frequency-count arrays of length 26, what is the time complexity of the comparison?</strong></p>
+      <ul class="options" data-correct="a">
+        <li data-val="a">O(1) — fixed alphabet size</li><li data-val="b">O(n)</li><li data-val="c">O(26 log 26)</li><li data-val="d">O(n log n)</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q5')">Reveal</button>
+      <div class="explanation" id="q5-exp"><strong>O(1)</strong> — comparing two arrays of constant length 26 is constant-time work, regardless of the input string length.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>💻 Part B — LeetCode Problem Set</h2>
+
+    <div class="problem">
+      <div class="problem-header"><h4>#303 · Range Sum Query – Immutable</h4><span class="difficulty easy">Easy</span></div>
+      <div class="problem-body">
+        <p>Given an integer array, handle multiple range sum queries efficiently. Build a prefix sum once in the constructor; each query must be O(1).</p>
+        <p><span class="tag">Prefix Sum</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h1')">💡 Hint</button>
+        <div class="hint-content hint-box" id="h1">Build <code>self.prefix</code> in <code>__init__</code>. In <code>sumRange(l,r)</code> return <code>self.prefix[r+1] - self.prefix[l]</code>.</div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/range-sum-query-immutable/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+
+    <div class="problem">
+      <div class="problem-header"><h4>#49 · Group Anagrams</h4><span class="difficulty medium">Medium</span></div>
+      <div class="problem-body">
+        <p>Given an array of strings, group the anagrams together. Each group may be returned in any order.</p>
+        <p><span class="tag">Hash Map</span> <span class="tag">Frequency Map</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h2')">💡 Hint</button>
+        <div class="hint-content hint-box" id="h2">Use <code>tuple(sorted(s))</code> as the dictionary key. All anagrams map to the same sorted key. Group under that key.</div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/group-anagrams/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+
+    <div class="problem">
+      <div class="problem-header"><h4>#54 · Spiral Matrix</h4><span class="difficulty medium">Medium</span></div>
+      <div class="problem-body">
+        <p>Given an m×n matrix, return all elements in spiral order.</p>
+        <p><span class="tag">Matrix Traversal</span> <span class="tag">Boundary Shrink</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h3')">💡 Hint</button>
+        <div class="hint-content hint-box" id="h3">Maintain four boundaries: top, bottom, left, right. After traversing each side, shrink that boundary inward and check if boundaries have crossed before the next side.</div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/spiral-matrix/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+
+    <div class="problem">
+      <div class="problem-header"><h4>#438 · Find All Anagrams in a String</h4><span class="difficulty medium">Medium</span></div>
+      <div class="problem-body">
+        <p>Given strings s and p, return all start indices of p's anagrams in s. The answer can be in any order.</p>
+        <p><span class="tag">Sliding Window</span> <span class="tag">Frequency Map</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h4')">💡 Hint</button>
+        <div class="hint-content hint-box" id="h4">Fixed-size window of length <code>len(p)</code>. Add the new right character, drop the leftmost character, compare frequency arrays in O(1) (array of length 26).</div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/find-all-anagrams-in-a-string/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+
+    <div class="problem">
+      <div class="problem-header"><h4>#560 · Subarray Sum Equals K (Bonus)</h4><span class="difficulty medium">Medium</span></div>
+      <div class="problem-body">
+        <p>Given an integer array and an integer k, return the total number of subarrays whose sum equals k. Array may contain negatives.</p>
+        <p><span class="tag">Prefix Sum + Hash Map</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h5')">💡 Hint</button>
+        <div class="hint-content hint-box" id="h5">If <code>prefix[j] - prefix[i] == k</code>, then subarray i..j-1 sums to k. Track prefix sum frequencies in a dictionary. For each prefix sum, check if <code>prefix − k</code> has been seen before.</div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/subarray-sum-equals-k/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>✏️ Part C — Trace Exercise</h2>
+    <p style="font-size:0.93rem;margin-bottom:0.8rem;">Given <code>nums = [2, 4, 3, 1, 5]</code>, manually compute the prefix sum array. Then answer:</p>
+    <ol style="margin-left:1.4rem;line-height:2.4;font-size:0.95rem;">
+      <li>What is the sum of indices 1 to 3?</li>
+      <li>How many range-sum queries can you answer with one prefix array of size n+1?</li>
+      <li>Can you use prefix sums if the array is mutable (values change after build)? Explain.</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>🤝 Part D — Peer Review Checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span><strong>Prefix array size:</strong> Is it length n+1 (not n) to allow the l=0 edge case?</span></li>
+      <li><input type="checkbox"><span><strong>Copy vs. reference:</strong> When building frequency maps, are string characters iterated (not list slices)?</span></li>
+      <li><input type="checkbox"><span><strong>Complexity stated:</strong> Separately stated for build phase and query phase?</span></li>
+      <li><input type="checkbox"><span><strong>Matrix bounds:</strong> Are out-of-bounds accesses prevented before indexing?</span></li>
+      <li><input type="checkbox"><span><strong>Window slide correctness:</strong> Correct order: add right → compare → drop left (or drop left → add right, depending on design)?</span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>📝 Part E — Weekly Reflection</h2>
+    <ol style="margin-left:1.4rem;line-height:2.2;font-size:0.95rem;">
+      <li>Solve LeetCode #1 (Two Sum). Compare the O(n²) brute force with the O(n) hash-map approach. Write the complexity analysis for both.</li>
+      <li>Can you extend the prefix sum to handle 2D matrices? Look up "304. Range Sum Query 2D – Immutable" and describe the inclusion-exclusion formula in your own words.</li>
+      <li>Find one interview question (from NeetCode or LeetCode) that combines prefix sum AND sliding window. Describe the problem and the key insight.</li>
+    </ol>
+  </div>
+</main>
+<footer><strong>Algoritmia Aplicada y Diseño Moderno de Sistemas</strong> · UDES · Block 1 – Week 3 Activities · Professor: Jorge Galvis</footer>
+
+<script>
+  let answered=0,correct=0;
+  function revealQuiz(qid){
+    const block=document.getElementById(qid);
+    const correctVal=block.querySelector('.options').dataset.correct;
+    const selected=block.querySelector('li.selected');
+    if(!selected){alert('Please select an answer first.');return;}
+    block.querySelectorAll('.options li').forEach(li=>{
+      if(li.dataset.val===correctVal)li.classList.add('correct');
+      else if(li.classList.contains('selected'))li.classList.add('wrong');
+    });
+    document.getElementById(qid+'-exp').style.display='block';
+    if(!block.dataset.counted){
+      answered++;
+      if(selected.dataset.val===correctVal)correct++;
+      block.dataset.counted='1';
+      document.getElementById('score').textContent=correct+' / '+answered;
+    }
+    block.querySelector('.reveal-btn').disabled=true;
+  }
+  document.querySelectorAll('.options').forEach(ul=>{
+    ul.querySelectorAll('li').forEach(li=>{
+      li.addEventListener('click',()=>{
+        if(ul.closest('.quiz-q').dataset.counted)return;
+        ul.querySelectorAll('li').forEach(x=>x.classList.remove('selected'));
+        li.classList.add('selected');
+      });
+    });
+  });
+  function toggleHint(id){const el=document.getElementById(id);el.style.display=el.style.display==='block'?'none':'block';}
+  document.querySelectorAll('.checklist input').forEach((cb,i)=>{
+    cb.checked=sessionStorage.getItem('w3-cb-'+i)==='1';
+    cb.addEventListener('change',()=>sessionStorage.setItem('w3-cb-'+i,cb.checked?'1':'0'));
+  });
+</script>
+</body>
+</html>
