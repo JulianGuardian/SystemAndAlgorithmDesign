@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 4 Design Activities – URL Shortener, Rate Limiting, API | Algoritmia Aplicada</title>
+<style>
+  :root{--udes-blue:#003087;--udes-blue-dark:#001f5c;--udes-blue-light:#1a4fa0;--udes-gold:#C8A028;--bg:#f4f6fb;--surface:#fff;--surface2:#eef2fa;--text:#1a1a2e;--text-muted:#5a6070;--border:#d0d8ea;--code-bg:#1e2340;--code-text:#e8eaf0;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  .top-nav{background:var(--udes-blue-dark);color:#fff;padding:0.6rem 2rem;display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;}
+  .course-label{color:var(--udes-gold);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;}
+  .lesson-breadcrumb{display:flex;gap:1.2rem;align-items:center;}
+  .prev{color:#aab4cc;}.current{background:var(--udes-gold);color:#000;font-weight:700;padding:0.2rem 0.7rem;border-radius:4px;}
+  header{background:linear-gradient(135deg,var(--udes-blue) 0%,var(--udes-blue-light) 100%);color:#fff;padding:2.5rem 2rem;text-align:center;border-bottom:4px solid var(--udes-gold);}
+  .block-tag{display:inline-block;background:var(--udes-gold);color:#000;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:0.25rem 0.9rem;border-radius:20px;margin-bottom:1rem;}
+  header h1{font-size:2rem;font-weight:800;margin-bottom:0.4rem;} header p.subtitle{font-size:1rem;color:#b8ccee;}
+  .container{max-width:900px;margin:0 auto;padding:2rem 1.5rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.8rem 2rem;margin-bottom:2rem;box-shadow:0 2px 8px rgba(0,48,135,0.06);}
+  .card h2{color:var(--udes-blue);font-size:1.3rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--udes-gold);}
+  .card h3{color:var(--udes-blue-dark);font-size:1.05rem;margin:1.3rem 0 0.5rem;}
+  .quiz-q{background:var(--surface2);border-left:4px solid var(--udes-blue);border-radius:0 8px 8px 0;padding:1rem 1.2rem;margin:1.2rem 0;}
+  .quiz-q .q-num{font-size:0.78rem;font-weight:700;color:var(--udes-gold);text-transform:uppercase;}
+  .options{list-style:none;padding:0;margin-top:0.8rem;}
+  .options li{padding:0.45rem 0.8rem;margin:0.3rem 0;border-radius:6px;border:1px solid var(--border);cursor:pointer;transition:background 0.15s;}
+  .options li:hover{background:var(--surface2);}
+  .options li.selected{background:#ddeaff;border-color:var(--udes-blue);}
+  .options li.correct{background:#e8f5e9;border-color:#2e7d32;color:#1b5e20;font-weight:600;}
+  .options li.wrong{background:#ffebee;border-color:#c62828;color:#b71c1c;}
+  .reveal-btn{margin-top:0.8rem;padding:0.4rem 1.1rem;background:var(--udes-blue);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:0.87rem;font-weight:600;}
+  .explanation{display:none;margin-top:0.8rem;padding:0.8rem 1rem;background:#fffde7;border-left:3px solid var(--udes-gold);border-radius:0 6px 6px 0;font-size:0.92rem;}
+  .scenario{background:#e3f2fd;border:1px solid #90caf9;border-radius:8px;padding:1.2rem 1.4rem;margin:1rem 0;}
+  .scenario h4{color:#0d47a1;margin-bottom:0.5rem;}
+  .checklist{list-style:none;padding:0;}
+  .checklist li{padding:0.5rem 0.8rem;margin:0.3rem 0;display:flex;align-items:flex-start;gap:0.7rem;border-radius:6px;background:var(--surface2);}
+  .checklist input[type=checkbox]{margin-top:0.3rem;accent-color:var(--udes-blue);width:16px;height:16px;flex-shrink:0;}
+  .eval-box{background:#e8f5e9;border:2px solid #2e7d32;border-radius:10px;padding:1.4rem 1.8rem;margin-top:1rem;}
+  .eval-box h3{color:#1b5e20;margin-bottom:0.6rem;}
+  .code-block{background:var(--code-bg);color:var(--code-text);border-radius:8px;padding:1rem 1.2rem;overflow-x:auto;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:0.87rem;line-height:1.65;margin:0.8rem 0;}
+  .cm{color:#7f848e;font-style:italic;}
+  #score-bar{background:var(--udes-blue-dark);color:#fff;text-align:center;padding:1rem;position:sticky;top:0;z-index:100;font-size:0.95rem;}
+  #score-bar span{color:var(--udes-gold);font-weight:800;font-size:1.1rem;}
+  footer{background:var(--udes-blue-dark);color:#8899bb;text-align:center;padding:1.2rem;font-size:0.82rem;margin-top:3rem;}
+  footer strong{color:var(--udes-gold);}
+</style>
+</head>
+<body>
+<nav class="top-nav">
+  <span class="course-label">Algoritmia Aplicada y Diseño Moderno de Sistemas</span>
+  <div class="lesson-breadcrumb">
+    <span class="prev">⬅ Week 3: Databases</span>
+    <span class="current">Week 4 · Design Activities</span>
+    <span>→ Week 5: Corte 1 Evaluation</span>
+  </div>
+</nav>
+<div id="score-bar">Quiz score: <span id="score">0 / 0</span> correct</div>
+<header>
+  <div class="block-tag">Block 1 – Foundations · Week 4 Design Activities</div>
+  <h1>Essential Systems Activities</h1>
+  <p class="subtitle">URL Shortener Quiz · Rate Limiting · API Design · Mock Interview Prep</p>
+</header>
+
+<main class="container">
+
+  <div class="card">
+    <h2>⚡ Part A — Quiz</h2>
+
+    <div class="quiz-q" id="q1">
+      <div class="q-num">Question 1</div>
+      <p><strong>A URL shortener uses base62 encoding with 7 characters. How many unique short codes are possible?</strong></p>
+      <ul class="options" data-correct="c">
+        <li data-val="a">62 × 7 = 434</li>
+        <li data-val="b">62 + 7 = 69</li>
+        <li data-val="c">62⁷ ≈ 3.5 trillion</li>
+        <li data-val="d">26⁷ ≈ 8 billion</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q1')">Reveal</button>
+      <div class="explanation" id="q1-exp">Base62 uses 62 characters (a-z, A-Z, 0-9). With 7 positions: 62⁷ = <strong>~3.52 trillion</strong> unique codes. At 1,160 writes/sec for 10 years = ~366 billion total → more than enough headroom.</div>
+    </div>
+
+    <div class="quiz-q" id="q2">
+      <div class="q-num">Question 2</div>
+      <p><strong>Why would you choose a 302 redirect over a 301 for a URL shortener?</strong></p>
+      <ul class="options" data-correct="b">
+        <li data-val="a">302 is faster because browsers cache it</li>
+        <li data-val="b">302 ensures every redirect hits your servers so you can track analytics</li>
+        <li data-val="c">302 is required by HTTP/2</li>
+        <li data-val="d">301 does not work with shortened URLs</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q2')">Reveal</button>
+      <div class="explanation" id="q2-exp"><strong>Analytics</strong> — 301 (permanent) is cached by browsers; subsequent clicks bypass your server, so you lose click count data. 302 (temporary) ensures every redirect is processed by your service, enabling click tracking.</div>
+    </div>
+
+    <div class="quiz-q" id="q3">
+      <div class="q-num">Question 3</div>
+      <p><strong>The Token Bucket rate limiter allows burst traffic. The Leaky Bucket does NOT. Why?</strong></p>
+      <ul class="options" data-correct="a">
+        <li data-val="a">Token Bucket accumulates unused tokens; Leaky Bucket processes at a constant output rate</li>
+        <li data-val="b">Token Bucket uses more memory</li>
+        <li data-val="c">Leaky Bucket allows burst at the start of each minute</li>
+        <li data-val="d">They are equivalent — both allow the same burst</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q3')">Reveal</button>
+      <div class="explanation" id="q3-exp">Token Bucket: if a user doesn't make requests for 5 minutes, tokens accumulate (up to bucket capacity). When they burst, they use stored tokens → allowed. Leaky Bucket: output is always a constant drip rate — excess requests wait in queue or are dropped immediately.</div>
+    </div>
+
+    <div class="quiz-q" id="q4">
+      <div class="q-num">Question 4</div>
+      <p><strong>A mobile app shows a user's feed (posts + author profiles + like counts). Which technology reduces over-fetching better?</strong></p>
+      <ul class="options" data-correct="b">
+        <li data-val="a">REST with versioned endpoints</li>
+        <li data-val="b">GraphQL — client requests exactly the fields it needs</li>
+        <li data-val="c">REST with pagination</li>
+        <li data-val="d">WebSockets</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q4')">Reveal</button>
+      <div class="explanation" id="q4-exp"><strong>GraphQL</strong> — the client query specifies exactly which fields (post.text, author.name, likeCount) without fetching the entire user/post objects. This is critical for mobile clients with limited bandwidth.</div>
+    </div>
+
+    <div class="quiz-q" id="q5">
+      <div class="q-num">Question 5</div>
+      <p><strong>What HTTP status code should a rate limiter return when a client exceeds its limit?</strong></p>
+      <ul class="options" data-correct="c">
+        <li data-val="a">400 Bad Request</li>
+        <li data-val="b">401 Unauthorized</li>
+        <li data-val="c">429 Too Many Requests</li>
+        <li data-val="d">503 Service Unavailable</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q5')">Reveal</button>
+      <div class="explanation" id="q5-exp"><strong>429 Too Many Requests</strong> — the standard response for rate limiting. Should include a <code>Retry-After</code> header telling the client when to try again. Also include <code>X-RateLimit-Limit</code> and <code>X-RateLimit-Remaining</code> headers for transparency.</div>
+    </div>
+  </div>
+
+  <!-- MOCK INTERVIEW -->
+  <div class="card">
+    <h2>🎯 Part B — Mock Interview: URL Shortener (In-class)</h2>
+    <p style="font-size:0.93rem;margin-bottom:1rem;">This is your primary preparation for the Corte 1 design evaluation. Work in pairs: one is the interviewer, one is the candidate. 15 minutes to design, then swap roles.</p>
+
+    <div class="scenario">
+      <h4>Prompt (read to the candidate)</h4>
+      <p style="font-size:0.94rem;margin-top:0.5rem;">"Design a URL shortening service like Bit.ly. Users should be able to shorten a URL and share the short link. Anyone with the link should be redirected to the original URL."</p>
+      <p style="font-size:0.93rem;margin-top:0.5rem;"><em>Then stop. Wait for the candidate to ask clarifying questions.</em></p>
+    </div>
+
+    <h3>Interviewer Scoring Rubric</h3>
+    <ul class="checklist">
+      <li><input type="checkbox"><span><strong>(2 pts) Requirements:</strong> Candidate asked clarifying questions before designing. Both functional and non-functional requirements identified.</span></li>
+      <li><input type="checkbox"><span><strong>(2 pts) Estimation:</strong> Candidate calculated QPS and storage before choosing components.</span></li>
+      <li><input type="checkbox"><span><strong>(2 pts) API:</strong> Defined at least POST /shorten and GET /:code with correct HTTP verbs and response codes.</span></li>
+      <li><input type="checkbox"><span><strong>(2 pts) Architecture:</strong> Drew at least: LB, app server, Redis cache, DB. Explained why each is present.</span></li>
+      <li><input type="checkbox"><span><strong>(1 pt) Short code generation:</strong> Explained the method (base62 counter) and why it avoids collisions.</span></li>
+      <li><input type="checkbox"><span><strong>(1 pt) Trade-offs:</strong> Mentioned at least one trade-off (301 vs 302, sync vs async replication, etc.)</span></li>
+    </ul>
+    <p style="margin-top:0.8rem;font-size:0.9rem;color:var(--text-muted);">Total: 10 points. Score ≥ 7 = ready for Corte 1.</p>
+  </div>
+
+  <!-- API DESIGN EXERCISE -->
+  <div class="card">
+    <h2>✏️ Part C — API Design Exercise</h2>
+    <p style="font-size:0.93rem;margin-bottom:0.8rem;">Design the REST API for a Pastebin service. Write the endpoints (method + path), request body/params, and HTTP response codes for each operation below:</p>
+    <ol style="margin-left:1.4rem;line-height:2.4;font-size:0.95rem;">
+      <li>Create a new paste with text content and optional expiry</li>
+      <li>Retrieve a paste by its short ID</li>
+      <li>Delete a paste (authenticated users only)</li>
+      <li>List all pastes by a specific user (paginated)</li>
+    </ol>
+    <p style="font-size:0.9rem;color:var(--text-muted);margin-top:0.8rem;">For each endpoint: include the URL path, HTTP method, request body/params, and at least two possible response status codes.</p>
+  </div>
+
+  <!-- BLOCK 1 REVIEW -->
+  <div class="card">
+    <h2>🗺️ Part D — Block 1 Design Review (All weeks)</h2>
+    <p style="font-size:0.93rem;margin-bottom:1rem;">Complete this table from memory as a Block 1 review. Check your answers against the lesson files.</p>
+    <table>
+      <tr><th>Week</th><th>Core topic</th><th>Key decision you make</th><th>The wrong default</th></tr>
+      <tr><td>1</td><td>System design process</td><td>Ask requirements before drawing anything</td><td>Jump straight to architecture</td></tr>
+      <tr><td>2</td><td>Building blocks</td><td>Cache-aside for read-heavy, CDN for static assets</td><td>Cache everything including dynamic data</td></tr>
+      <tr><td>3</td><td>Databases</td><td>SQL + indexing first; NoSQL when justified</td><td>"NoSQL is faster so I'll use it"</td></tr>
+      <tr><td>4</td><td>Essential systems</td><td>Rate limit at the API gateway, not the service</td><td>Add rate limiting inside every microservice</td></tr>
+    </table>
+  </div>
+
+  <!-- CORTE 1 PREVIEW -->
+  <div class="card">
+    <h2>🎓 Corte 1 Evaluation — Final Checklist</h2>
+    <div class="eval-box">
+      <h3>Design Evaluation Preparation</h3>
+      <ul style="margin-left:1.4rem;line-height:2.2;font-size:0.95rem;">
+        <li>Practice designing URL Shortener and Pastebin at least 3 times before Week 5.</li>
+        <li>Time yourself: requirements + estimation + API + architecture in 12 minutes.</li>
+        <li>For each design, call out one bottleneck and one mitigation.</li>
+        <li>Know the 6-step framework by heart — use it as a checklist during the interview.</li>
+      </ul>
+    </div>
+    <ul class="checklist" style="margin-top:1.2rem;">
+      <li><input type="checkbox"><span>I can estimate QPS and storage from DAU without a calculator.</span></li>
+      <li><input type="checkbox"><span>I can explain the redirect flow of a URL shortener (DNS → LB → App → Redis → DB).</span></li>
+      <li><input type="checkbox"><span>I can explain 301 vs 302 and when to choose each.</span></li>
+      <li><input type="checkbox"><span>I can explain Token Bucket rate limiting and how Redis implements it.</span></li>
+      <li><input type="checkbox"><span>I can state two differences between REST and GraphQL with a use-case for each.</span></li>
+      <li><input type="checkbox"><span>I can draw the full architecture of a URL shortener in under 5 minutes.</span></li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>📝 Part E — Weekly Reflection</h2>
+    <ol style="margin-left:1.4rem;line-height:2.2;font-size:0.95rem;">
+      <li>Implement a simple URL shortener in Python as a Flask app (in-memory dict is fine). Add a rate limiter that allows max 5 requests/minute per IP using a dictionary of counters.</li>
+      <li>Research: what happens to all the shortened URLs when bit.ly's database goes down? What design decision mitigates this?</li>
+      <li>Design question: a URL shortener currently runs on one server (no LB, no cache, no replica). Traffic is 10× what it handles. Write the step-by-step migration plan (which component do you add first and why?).</li>
+    </ol>
+  </div>
+
+</main>
+<footer><strong>Algoritmia Aplicada y Diseño Moderno de Sistemas</strong> · UDES · Block 1 – Week 4 Design Activities · Professor: Jorge Galvis</footer>
+
+<script>
+  let answered=0,correct=0;
+  function revealQuiz(qid){
+    const block=document.getElementById(qid);
+    const correctVal=block.querySelector('.options').dataset.correct;
+    const selected=block.querySelector('li.selected');
+    if(!selected){alert('Please select an answer first.');return;}
+    block.querySelectorAll('.options li').forEach(li=>{
+      if(li.dataset.val===correctVal)li.classList.add('correct');
+      else if(li.classList.contains('selected'))li.classList.add('wrong');
+    });
+    document.getElementById(qid+'-exp').style.display='block';
+    if(!block.dataset.counted){
+      answered++;
+      if(selected.dataset.val===correctVal)correct++;
+      block.dataset.counted='1';
+      document.getElementById('score').textContent=correct+' / '+answered;
+    }
+    block.querySelector('.reveal-btn').disabled=true;
+  }
+  document.querySelectorAll('.options').forEach(ul=>{
+    ul.querySelectorAll('li').forEach(li=>{
+      li.addEventListener('click',()=>{
+        if(ul.closest('.quiz-q').dataset.counted)return;
+        ul.querySelectorAll('li').forEach(x=>x.classList.remove('selected'));
+        li.classList.add('selected');
+      });
+    });
+  });
+  document.querySelectorAll('.checklist input').forEach((cb,i)=>{
+    cb.checked=sessionStorage.getItem('w4d-cb-'+i)==='1';
+    cb.addEventListener('change',()=>sessionStorage.setItem('w4d-cb-'+i,cb.checked?'1':'0'));
+  });
+</script>
+</body>
+</html>

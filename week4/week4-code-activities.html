@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 4 Activities – Hash Tables & Linked Lists | Algoritmia Aplicada</title>
+<style>
+  :root{--udes-blue:#003087;--udes-blue-dark:#001f5c;--udes-blue-light:#1a4fa0;--udes-gold:#C8A028;--bg:#f4f6fb;--surface:#fff;--surface2:#eef2fa;--text:#1a1a2e;--text-muted:#5a6070;--border:#d0d8ea;--code-bg:#1e2340;--code-text:#e8eaf0;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  .top-nav{background:var(--udes-blue-dark);color:#fff;padding:0.6rem 2rem;display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;}
+  .course-label{color:var(--udes-gold);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;}
+  .lesson-breadcrumb{display:flex;gap:1.2rem;align-items:center;}
+  .prev{color:#aab4cc;}.current{background:var(--udes-gold);color:#000;font-weight:700;padding:0.2rem 0.7rem;border-radius:4px;}
+  header{background:linear-gradient(135deg,var(--udes-blue) 0%,var(--udes-blue-light) 100%);color:#fff;padding:2.5rem 2rem;text-align:center;border-bottom:4px solid var(--udes-gold);}
+  .block-tag{display:inline-block;background:var(--udes-gold);color:#000;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:0.25rem 0.9rem;border-radius:20px;margin-bottom:1rem;}
+  header h1{font-size:2rem;font-weight:800;margin-bottom:0.4rem;} header p.subtitle{font-size:1rem;color:#b8ccee;}
+  .container{max-width:900px;margin:0 auto;padding:2rem 1.5rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.8rem 2rem;margin-bottom:2rem;box-shadow:0 2px 8px rgba(0,48,135,0.06);}
+  .card h2{color:var(--udes-blue);font-size:1.3rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--udes-gold);}
+  .card h3{color:var(--udes-blue-dark);font-size:1.05rem;margin:1.3rem 0 0.5rem;}
+  .quiz-q{background:var(--surface2);border-left:4px solid var(--udes-blue);border-radius:0 8px 8px 0;padding:1rem 1.2rem;margin:1.2rem 0;}
+  .quiz-q .q-num{font-size:0.78rem;font-weight:700;color:var(--udes-gold);text-transform:uppercase;}
+  .options{list-style:none;padding:0;margin-top:0.8rem;}
+  .options li{padding:0.45rem 0.8rem;margin:0.3rem 0;border-radius:6px;border:1px solid var(--border);cursor:pointer;transition:background 0.15s;}
+  .options li:hover{background:var(--surface2);}
+  .options li.selected{background:#ddeaff;border-color:var(--udes-blue);}
+  .options li.correct{background:#e8f5e9;border-color:#2e7d32;color:#1b5e20;font-weight:600;}
+  .options li.wrong{background:#ffebee;border-color:#c62828;color:#b71c1c;}
+  .reveal-btn{margin-top:0.8rem;padding:0.4rem 1.1rem;background:var(--udes-blue);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:0.87rem;font-weight:600;}
+  .explanation{display:none;margin-top:0.8rem;padding:0.8rem 1rem;background:#fffde7;border-left:3px solid var(--udes-gold);border-radius:0 6px 6px 0;font-size:0.92rem;}
+  .problem{border:1px solid var(--border);border-radius:8px;margin:1rem 0;overflow:hidden;}
+  .problem-header{background:var(--udes-blue);color:#fff;padding:0.7rem 1.2rem;display:flex;justify-content:space-between;align-items:center;}
+  .problem-header h4{font-size:1rem;font-weight:700;}
+  .difficulty{font-size:0.75rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:12px;}
+  .easy{background:#c8e6c9;color:#1b5e20;}.medium{background:#fff3e0;color:#e65100;}
+  .problem-body{padding:1.2rem;} .problem-body p{margin-bottom:0.8rem;font-size:0.95rem;}
+  .lc-link{display:inline-block;background:var(--udes-gold);color:#000;font-weight:700;font-size:0.82rem;padding:0.3rem 0.9rem;border-radius:5px;text-decoration:none;margin-top:0.5rem;}
+  .hint-box{background:#e3f2fd;border-left:3px solid #1565c0;border-radius:0 6px 6px 0;padding:0.7rem 1rem;margin-top:0.8rem;font-size:0.9rem;}
+  .hint-toggle{cursor:pointer;color:var(--udes-blue);font-weight:600;font-size:0.88rem;border:none;background:none;padding:0;}
+  .hint-content{display:none;margin-top:0.5rem;}
+  .tag{display:inline-block;background:#e3ebfa;color:var(--udes-blue);border-radius:4px;padding:0.15rem 0.55rem;font-size:0.78rem;font-weight:600;margin:0.15rem;}
+  .checklist{list-style:none;padding:0;}
+  .checklist li{padding:0.5rem 0.8rem;margin:0.3rem 0;display:flex;align-items:flex-start;gap:0.7rem;border-radius:6px;background:var(--surface2);}
+  .checklist input[type=checkbox]{margin-top:0.3rem;accent-color:var(--udes-blue);width:16px;height:16px;flex-shrink:0;}
+  .eval-box{background:#e8f5e9;border:2px solid #2e7d32;border-radius:10px;padding:1.4rem 1.8rem;margin-top:1rem;}
+  .eval-box h3{color:#1b5e20;margin-bottom:0.6rem;}
+  #score-bar{background:var(--udes-blue-dark);color:#fff;text-align:center;padding:1rem;position:sticky;top:0;z-index:100;font-size:0.95rem;}
+  #score-bar span{color:var(--udes-gold);font-weight:800;font-size:1.1rem;}
+  footer{background:var(--udes-blue-dark);color:#8899bb;text-align:center;padding:1.2rem;font-size:0.82rem;margin-top:3rem;}
+  footer strong{color:var(--udes-gold);}
+</style>
+</head>
+<body>
+<nav class="top-nav">
+  <span class="course-label">Algoritmia Aplicada y Diseño Moderno de Sistemas</span>
+  <div class="lesson-breadcrumb">
+    <span class="prev">⬅ Week 3: Arrays &amp; Strings</span>
+    <span class="current">Week 4 · Activities</span>
+    <span>→ Week 5: Corte 1 Evaluation</span>
+  </div>
+</nav>
+<div id="score-bar">Quiz score: <span id="score">0 / 0</span> correct</div>
+<header>
+  <div class="block-tag">Block 1 – Foundations · Week 4 Activities</div>
+  <h1>Activities &amp; Problem Set</h1>
+  <p class="subtitle">Hash Tables &amp; Linked Lists Quiz · Last practice before Corte 1</p>
+</header>
+
+<main class="container">
+
+  <div class="card">
+    <h2>⚡ Part A — Quick Quiz</h2>
+
+    <div class="quiz-q" id="q1">
+      <div class="q-num">Question 1</div>
+      <p><strong>What is the average-case time complexity of inserting a key into a hash table?</strong></p>
+      <ul class="options" data-correct="a">
+        <li data-val="a">O(1)</li><li data-val="b">O(n)</li><li data-val="c">O(log n)</li><li data-val="d">O(n²)</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q1')">Reveal</button>
+      <div class="explanation" id="q1-exp"><strong>O(1) average</strong> — hash function runs in O(k) where k=key length (treated as constant), then array index write is O(1). Worst case (all collisions) is O(n), but rare with a good hash function and load factor.</div>
+    </div>
+
+    <div class="quiz-q" id="q2">
+      <div class="q-num">Question 2</div>
+      <p><strong>Floyd's cycle detection uses two pointers. What happens if there is NO cycle?</strong></p>
+      <ul class="options" data-correct="c">
+        <li data-val="a">They meet at the tail node</li>
+        <li data-val="b">slow catches up to fast</li>
+        <li data-val="c">fast reaches None (end of list)</li>
+        <li data-val="d">They meet at the head</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q2')">Reveal</button>
+      <div class="explanation" id="q2-exp">Without a cycle, fast advances two steps at a time and eventually reaches <strong>None</strong>. The while loop condition <code>fast and fast.next</code> exits, and we return False.</div>
+    </div>
+
+    <div class="quiz-q" id="q3">
+      <div class="q-num">Question 3</div>
+      <p><strong>Why do we use a dummy head node when merging two sorted linked lists?</strong></p>
+      <ul class="options" data-correct="b">
+        <li data-val="a">To store the count of merged nodes</li>
+        <li data-val="b">To avoid special-casing the first node assignment</li>
+        <li data-val="c">To detect cycles in the merged list</li>
+        <li data-val="d">To reduce memory usage</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q3')">Reveal</button>
+      <div class="explanation" id="q3-exp"><strong>Avoiding edge cases.</strong> Without a dummy head, you need special logic to initialize the merged list's head. With a dummy, <code>tail.next = smaller_node</code> always works uniformly, and you return <code>dummy.next</code> at the end.</div>
+    </div>
+
+    <div class="quiz-q" id="q4">
+      <div class="q-num">Question 4</div>
+      <p><strong>What is the space complexity of reversing a linked list iteratively?</strong></p>
+      <ul class="options" data-correct="a">
+        <li data-val="a">O(1)</li><li data-val="b">O(n)</li><li data-val="c">O(log n)</li><li data-val="d">O(n²)</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q4')">Reveal</button>
+      <div class="explanation" id="q4-exp"><strong>O(1)</strong> — the iterative approach only uses three pointers (prev, curr, nxt) regardless of list size. Contrast with the recursive approach which uses O(n) call stack.</div>
+    </div>
+
+    <div class="quiz-q" id="q5">
+      <div class="q-num">Question 5</div>
+      <p><strong>A hash table has 10 buckets and 8 entries. What is its load factor?</strong></p>
+      <ul class="options" data-correct="c">
+        <li data-val="a">10</li><li data-val="b">0.1</li><li data-val="c">0.8</li><li data-val="d">8</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q5')">Reveal</button>
+      <div class="explanation" id="q5-exp">Load factor = entries / buckets = 8 / 10 = <strong>0.8</strong>. This is close to the 0.75 threshold where most implementations trigger a resize to maintain O(1) performance.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>💻 Part B — LeetCode Problem Set</h2>
+
+    <div class="problem">
+      <div class="problem-header"><h4>#1 · Two Sum</h4><span class="difficulty easy">Easy</span></div>
+      <div class="problem-body">
+        <p>Given an array and a target, return indices of the two numbers that add to target. Each input has exactly one solution. You may not use the same element twice.</p>
+        <p><span class="tag">Hash Map</span> <span class="tag">O(n)</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h1')">💡 Hint</button>
+        <div class="hint-content hint-box" id="h1">Single pass: for each number, check if <code>target - num</code> is already in the dictionary. If yes, return indices. If no, store <code>num → index</code>.</div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/two-sum/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+
+    <div class="problem">
+      <div class="problem-header"><h4>#206 · Reverse Linked List</h4><span class="difficulty easy">Easy</span></div>
+      <div class="problem-body">
+        <p>Reverse a singly linked list. Solve it both iteratively (O(1) space) and recursively (O(n) space), then compare.</p>
+        <p><span class="tag">Linked List</span> <span class="tag">Three-pointer iterative</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h2')">💡 Hint</button>
+        <div class="hint-content hint-box" id="h2">Three variables: <code>prev=None</code>, <code>curr=head</code>. In each iteration: save <code>nxt=curr.next</code>, then <code>curr.next=prev</code>, then advance both. Return <code>prev</code> at the end.</div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/reverse-linked-list/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+
+    <div class="problem">
+      <div class="problem-header"><h4>#141 · Linked List Cycle</h4><span class="difficulty easy">Easy</span></div>
+      <div class="problem-body">
+        <p>Given the head of a linked list, determine if the list has a cycle. Return true if there is a cycle, false otherwise. Use O(1) memory (no visited set).</p>
+        <p><span class="tag">Floyd's Algorithm</span> <span class="tag">O(1) space</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h3')">💡 Hint</button>
+        <div class="hint-content hint-box" id="h3">Two pointers: slow moves 1 step, fast moves 2 steps. If they ever point to the same node, there is a cycle. If fast reaches None, no cycle.</div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/linked-list-cycle/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+
+    <div class="problem">
+      <div class="problem-header"><h4>#21 · Merge Two Sorted Lists</h4><span class="difficulty easy">Easy</span></div>
+      <div class="problem-body">
+        <p>Merge two sorted linked lists and return the head of the merged list. The merged list should be made by splicing together the nodes of the first two lists.</p>
+        <p><span class="tag">Dummy Head</span> <span class="tag">O(n+m)</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h4')">💡 Hint</button>
+        <div class="hint-content hint-box" id="h4">Create <code>dummy = ListNode(0)</code>. Use a <code>tail</code> pointer. In the while loop, compare l1.val and l2.val, attach the smaller node to tail.next, advance tail and that list's pointer. After the loop, attach the remaining list.</div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/merge-two-sorted-lists/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+
+    <div class="problem">
+      <div class="problem-header"><h4>#19 · Remove Nth Node From End of List (Bonus)</h4><span class="difficulty medium">Medium</span></div>
+      <div class="problem-body">
+        <p>Given the head of a linked list, remove the nth node from the end and return the head. Do it in one pass.</p>
+        <p><span class="tag">Two Pointers</span> <span class="tag">One pass O(n)</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h5')">💡 Hint</button>
+        <div class="hint-content hint-box" id="h5">Advance fast pointer n+1 steps ahead. Then move both slow and fast together until fast is None. slow.next is the node to remove — set <code>slow.next = slow.next.next</code>. Use a dummy head to handle removing the head node.</div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/remove-nth-node-from-end-of-list/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>✏️ Part C — Block 1 Review Exercise</h2>
+    <p style="font-size:0.93rem;margin-bottom:1rem;">This exercise connects all four weeks. Solve in writing before coding.</p>
+    <ol style="margin-left:1.4rem;line-height:2.4;font-size:0.95rem;">
+      <li><strong>Complexity review:</strong> For each of the following, state time AND space complexity: binary search, generating all subsets, building a prefix sum, reversing a linked list, checking for anagrams.</li>
+      <li><strong>Pattern selection:</strong> A sorted array of size 10⁶. You need to find if any two elements sum to a target. Which pattern: binary search + two pointers, or hash map + single pass? Justify.</li>
+      <li><strong>Design question:</strong> You are given 1 million strings. How would you find all groups of anagrams? What data structure would you use and what is the total time complexity?</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>🤝 Part D — Peer Review Checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span><strong>No visited set in cycle detection:</strong> Solution uses O(1) space (Floyd's), not a hash set.</span></li>
+      <li><input type="checkbox"><span><strong>Dummy head used:</strong> Merge solution avoids if/else for the first element by using a dummy head.</span></li>
+      <li><input type="checkbox"><span><strong>Edge cases covered:</strong> Empty list (None head), single node list, both lists empty.</span></li>
+      <li><input type="checkbox"><span><strong>Hash map cleanup:</strong> No unnecessary keys stored that inflate space beyond O(n).</span></li>
+      <li><input type="checkbox"><span><strong>Pointer safety:</strong> fast.next checked before fast.next.next to avoid NullPointerError.</span></li>
+      <li><input type="checkbox"><span><strong>Complexity fully stated</strong> for all solutions.</span></li>
+    </ul>
+  </div>
+
+  <!-- CORTE 1 PREVIEW -->
+  <div class="card">
+    <h2>🎯 Corte 1 Evaluation Preview (Week 5)</h2>
+    <div class="eval-box">
+      <h3>What to expect</h3>
+      <p style="margin-bottom:0.8rem;"><strong>Code challenge (45 min, no internet):</strong> One easy/medium problem from the topics of Weeks 1–4 (arrays, strings, hash tables, linked lists). After solving, you will explain verbally: your approach, time/space complexity, and edge cases.</p>
+      <p style="margin-bottom:0.8rem;"><strong>System Design (10–15 min):</strong> You will design a URL shortener or Pastebin on the whiteboard, justifying architectural decisions.</p>
+      <p><strong>Class activities:</strong> Quizzes and LeetCode weekly assignments from Weeks 1–4 count for 10%.</p>
+    </div>
+    <p style="margin-top:1rem;font-size:0.9rem;color:var(--text-muted);">
+      <strong>Study tip:</strong> For each pattern (binary search, two pointers, sliding window, backtracking, prefix sum, hash map, linked list operations), practice at least 2 problems until you can code the template from memory in under 5 minutes.
+    </p>
+  </div>
+
+  <div class="card">
+    <h2>📝 Part E — Weekly Reflection</h2>
+    <ol style="margin-left:1.4rem;line-height:2.2;font-size:0.95rem;">
+      <li>Implement a basic hash table from scratch in Python with chaining. Support <code>put(key, val)</code>, <code>get(key)</code>, and <code>remove(key)</code>. What load factor triggers your resize? (See LeetCode #706 Design HashMap)</li>
+      <li>Solve LeetCode #142 "Linked List Cycle II" — finding the cycle entry point. Write a comment explaining the math behind why resetting one pointer to head and advancing both at speed 1 finds the entry point.</li>
+      <li>Write a one-page summary (bullet points) of Block 1: every pattern, its complexity, and a one-sentence "when to use it."</li>
+    </ol>
+  </div>
+
+</main>
+<footer><strong>Algoritmia Aplicada y Diseño Moderno de Sistemas</strong> · UDES · Block 1 – Week 4 Activities · Professor: Jorge Galvis</footer>
+<script>
+  let answered=0,correct=0;
+  function revealQuiz(qid){
+    const block=document.getElementById(qid);
+    const correctVal=block.querySelector('.options').dataset.correct;
+    const selected=block.querySelector('li.selected');
+    if(!selected){alert('Please select an answer first.');return;}
+    block.querySelectorAll('.options li').forEach(li=>{
+      if(li.dataset.val===correctVal)li.classList.add('correct');
+      else if(li.classList.contains('selected'))li.classList.add('wrong');
+    });
+    document.getElementById(qid+'-exp').style.display='block';
+    if(!block.dataset.counted){
+      answered++;
+      if(selected.dataset.val===correctVal)correct++;
+      block.dataset.counted='1';
+      document.getElementById('score').textContent=correct+' / '+answered;
+    }
+    block.querySelector('.reveal-btn').disabled=true;
+  }
+  document.querySelectorAll('.options').forEach(ul=>{
+    ul.querySelectorAll('li').forEach(li=>{
+      li.addEventListener('click',()=>{
+        if(ul.closest('.quiz-q').dataset.counted)return;
+        ul.querySelectorAll('li').forEach(x=>x.classList.remove('selected'));
+        li.classList.add('selected');
+      });
+    });
+  });
+  function toggleHint(id){const el=document.getElementById(id);el.style.display=el.style.display==='block'?'none':'block';}
+  document.querySelectorAll('.checklist input').forEach((cb,i)=>{
+    cb.checked=sessionStorage.getItem('w4-cb-'+i)==='1';
+    cb.addEventListener('change',()=>sessionStorage.setItem('w4-cb-'+i,cb.checked?'1':'0'));
+  });
+</script>
+</body>
+</html>
