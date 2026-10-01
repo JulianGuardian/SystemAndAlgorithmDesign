@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 4 – URL Shortener, Pastebin, Rate Limiting & API Design | Algoritmia Aplicada</title>
+<style>
+  :root{--udes-blue:#003087;--udes-blue-dark:#001f5c;--udes-blue-light:#1a4fa0;--udes-gold:#C8A028;--bg:#f4f6fb;--surface:#fff;--surface2:#eef2fa;--text:#1a1a2e;--text-muted:#5a6070;--border:#d0d8ea;--success:#2e7d32;--code-bg:#1e2340;--code-text:#e8eaf0;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  .top-nav{background:var(--udes-blue-dark);color:#fff;padding:0.6rem 2rem;display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;}
+  .course-label{color:var(--udes-gold);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;}
+  .lesson-breadcrumb{display:flex;gap:1.2rem;align-items:center;}
+  .prev{color:#aab4cc;}.current{background:var(--udes-gold);color:#000;font-weight:700;padding:0.2rem 0.7rem;border-radius:4px;}
+  header{background:linear-gradient(135deg,var(--udes-blue) 0%,var(--udes-blue-light) 100%);color:#fff;padding:3rem 2rem 2.5rem;text-align:center;border-bottom:4px solid var(--udes-gold);}
+  .block-tag{display:inline-block;background:var(--udes-gold);color:#000;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:0.25rem 0.9rem;border-radius:20px;margin-bottom:1rem;}
+  header h1{font-size:2.2rem;font-weight:800;margin-bottom:0.4rem;}
+  header p.subtitle{font-size:1.05rem;color:#b8ccee;max-width:660px;margin:0 auto;}
+  .container{max-width:960px;margin:0 auto;padding:2rem 1.5rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.8rem 2rem;margin-bottom:2rem;box-shadow:0 2px 8px rgba(0,48,135,0.06);}
+  .card h2{color:var(--udes-blue);font-size:1.35rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--udes-gold);}
+  .card h3{color:var(--udes-blue-dark);font-size:1.1rem;margin:1.4rem 0 0.6rem;}
+  .objectives ul{list-style:none;padding:0;}
+  .objectives li{padding:0.4rem 0 0.4rem 1.8rem;position:relative;}
+  .objectives li::before{content:"✓";position:absolute;left:0;color:var(--udes-gold);font-weight:900;}
+  .concept-box{background:var(--surface2);border-left:4px solid var(--udes-blue);border-radius:0 8px 8px 0;padding:1rem 1.2rem;margin:1rem 0;font-size:0.97rem;}
+  .concept-box.gold{border-left-color:var(--udes-gold);}
+  .diagram-wrap{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1.2rem;margin:1.2rem 0;text-align:center;}
+  .diagram-wrap figcaption{font-size:0.82rem;color:var(--text-muted);margin-top:0.6rem;font-style:italic;}
+  .alert{background:#fff8e1;border-left:4px solid var(--udes-gold);border-radius:0 8px 8px 0;padding:0.9rem 1.2rem;margin:1rem 0;font-size:0.95rem;}
+  .tag{display:inline-block;background:#e3ebfa;color:var(--udes-blue);border-radius:4px;padding:0.15rem 0.55rem;font-size:0.78rem;font-weight:600;margin:0.15rem;}
+  table{width:100%;border-collapse:collapse;font-size:0.92rem;margin:1rem 0;}
+  th{background:var(--udes-blue);color:#fff;padding:0.6rem 1rem;text-align:left;}
+  td{padding:0.55rem 1rem;border-bottom:1px solid var(--border);}
+  tr:nth-child(even) td{background:var(--surface2);}
+  .good{color:var(--success);font-weight:700;} .bad{color:#c62828;font-weight:700;}
+  .code-block{background:var(--code-bg);color:var(--code-text);border-radius:8px;padding:1.1rem 1.3rem;overflow-x:auto;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:0.87rem;line-height:1.65;margin:0.8rem 0;}
+  .kw{color:#c678dd;}.fn{color:#61afef;}.cm{color:#7f848e;font-style:italic;}.st{color:#98c379;}
+  footer{background:var(--udes-blue-dark);color:#8899bb;text-align:center;padding:1.2rem;font-size:0.82rem;margin-top:3rem;}
+  footer strong{color:var(--udes-gold);}
+</style>
+</head>
+<body>
+<nav class="top-nav">
+  <span class="course-label">Algoritmia Aplicada y Diseño Moderno de Sistemas</span>
+  <div class="lesson-breadcrumb">
+    <span class="prev">⬅ Week 3: Databases</span>
+    <span class="current">Week 4 · Design</span>
+    <span>→ Week 5: Corte 1 Evaluation</span>
+  </div>
+</nav>
+<header>
+  <div class="block-tag">Block 1 – Foundations · Week 4 of 4 · System Design</div>
+  <h1>Essential Systems &amp; API Design</h1>
+  <p class="subtitle">URL Shortener · Pastebin · Rate Limiting · REST vs. GraphQL</p>
+</header>
+
+<main class="container">
+  <div class="card objectives">
+    <h2>🎯 Learning Objectives</h2>
+    <ul>
+      <li>Design a URL shortener end-to-end: API, short code generation, redirect flow, storage, and scale.</li>
+      <li>Design a Pastebin system highlighting differences from URL shortener (binary/large content, metadata).</li>
+      <li>Explain rate limiting algorithms: token bucket, sliding window counter, and fixed window counter.</li>
+      <li>Distinguish REST from GraphQL and identify situations where each excels.</li>
+      <li>Communicate a complete design decision with trade-offs in 10–15 minutes (interview format).</li>
+    </ul>
+  </div>
+
+  <!-- URL SHORTENER -->
+  <div class="card">
+    <h2>🔗 1 · URL Shortener Design</h2>
+    <p>This is the canonical first system design problem. It tests your ability to go from requirements to a complete design covering APIs, storage, short code generation, and scale.</p>
+
+    <h3>Step 1 — Requirements</h3>
+    <div class="concept-box gold">
+      <strong>Functional:</strong> Given a long URL, return a short URL (e.g. bit.ly/aB3xK9). Given a short URL, redirect to original. Links expire after 30 days by default (configurable).<br><br>
+      <strong>Non-functional:</strong> 100M links created/day. Read:Write = 10:1. Redirect latency &lt; 10ms (p99). 99.99% availability. Short codes must be unique (no collisions).
+    </div>
+
+    <h3>Step 2 — Scale Estimate</h3>
+    <div class="concept-box">
+      Writes: 100M/day ÷ 86,400 ≈ <strong>1,160 writes/sec</strong><br>
+      Reads: 1,160 × 10 = <strong>11,600 reads/sec</strong><br>
+      Storage (10 years): 1,160 × 86,400 × 365 × 10 × ~500B ≈ <strong>~1.8 TB</strong><br>
+      → Read-heavy, modest write QPS, storage manageable on a few nodes. Cache reads aggressively.
+    </div>
+
+    <h3>Step 3 — API Design</h3>
+<pre class="code-block">
+<span class="cm"># Create short URL</span>
+POST /api/v1/shorten
+Body: { <span class="st">"long_url"</span>: <span class="st">"https://..."</span>, <span class="st">"expires_days"</span>: 30 }
+Response: { <span class="st">"short_url"</span>: <span class="st">"https://short.ly/aB3xK9"</span> }
+
+<span class="cm"># Redirect</span>
+GET /{short_code}
+Response: HTTP 301/302 redirect to long_url
+</pre>
+    <div class="concept-box">
+      <strong>301 vs 302:</strong> 301 (Permanent) → browser caches the redirect, future requests skip the server (less load, but you lose analytics). 302 (Temporary) → every request goes through your server (more load, full analytics). Choose 302 for analytics-critical links.
+    </div>
+
+    <h3>Step 4 — Short Code Generation</h3>
+    <table>
+      <tr><th>Method</th><th>How</th><th>Pro</th><th>Con</th></tr>
+      <tr><td><strong>Hash + truncate</strong></td><td>MD5(long_url), take first 7 chars</td><td>Simple, deterministic</td><td>Collisions if same URL hashed multiple times</td></tr>
+      <tr><td><strong>Base62 counter</strong></td><td>Auto-increment ID → base62 encode</td><td>No collisions, predictable length</td><td>Counter is a bottleneck; reveals enumeration order</td></tr>
+      <tr><td><strong>Random + collision check</strong></td><td>Generate random 7-char code, check DB</td><td>Unpredictable (secure)</td><td>Extra DB round-trip on collision</td></tr>
+    </table>
+    <p style="margin-top:0.6rem;font-size:0.93rem;">Base62 encoding (a-z, A-Z, 0-9) with 7 characters gives <strong>62⁷ ≈ 3.5 trillion</strong> unique codes — more than enough.</p>
+
+    <h3>Step 5 — Architecture</h3>
+    <div class="diagram-wrap">
+      <svg width="640" height="220" viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;height:auto;">
+        <defs><marker id="a" markerWidth="7" markerHeight="7" refX="4" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#003087"/></marker></defs>
+        <g font-family="'Segoe UI',sans-serif" font-size="11" text-anchor="middle">
+          <!-- Client -->
+          <rect x="10" y="88" width="70" height="40" rx="5" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <text x="45" y="108" fill="#003087" font-weight="bold">Client</text>
+          <text x="45" y="122" fill="#5a6070" font-size="10">Browser</text>
+          <!-- LB -->
+          <rect x="110" y="88" width="70" height="40" rx="5" fill="#1a4fa0" stroke="#003087" stroke-width="2"/>
+          <text x="145" y="108" fill="#fff" font-weight="bold">Load</text>
+          <text x="145" y="121" fill="#fff" font-weight="bold">Balancer</text>
+          <!-- App servers -->
+          <rect x="230" y="60" width="80" height="36" rx="4" fill="#003087"/>
+          <text x="270" y="83" fill="#fff" font-size="11">Short Svc 1</text>
+          <rect x="230" y="110" width="80" height="36" rx="4" fill="#003087"/>
+          <text x="270" y="133" fill="#fff" font-size="11">Short Svc 2</text>
+          <!-- Redis -->
+          <rect x="380" y="60" width="80" height="36" rx="4" fill="#c8a028" stroke="#a07800" stroke-width="2"/>
+          <text x="420" y="78" fill="#000" font-weight="bold">Redis</text>
+          <text x="420" y="91" fill="#000" font-size="10">short→long</text>
+          <!-- DB -->
+          <ellipse cx="510" cy="108" rx="55" ry="22" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <rect x="455" y="108" width="110" height="30" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <ellipse cx="510" cy="138" rx="55" ry="22" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <text x="510" y="127" fill="#003087" font-weight="bold">PostgreSQL</text>
+          <!-- Counter service -->
+          <rect x="380" y="140" width="80" height="36" rx="4" fill="#5a6070" stroke="#444" stroke-width="1.5"/>
+          <text x="420" y="157" fill="#fff" font-size="10" font-weight="bold">ID Counter</text>
+          <text x="420" y="170" fill="#aab" font-size="9">(Redis INCR)</text>
+          <!-- Arrows -->
+          <line x1="82"  y1="108" x2="108" y2="108" stroke="#003087" stroke-width="1.8" marker-end="url(#a)"/>
+          <line x1="182" y1="100" x2="228" y2="80"  stroke="#003087" stroke-width="1.5" marker-end="url(#a)"/>
+          <line x1="182" y1="118" x2="228" y2="125" stroke="#003087" stroke-width="1.5" marker-end="url(#a)"/>
+          <line x1="312" y1="78"  x2="378" y2="78"  stroke="#c8a028" stroke-width="1.8" marker-end="url(#a)"/>
+          <line x1="312" y1="125" x2="453" y2="122" stroke="#003087" stroke-width="1.5" marker-end="url(#a)"/>
+          <line x1="312" y1="130" x2="378" y2="152" stroke="#5a6070" stroke-width="1.5" stroke-dasharray="4 2" marker-end="url(#a)"/>
+          <!-- Labels -->
+          <text x="320" y="48" fill="#5a6070" font-size="10">① Read: check Redis first (cache)</text>
+          <text x="320" y="195" fill="#5a6070" font-size="10">② Write: get ID from counter → base62 encode → store in Redis + DB</text>
+        </g>
+      </svg>
+      <figcaption>Figure 1 — URL Shortener architecture. Reads are cache-first (Redis). Writes generate a unique ID, encode to base62, store in Redis + DB.</figcaption>
+    </div>
+  </div>
+
+  <!-- PASTEBIN -->
+  <div class="card">
+    <h2>📄 2 · Pastebin — Key Differences from URL Shortener</h2>
+    <p>Pastebin stores arbitrary text content (code snippets, logs) and serves it back. The design is similar to a URL shortener but with important differences.</p>
+
+    <table>
+      <tr><th></th><th>URL Shortener</th><th>Pastebin</th></tr>
+      <tr><td><strong>Stored data</strong></td><td>~500B (URL string)</td><td>Up to 1 MB (text content)</td></tr>
+      <tr><td><strong>Content storage</strong></td><td>Relational DB</td><td>Object storage (S3) for content; DB for metadata</td></tr>
+      <tr><td><strong>Read pattern</strong></td><td>Redirect (302)</td><td>Serve content (200 + body)</td></tr>
+      <tr><td><strong>Expiry</strong></td><td>Optional (30 days)</td><td>Required (auto-delete content from object store)</td></tr>
+      <tr><td><strong>Syntax highlight</strong></td><td>N/A</td><td>Language detection → CDN-cached HTML</td></tr>
+    </table>
+
+    <div class="concept-box gold">
+      <strong>Design insight:</strong> Separate <em>metadata</em> (paste ID, user, language, expiry, URL to content) stored in PostgreSQL from the <em>content itself</em> stored in S3/object storage. This keeps the DB lightweight and allows content to scale independently.
+    </div>
+  </div>
+
+  <!-- RATE LIMITING -->
+  <div class="card">
+    <h2>🚦 3 · Rate Limiting</h2>
+    <p>Rate limiting protects your system from abuse, ensures fair usage, and prevents denial-of-service. It lives in the API gateway or as a middleware layer.</p>
+
+    <h3>Algorithms</h3>
+    <table>
+      <tr><th>Algorithm</th><th>How it works</th><th>Allows burst?</th><th>Memory</th></tr>
+      <tr><td><strong>Fixed Window Counter</strong></td><td>Count requests per fixed time window (e.g., 100/min). Reset at minute boundary.</td><td>Yes (2× at boundary)</td><td>O(1)</td></tr>
+      <tr><td><strong>Sliding Window Counter</strong></td><td>Weighted sum of current + previous window proportional to elapsed time.</td><td>Partial</td><td>O(1)</td></tr>
+      <tr><td><strong>Token Bucket</strong></td><td>Bucket fills at fixed rate (1 token/sec). Each request consumes 1 token. If empty, reject.</td><td class="good">Yes (burst up to bucket size)</td><td>O(1) per user</td></tr>
+      <tr><td><strong>Leaky Bucket</strong></td><td>Requests enter a queue, processed at fixed rate. Queue overflow = reject.</td><td class="bad">No</td><td>O(queue size)</td></tr>
+    </table>
+
+    <div class="diagram-wrap">
+      <svg width="520" height="160" viewBox="0 0 520 160" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;height:auto;">
+        <defs><marker id="b" markerWidth="7" markerHeight="7" refX="4" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#003087"/></marker></defs>
+        <g font-family="'Segoe UI',sans-serif" font-size="11" text-anchor="middle">
+          <!-- Token Bucket -->
+          <text x="120" y="18" fill="#003087" font-weight="bold" font-size="13">Token Bucket</text>
+          <rect x="70" y="25" width="100" height="80" rx="6" fill="#eef2fa" stroke="#003087" stroke-width="2"/>
+          <!-- tokens as circles -->
+          <circle cx="95"  cy="48" r="8" fill="#c8a028"/><text x="95"  cy="48" y="52" fill="#000" font-size="9">T</text>
+          <circle cx="115" cy="48" r="8" fill="#c8a028"/><text x="115" cy="48" y="52" fill="#000" font-size="9">T</text>
+          <circle cx="135" cy="48" r="8" fill="#c8a028"/><text x="135" cy="48" y="52" fill="#000" font-size="9">T</text>
+          <circle cx="95"  cy="68" r="8" fill="#c8a028"/><text x="95"  cy="68" y="72" fill="#000" font-size="9">T</text>
+          <circle cx="115" cy="68" r="8" fill="#c8a028"/><text x="115" cy="68" y="72" fill="#000" font-size="9">T</text>
+          <circle cx="135" cy="68" r="8" fill="#eef2fa" stroke="#aab" stroke-width="1"/>
+          <circle cx="95"  cy="88" r="8" fill="#eef2fa" stroke="#aab" stroke-width="1"/>
+          <circle cx="115" cy="88" r="8" fill="#eef2fa" stroke="#aab" stroke-width="1"/>
+          <circle cx="135" cy="88" r="8" fill="#eef2fa" stroke="#aab" stroke-width="1"/>
+          <text x="120" y="120" fill="#003087" font-size="10">5/9 tokens remain</text>
+          <text x="120" y="135" fill="#5a6070" font-size="10">Refills at 1/sec</text>
+          <!-- Arrows -->
+          <line x1="30" y1="60" x2="68" y2="60" stroke="#c8a028" stroke-width="2" marker-end="url(#b)"/>
+          <text x="20" y="55" fill="#c8a028" font-size="10">refill →</text>
+          <line x1="172" y1="60" x2="210" y2="60" stroke="#003087" stroke-width="2" marker-end="url(#b)"/>
+          <text x="215" y="55" fill="#2e7d32" font-size="10" text-anchor="start">✓ allow</text>
+          <text x="215" y="68" fill="#c62828" font-size="10" text-anchor="start">✗ reject if empty</text>
+          <!-- Distributed rate limiting -->
+          <text x="390" y="18" fill="#003087" font-weight="bold" font-size="13">Distributed (Redis)</text>
+          <rect x="310" y="25" width="80" height="32" rx="4" fill="#003087"/>
+          <text x="350" y="46" fill="#fff">API GW 1</text>
+          <rect x="310" y="68" width="80" height="32" rx="4" fill="#003087"/>
+          <text x="350" y="89" fill="#fff">API GW 2</text>
+          <rect x="420" y="45" width="80" height="40" rx="5" fill="#c8a028" stroke="#a07800" stroke-width="2"/>
+          <text x="460" y="63" fill="#000" font-weight="bold">Redis</text>
+          <text x="460" y="77" fill="#000" font-size="10">INCR + TTL</text>
+          <line x1="392" y1="45" x2="418" y2="55" stroke="#003087" stroke-width="1.5" marker-end="url(#b)"/>
+          <line x1="392" y1="80" x2="418" y2="70" stroke="#003087" stroke-width="1.5" marker-end="url(#b)"/>
+          <text x="390" y="120" fill="#5a6070" font-size="10">Both GWs share counter in Redis</text>
+          <text x="390" y="135" fill="#5a6070" font-size="10">INCR + EXPIRE = atomic window counter</text>
+        </g>
+      </svg>
+      <figcaption>Figure 2 — Token Bucket (left) and distributed rate limiting with Redis (right). Redis INCR is atomic — safe across multiple API gateway instances.</figcaption>
+    </div>
+
+    <div class="concept-box">
+      <strong>Distributed implementation with Redis:</strong><br>
+      <code>count = INCR(user_id:minute)</code><br>
+      <code>if count == 1: EXPIRE(user_id:minute, 60)</code>  ← set TTL on first request<br>
+      <code>if count &gt; limit: return 429 Too Many Requests</code>
+    </div>
+  </div>
+
+  <!-- REST vs GRAPHQL -->
+  <div class="card">
+    <h2>🔌 4 · API Design — REST vs. GraphQL</h2>
+
+    <table>
+      <tr><th></th><th>REST</th><th>GraphQL</th></tr>
+      <tr><td><strong>Structure</strong></td><td>Multiple endpoints, one resource per URL</td><td>Single endpoint (<code>/graphql</code>), query specifies shape</td></tr>
+      <tr><td><strong>Over-fetching</strong></td><td>Returns all fields of a resource</td><td class="good">Client specifies exactly which fields</td></tr>
+      <tr><td><strong>Under-fetching</strong></td><td>May need multiple round-trips for related data</td><td class="good">Fetch nested resources in one query</td></tr>
+      <tr><td><strong>Caching</strong></td><td class="good">HTTP caching works naturally (GET /users/42)</td><td class="bad">POST to /graphql — harder to cache</td></tr>
+      <tr><td><strong>Versioning</strong></td><td>/api/v1/, /api/v2/ — explicit versions</td><td>Schema evolution, deprecate fields in-place</td></tr>
+      <tr><td><strong>Best for</strong></td><td>Public APIs, simple CRUD, mobile where HTTP caching helps</td><td>Complex data graphs, dashboards, multiple client types</td></tr>
+    </table>
+
+    <h3>REST Example — URL Shortener API</h3>
+<pre class="code-block">
+<span class="cm"># Create</span>
+POST   /api/v1/urls              → 201 Created  { "short_code": "aB3xK9" }
+
+<span class="cm"># Read</span>
+GET    /api/v1/urls/{code}       → 200 OK  { "long_url": "...", "clicks": 142 }
+
+<span class="cm"># Redirect</span>
+GET    /{code}                   → 302 Found  Location: https://original.url
+
+<span class="cm"># Delete</span>
+DELETE /api/v1/urls/{code}       → 204 No Content
+</pre>
+
+    <h3>REST Design Principles</h3>
+    <div class="concept-box gold">
+      <strong>Resource-based URLs:</strong> Nouns, not verbs → <code>/users/42/orders</code> not <code>/getUserOrders</code><br>
+      <strong>HTTP verbs carry action:</strong> GET (read), POST (create), PUT/PATCH (update), DELETE (remove)<br>
+      <strong>Status codes:</strong> 200 OK, 201 Created, 400 Bad Request, 401 Unauthorized, 404 Not Found, 429 Too Many Requests, 500 Server Error<br>
+      <strong>Stateless:</strong> Each request carries all necessary context (auth token in header)
+    </div>
+  </div>
+
+  <!-- BLOCK 1 COMPLETE -->
+  <div class="card">
+    <h2>📋 Block 1 Complete — Design Summary</h2>
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+      <span class="tag">6-step framework</span><span class="tag">Estimation</span>
+      <span class="tag">DNS/CDN/LB/Cache</span><span class="tag">SQL vs NoSQL</span>
+      <span class="tag">Replication/Sharding</span><span class="tag">CAP theorem</span>
+      <span class="tag">URL Shortener</span><span class="tag">Token bucket rate limiting</span>
+      <span class="tag">REST API design</span>
+    </div>
+    <div class="concept-box gold">
+      <strong>Corte 1 Design Evaluation (Week 5):</strong> You will have 10–15 minutes to design a URL shortener or Pastebin on the whiteboard. Use the 6 steps. Estimate first. Define the API. Draw the components. Explain every trade-off you make. The interviewer is grading your reasoning, not your answer.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📚 References</h2>
+    <ul style="line-height:2.2">
+      <li><strong>System Design Interview Vol. 1</strong> (Alex Xu) — Chapter 8: Design a URL Shortener, Chapter 4: Rate Limiter</li>
+      <li><strong>ByteByteGo</strong> — "Design a URL Shortener in 3 Minutes", "Rate Limiting Algorithms"</li>
+      <li><strong>34 System Design Case Studies.pdf</strong> (course material)</li>
+      <li><strong>REST API Design Rulebook</strong> (Masse, O'Reilly) — free chapter summaries online</li>
+    </ul>
+  </div>
+</main>
+<footer><strong>Algoritmia Aplicada y Diseño Moderno de Sistemas</strong> · UDES · Block 1 – Week 4 Design · Professor: Jorge Galvis</footer>
+</body>
+</html>

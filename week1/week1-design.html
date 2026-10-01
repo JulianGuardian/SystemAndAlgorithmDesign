@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 1 – Introduction to System Design | Algoritmia Aplicada</title>
+<style>
+  :root{--udes-blue:#003087;--udes-blue-dark:#001f5c;--udes-blue-light:#1a4fa0;--udes-gold:#C8A028;--bg:#f4f6fb;--surface:#fff;--surface2:#eef2fa;--text:#1a1a2e;--text-muted:#5a6070;--border:#d0d8ea;--success:#2e7d32;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  .top-nav{background:var(--udes-blue-dark);color:#fff;padding:0.6rem 2rem;display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;}
+  .course-label{color:var(--udes-gold);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;}
+  .lesson-breadcrumb{display:flex;gap:1.2rem;align-items:center;}
+  .prev{color:#aab4cc;}.current{background:var(--udes-gold);color:#000;font-weight:700;padding:0.2rem 0.7rem;border-radius:4px;}
+  header{background:linear-gradient(135deg,var(--udes-blue) 0%,var(--udes-blue-light) 100%);color:#fff;padding:3rem 2rem 2.5rem;text-align:center;border-bottom:4px solid var(--udes-gold);}
+  .block-tag{display:inline-block;background:var(--udes-gold);color:#000;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:0.25rem 0.9rem;border-radius:20px;margin-bottom:1rem;}
+  header h1{font-size:2.2rem;font-weight:800;margin-bottom:0.4rem;}
+  header p.subtitle{font-size:1.05rem;color:#b8ccee;max-width:660px;margin:0 auto;}
+  .container{max-width:960px;margin:0 auto;padding:2rem 1.5rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.8rem 2rem;margin-bottom:2rem;box-shadow:0 2px 8px rgba(0,48,135,0.06);}
+  .card h2{color:var(--udes-blue);font-size:1.35rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--udes-gold);}
+  .card h3{color:var(--udes-blue-dark);font-size:1.1rem;margin:1.4rem 0 0.6rem;}
+  .objectives ul{list-style:none;padding:0;}
+  .objectives li{padding:0.4rem 0 0.4rem 1.8rem;position:relative;}
+  .objectives li::before{content:"✓";position:absolute;left:0;color:var(--udes-gold);font-weight:900;}
+  .concept-box{background:var(--surface2);border-left:4px solid var(--udes-blue);border-radius:0 8px 8px 0;padding:1rem 1.2rem;margin:1rem 0;font-size:0.97rem;}
+  .concept-box.gold{border-left-color:var(--udes-gold);}
+  .diagram-wrap{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1.2rem;margin:1.2rem 0;text-align:center;}
+  .diagram-wrap figcaption{font-size:0.82rem;color:var(--text-muted);margin-top:0.6rem;font-style:italic;}
+  .alert{background:#fff8e1;border-left:4px solid var(--udes-gold);border-radius:0 8px 8px 0;padding:0.9rem 1.2rem;margin:1rem 0;font-size:0.95rem;}
+  .alert strong{color:#795500;}
+  .tag{display:inline-block;background:#e3ebfa;color:var(--udes-blue);border-radius:4px;padding:0.15rem 0.55rem;font-size:0.78rem;font-weight:600;margin:0.15rem;}
+  .step-list{list-style:none;padding:0;counter-reset:steps;}
+  .step-list li{counter-increment:steps;padding:0.7rem 0.8rem 0.7rem 3rem;margin:0.5rem 0;position:relative;background:var(--surface2);border-radius:8px;}
+  .step-list li::before{content:counter(steps);position:absolute;left:0.8rem;top:50%;transform:translateY(-50%);background:var(--udes-blue);color:#fff;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.8rem;font-weight:700;line-height:24px;text-align:center;}
+  table{width:100%;border-collapse:collapse;font-size:0.92rem;margin:1rem 0;}
+  th{background:var(--udes-blue);color:#fff;padding:0.6rem 1rem;text-align:left;}
+  td{padding:0.55rem 1rem;border-bottom:1px solid var(--border);}
+  tr:nth-child(even) td{background:var(--surface2);}
+  footer{background:var(--udes-blue-dark);color:#8899bb;text-align:center;padding:1.2rem;font-size:0.82rem;margin-top:3rem;}
+  footer strong{color:var(--udes-gold);}
+</style>
+</head>
+<body>
+<nav class="top-nav">
+  <span class="course-label">Algoritmia Aplicada y Diseño Moderno de Sistemas</span>
+  <div class="lesson-breadcrumb">
+    <span class="prev">⬅ Course Start</span>
+    <span class="current">Week 1 · Design</span>
+    <span>→ Week 2: Building Blocks</span>
+  </div>
+</nav>
+<header>
+  <div class="block-tag">Block 1 – Foundations · Week 1 of 4 · System Design</div>
+  <h1>Introduction to System Design</h1>
+  <p class="subtitle">What is system design · The technical interview process · How to approach a design question</p>
+</header>
+
+<main class="container">
+  <div class="card objectives">
+    <h2>🎯 Learning Objectives</h2>
+    <ul>
+      <li>Understand what "system design" means in the context of a technical interview.</li>
+      <li>Identify the key pillars of a scalable system: scalability, reliability, availability, and maintainability.</li>
+      <li>Follow a structured framework for answering any system design question.</li>
+      <li>Estimate the scale of a system using back-of-the-envelope calculations.</li>
+      <li>Read and draw basic architecture diagrams using standard component boxes.</li>
+    </ul>
+  </div>
+
+  <!-- WHAT IS SYSTEM DESIGN -->
+  <div class="card">
+    <h2>🏗 1 · What Is System Design?</h2>
+    <p>System design is the process of defining the <strong>architecture, components, interfaces, and data</strong> of a system to satisfy specified requirements. At a tech company, system design interviews test whether you can think at scale — designing systems that handle millions of users, terabytes of data, and thousands of requests per second.</p>
+
+    <div class="concept-box gold">
+      <strong>The two kinds of interviews you will face:</strong><br>
+      <strong>Coding interview</strong> — algorithmic problem on a whiteboard or editor. Focus: correctness, complexity, clean code.<br>
+      <strong>System design interview</strong> — open-ended design question (e.g., "design Twitter"). Focus: scale, trade-offs, component selection, and communication.
+    </div>
+
+    <h3>Why Companies Care About System Design</h3>
+    <p>Algorithms tell a company you can write efficient code. System design tells them you can <em>build products</em> — products that don't fall over at 3AM when they go viral, that can be extended by a team of 50 engineers, and that can recover from hardware failures automatically.</p>
+
+    <h3>The Four Pillars of a Good System</h3>
+    <table>
+      <tr><th>Pillar</th><th>Question it answers</th><th>Example</th></tr>
+      <tr><td><strong>Scalability</strong></td><td>Can it handle 10× more users tomorrow?</td><td>Add servers behind a load balancer</td></tr>
+      <tr><td><strong>Reliability</strong></td><td>Does it give the correct result every time?</td><td>Idempotent writes, checksums</td></tr>
+      <tr><td><strong>Availability</strong></td><td>Is it up 99.99% of the time?</td><td>Replication, failover, health checks</td></tr>
+      <tr><td><strong>Maintainability</strong></td><td>Can a new engineer understand and extend it?</td><td>Clean APIs, good logging, documentation</td></tr>
+    </table>
+  </div>
+
+  <!-- THE INTERVIEW FRAMEWORK -->
+  <div class="card">
+    <h2>📋 2 · The 6-Step Interview Framework</h2>
+    <p>Every system design question can be answered with the same structured approach. Practice this until it is automatic.</p>
+
+    <ul class="step-list">
+      <li><strong>Clarify requirements (3–5 min):</strong> Ask what features are in scope. Functional (what it does) vs. non-functional (scale, latency). Never assume — ask.</li>
+      <li><strong>Estimate scale (2–3 min):</strong> How many users? DAU (Daily Active Users)? QPS (Queries Per Second)? Storage per year? Write these on the board.</li>
+      <li><strong>Define the API:</strong> What are the core endpoints the system exposes? (e.g., POST /shorten, GET /:code). This anchors everything else.</li>
+      <li><strong>High-level design:</strong> Draw the main boxes — clients, servers, databases, caches. Connect them with arrows. Start simple.</li>
+      <li><strong>Deep dive into components:</strong> Pick 1–2 components and go deep. Database schema, caching strategy, partitioning approach.</li>
+      <li><strong>Identify bottlenecks and trade-offs:</strong> Single points of failure? Hot partitions? Consistency vs. availability? Propose solutions.</li>
+    </ul>
+
+    <div class="alert">
+      <strong>💡 Interview tip:</strong> Interviewers do not expect a perfect design. They want to see your <em>thought process</em>. Communicate every assumption out loud. When you make a trade-off, name it ("I'm choosing eventual consistency here because…").
+    </div>
+  </div>
+
+  <!-- BACK OF ENVELOPE -->
+  <div class="card">
+    <h2>🧮 3 · Back-of-the-Envelope Estimation</h2>
+    <p>Knowing the scale of a system guides every architecture decision. Before you place any box on the board, estimate the load.</p>
+
+    <h3>Key Numbers to Memorize</h3>
+    <table>
+      <tr><th>Unit</th><th>Approximate value</th></tr>
+      <tr><td>L1 cache latency</td><td>0.5 ns</td></tr>
+      <tr><td>RAM access</td><td>100 ns</td></tr>
+      <tr><td>SSD read</td><td>100 μs (1,000× slower than RAM)</td></tr>
+      <tr><td>Network round-trip (same DC)</td><td>0.5 ms</td></tr>
+      <tr><td>Network round-trip (cross-continent)</td><td>150 ms</td></tr>
+      <tr><td>1 GB RAM</td><td>≈ 10⁹ bytes</td></tr>
+      <tr><td>1 million seconds</td><td>≈ 11.5 days</td></tr>
+    </table>
+
+    <h3>Example: Estimate a URL Shortener</h3>
+    <div class="concept-box">
+      <strong>Assumptions:</strong> 100M DAU. 10% write (shorten), 90% read (redirect). Average URL = 100 bytes.<br><br>
+      <strong>QPS:</strong> 100M users × 1 request/day ÷ 86,400 sec ≈ <strong>~1,200 QPS</strong> (reads ≈ 1,080 QPS, writes ≈ 120 QPS)<br>
+      <strong>Storage (10 years):</strong> 120 writes/sec × 86,400 × 365 × 10 × 100 bytes ≈ <strong>~3.8 TB</strong><br><br>
+      Conclusion: read-heavy (9:1), modest write QPS, storage fits on a few servers. → Cache reads heavily, scale reads horizontally.
+    </div>
+  </div>
+
+  <!-- ARCHITECTURE DIAGRAM BASICS -->
+  <div class="card">
+    <h2>📐 4 · Reading Architecture Diagrams</h2>
+    <p>System design diagrams use standard components. Learn to recognize and draw each one.</p>
+
+    <div class="diagram-wrap">
+      <svg width="680" height="320" viewBox="0 0 680 320" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;height:auto;">
+        <defs>
+          <marker id="arr" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#003087"/></marker>
+        </defs>
+        <g font-family="'Segoe UI',sans-serif" font-size="12" text-anchor="middle">
+          <!-- Client -->
+          <rect x="20" y="130" width="90" height="50" rx="8" fill="#eef2fa" stroke="#003087" stroke-width="2"/>
+          <text x="65" y="150" fill="#003087" font-weight="bold">Client</text>
+          <text x="65" y="168" fill="#5a6070" font-size="10">(Browser/App)</text>
+          <!-- DNS -->
+          <rect x="170" y="70" width="90" height="40" rx="6" fill="#fff3e0" stroke="#e65100" stroke-width="1.5"/>
+          <text x="215" y="88" fill="#e65100" font-weight="bold">DNS</text>
+          <text x="215" y="103" fill="#5a6070" font-size="10">name → IP</text>
+          <!-- Load Balancer -->
+          <rect x="170" y="130" width="90" height="50" rx="8" fill="#1a4fa0" stroke="#003087" stroke-width="2"/>
+          <text x="215" y="150" fill="#fff" font-weight="bold">Load</text>
+          <text x="215" y="165" fill="#fff" font-weight="bold">Balancer</text>
+          <!-- Servers -->
+          <rect x="330" y="90" width="90" height="40" rx="6" fill="#003087" stroke="#001f5c" stroke-width="2"/>
+          <text x="375" y="115" fill="#fff" font-size="11">Server 1</text>
+          <rect x="330" y="145" width="90" height="40" rx="6" fill="#003087" stroke="#001f5c" stroke-width="2"/>
+          <text x="375" y="170" fill="#fff" font-size="11">Server 2</text>
+          <rect x="330" y="200" width="90" height="40" rx="6" fill="#003087" stroke="#001f5c" stroke-width="2"/>
+          <text x="375" y="225" fill="#fff" font-size="11">Server 3</text>
+          <!-- Cache -->
+          <rect x="490" y="90" width="90" height="40" rx="6" fill="#c8a028" stroke="#a07800" stroke-width="2"/>
+          <text x="535" y="108" fill="#000" font-weight="bold">Cache</text>
+          <text x="535" y="122" fill="#000" font-size="10">(Redis)</text>
+          <!-- DB -->
+          <ellipse cx="535" cy="195" rx="45" ry="20" fill="#eef2fa" stroke="#003087" stroke-width="2"/>
+          <rect x="490" y="195" width="90" height="45" fill="#eef2fa" stroke="#003087" stroke-width="2"/>
+          <ellipse cx="535" cy="240" rx="45" ry="20" fill="#eef2fa" stroke="#003087" stroke-width="2"/>
+          <text x="535" y="222" fill="#003087" font-weight="bold">Database</text>
+          <!-- Arrows -->
+          <line x1="110" y1="155" x2="168" y2="155" stroke="#003087" stroke-width="2" marker-end="url(#arr)"/>
+          <line x1="65" y1="128" x2="175" y2="98" stroke="#e65100" stroke-width="1.5" stroke-dasharray="4 2" marker-end="url(#arr)"/>
+          <line x1="262" y1="145" x2="328" y2="115" stroke="#003087" stroke-width="1.8" marker-end="url(#arr)"/>
+          <line x1="262" y1="155" x2="328" y2="160" stroke="#003087" stroke-width="1.8" marker-end="url(#arr)"/>
+          <line x1="262" y1="165" x2="328" y2="210" stroke="#003087" stroke-width="1.8" marker-end="url(#arr)"/>
+          <line x1="422" y1="110" x2="488" y2="110" stroke="#c8a028" stroke-width="2" marker-end="url(#arr)"/>
+          <line x1="422" y1="160" x2="488" y2="195" stroke="#003087" stroke-width="1.8" marker-end="url(#arr)"/>
+          <!-- Labels -->
+          <text x="340" y="280" fill="#5a6070" font-size="11">DNS lookup resolves hostname → IP of load balancer</text>
+          <text x="340" y="297" fill="#5a6070" font-size="11">LB distributes requests across multiple app servers</text>
+          <text x="340" y="314" fill="#5a6070" font-size="11">Servers check cache first; on miss, query the database</text>
+        </g>
+      </svg>
+      <figcaption>Figure 1 — Canonical web architecture. DNS → Load Balancer → App Servers → Cache + DB. This pattern appears in nearly every system design.</figcaption>
+    </div>
+
+    <h3>Standard Component Legend</h3>
+    <table>
+      <tr><th>Symbol</th><th>Component</th><th>Purpose</th></tr>
+      <tr><td>Rectangle</td><td>Server / Service</td><td>Runs application code</td></tr>
+      <tr><td>Cylinder</td><td>Database</td><td>Persistent storage (SQL/NoSQL)</td></tr>
+      <tr><td>Rectangle (gold)</td><td>Cache</td><td>Fast in-memory storage (Redis, Memcached)</td></tr>
+      <tr><td>Triangle / cloud</td><td>CDN</td><td>Distributes static assets globally</td></tr>
+      <tr><td>Rectangle (rounded, blue)</td><td>Load Balancer</td><td>Distributes traffic across servers</td></tr>
+    </table>
+  </div>
+
+  <!-- FUNCTIONAL VS NON-FUNCTIONAL -->
+  <div class="card">
+    <h2>✅ 5 · Functional vs. Non-Functional Requirements</h2>
+    <p>Every design question starts with clarifying requirements. Confusing these two categories is a common interview mistake.</p>
+
+    <div class="concept-box">
+      <strong>Functional requirements</strong> — what the system <em>does</em>:<br>
+      • Users can shorten a URL<br>
+      • Users can retrieve the original URL from a short code<br>
+      • Links expire after 30 days (optional)<br><br>
+      <strong>Non-functional requirements</strong> — how well it does it:<br>
+      • Redirect latency &lt; 100ms (p99)<br>
+      • 99.99% availability (≤ 52 minutes downtime/year)<br>
+      • Horizontally scalable to handle 1M QPS<br>
+      • Short codes must be unique (no collisions)
+    </div>
+
+    <div class="alert">
+      <strong>Interview practice:</strong> When given any system (Twitter, WhatsApp, Uber) spend the first 3 minutes writing two lists on the board: Functional and Non-Functional. This shows discipline and prevents you from designing the wrong system.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📋 Week 1 Summary</h2>
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+      <span class="tag">6-step framework</span><span class="tag">Functional vs. Non-functional</span>
+      <span class="tag">Back-of-envelope</span><span class="tag">QPS estimation</span>
+      <span class="tag">Scalability / Reliability / Availability</span>
+    </div>
+    <div class="concept-box gold">
+      The most common mistake in a system design interview is jumping straight to a solution without clarifying requirements. <strong>The first 5 minutes are the most important.</strong> Ask questions, estimate scale, and align with the interviewer on scope before drawing a single box.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📚 References</h2>
+    <ul style="line-height:2.2">
+      <li><strong>System Design Interview Vol. 1</strong> (Alex Xu) — Chapter 1: Scale from Zero to Millions, Chapter 2: Back-of-the-Envelope Estimation</li>
+      <li><strong>ByteByteGo</strong> — "System Design Interview Framework" (bytebytego.com)</li>
+      <li><strong>Skilled.dev</strong> — System Design category overview</li>
+      <li><strong>From0To1M.pdf</strong> (course material) — Scaling from zero to one million users</li>
+    </ul>
+  </div>
+</main>
+<footer><strong>Algoritmia Aplicada y Diseño Moderno de Sistemas</strong> · UDES · Block 1 – Week 1 Design · Professor: Jorge Galvis</footer>
+</body>
+</html>

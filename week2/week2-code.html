@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 2 – Recursion & Backtracking | Algoritmia Aplicada</title>
+<style>
+  :root{--udes-blue:#003087;--udes-blue-dark:#001f5c;--udes-blue-light:#1a4fa0;--udes-gold:#C8A028;--udes-gold-light:#f0c84a;--bg:#f4f6fb;--surface:#ffffff;--surface2:#eef2fa;--text:#1a1a2e;--text-muted:#5a6070;--border:#d0d8ea;--code-bg:#1e2340;--code-text:#e8eaf0;--success:#2e7d32;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  .top-nav{background:var(--udes-blue-dark);color:#fff;padding:0.6rem 2rem;display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;}
+  .top-nav .course-label{color:var(--udes-gold);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;}
+  .lesson-breadcrumb{display:flex;gap:1.2rem;align-items:center;}
+  .lesson-breadcrumb .prev{color:#aab4cc;}
+  .lesson-breadcrumb .current{background:var(--udes-gold);color:#000;font-weight:700;padding:0.2rem 0.7rem;border-radius:4px;}
+  header{background:linear-gradient(135deg,var(--udes-blue) 0%,var(--udes-blue-light) 100%);color:#fff;padding:3rem 2rem 2.5rem;text-align:center;border-bottom:4px solid var(--udes-gold);}
+  header .block-tag{display:inline-block;background:var(--udes-gold);color:#000;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:0.25rem 0.9rem;border-radius:20px;margin-bottom:1rem;}
+  header h1{font-size:2.2rem;font-weight:800;margin-bottom:0.4rem;}
+  header p.subtitle{font-size:1.05rem;color:#b8ccee;max-width:620px;margin:0 auto;}
+  .container{max-width:960px;margin:0 auto;padding:2rem 1.5rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.8rem 2rem;margin-bottom:2rem;box-shadow:0 2px 8px rgba(0,48,135,0.06);}
+  .card h2{color:var(--udes-blue);font-size:1.35rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--udes-gold);display:flex;align-items:center;gap:0.5rem;}
+  .card h3{color:var(--udes-blue-dark);font-size:1.1rem;margin:1.4rem 0 0.6rem;}
+  .objectives ul{list-style:none;padding:0;}
+  .objectives li{padding:0.4rem 0 0.4rem 1.8rem;position:relative;}
+  .objectives li::before{content:"✓";position:absolute;left:0;color:var(--udes-gold);font-weight:900;}
+  .concept-box{background:var(--surface2);border-left:4px solid var(--udes-blue);border-radius:0 8px 8px 0;padding:1rem 1.2rem;margin:1rem 0;font-size:0.97rem;}
+  .concept-box.gold{border-left-color:var(--udes-gold);}
+  .concept-box strong{color:var(--udes-blue);}
+  .code-block{background:var(--code-bg);color:var(--code-text);border-radius:8px;padding:1.2rem 1.4rem;overflow-x:auto;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:0.88rem;line-height:1.65;margin:1rem 0;position:relative;}
+  .code-block .label{position:absolute;top:0.5rem;right:0.8rem;font-size:0.7rem;background:var(--udes-gold);color:#000;padding:0.1rem 0.5rem;border-radius:4px;font-weight:700;font-family:sans-serif;}
+  .kw{color:#c678dd;} .fn{color:#61afef;} .cm{color:#7f848e;font-style:italic;} .st{color:#98c379;} .nu{color:#d19a66;} .op{color:#56b6c2;}
+  .diagram-wrap{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1.2rem;margin:1.2rem 0;text-align:center;}
+  .diagram-wrap figcaption{font-size:0.82rem;color:var(--text-muted);margin-top:0.6rem;font-style:italic;}
+  .alert{background:#fff8e1;border-left:4px solid var(--udes-gold);border-radius:0 8px 8px 0;padding:0.9rem 1.2rem;margin:1rem 0;font-size:0.95rem;}
+  .alert strong{color:#795500;}
+  .tag{display:inline-block;background:#e3ebfa;color:var(--udes-blue);border-radius:4px;padding:0.15rem 0.55rem;font-size:0.78rem;font-weight:600;margin:0.15rem;}
+  table{width:100%;border-collapse:collapse;font-size:0.92rem;margin:1rem 0;}
+  th{background:var(--udes-blue);color:#fff;padding:0.6rem 1rem;text-align:left;}
+  td{padding:0.55rem 1rem;border-bottom:1px solid var(--border);}
+  tr:nth-child(even) td{background:var(--surface2);}
+  .good{color:var(--success);font-weight:700;}
+  .bad{color:#c62828;font-weight:700;}
+  footer{background:var(--udes-blue-dark);color:#8899bb;text-align:center;padding:1.2rem;font-size:0.82rem;margin-top:3rem;}
+  footer strong{color:var(--udes-gold);}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <span class="course-label">Algoritmia Aplicada y Diseño Moderno de Sistemas</span>
+  <div class="lesson-breadcrumb">
+    <span class="prev">⬅ Week 1: Big O &amp; Searching</span>
+    <span class="current">Week 2 · Code</span>
+    <span>→ Week 3: Arrays &amp; Strings</span>
+  </div>
+</nav>
+
+<header>
+  <div class="block-tag">Block 1 – Foundations · Week 2 of 4</div>
+  <h1>Recursion &amp; Backtracking</h1>
+  <p class="subtitle">Recursive thinking · Permutations · Subsets · Backtracking template</p>
+</header>
+
+<main class="container">
+
+  <div class="card objectives">
+    <h2>🎯 Learning Objectives</h2>
+    <ul>
+      <li>Model problems using recursive decomposition (base case + recursive case).</li>
+      <li>Analyze the time complexity of recursive algorithms using the call-tree method.</li>
+      <li>Generate all permutations of a string/array using recursion.</li>
+      <li>Generate all subsets (power set) of a set using recursion.</li>
+      <li>Apply the backtracking template: choose → explore → unchoose.</li>
+      <li>Identify when recursion is preferable and when it introduces unnecessary overhead.</li>
+    </ul>
+  </div>
+
+  <!-- SECTION 1: RECURSIVE THINKING -->
+  <div class="card">
+    <h2>🧠 1 · Recursive Thinking</h2>
+    <p>Recursion is a function calling <strong>itself</strong> on a smaller version of the same problem. Every recursive solution needs exactly two parts:</p>
+    <div class="concept-box gold">
+      <strong>Base case:</strong> The smallest problem that can be solved directly without recursion.<br>
+      <strong>Recursive case:</strong> Reduce the current problem to a smaller version and call self.
+    </div>
+    <p>A useful mental model: <em>"Assume the recursive call works correctly, and just write what you need to do with its result."</em> Trust the recursion.</p>
+
+    <h3>Call Stack Visualization</h3>
+    <div class="diagram-wrap">
+      <svg width="540" height="290" viewBox="0 0 540 290" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;height:auto;">
+        <!-- factorial(4) call tree -->
+        <g font-family="'Segoe UI',sans-serif" font-size="13" text-anchor="middle">
+          <!-- Level 0 -->
+          <rect x="195" y="10" width="150" height="36" rx="6" fill="#003087" stroke="#001f5c" stroke-width="2"/>
+          <text x="270" y="33" fill="#fff" font-weight="bold">factorial(4)</text>
+          <!-- Level 1 -->
+          <rect x="195" y="70" width="150" height="36" rx="6" fill="#1a4fa0" stroke="#003087" stroke-width="1.5"/>
+          <text x="270" y="93" fill="#fff">factorial(3)</text>
+          <!-- Level 2 -->
+          <rect x="195" y="130" width="150" height="36" rx="6" fill="#1a4fa0" stroke="#003087" stroke-width="1.5"/>
+          <text x="270" y="153" fill="#fff">factorial(2)</text>
+          <!-- Level 3 -->
+          <rect x="195" y="190" width="150" height="36" rx="6" fill="#1a4fa0" stroke="#003087" stroke-width="1.5"/>
+          <text x="270" y="213" fill="#fff">factorial(1)</text>
+          <!-- Base -->
+          <rect x="195" y="250" width="150" height="36" rx="6" fill="#c8a028" stroke="#a07800" stroke-width="2"/>
+          <text x="270" y="273" fill="#000" font-weight="bold">BASE: return 1</text>
+          <!-- Arrows down -->
+          <line x1="270" y1="46" x2="270" y2="68" stroke="#003087" stroke-width="2" marker-end="url(#arr)"/>
+          <line x1="270" y1="106" x2="270" y2="128" stroke="#003087" stroke-width="2" marker-end="url(#arr)"/>
+          <line x1="270" y1="166" x2="270" y2="188" stroke="#003087" stroke-width="2" marker-end="url(#arr)"/>
+          <line x1="270" y1="226" x2="270" y2="248" stroke="#c8a028" stroke-width="2" marker-end="url(#arr2)"/>
+          <!-- Return labels on right -->
+          <text x="440" y="40" fill="#5a6070" font-size="11">returns 4×6=24</text>
+          <text x="440" y="100" fill="#5a6070" font-size="11">returns 3×2=6</text>
+          <text x="440" y="160" fill="#5a6070" font-size="11">returns 2×1=2</text>
+          <text x="440" y="220" fill="#5a6070" font-size="11">returns 1×1=1</text>
+          <text x="440" y="270" fill="#c8a028" font-size="11" font-weight="bold">returns 1 ✓</text>
+          <defs>
+            <marker id="arr" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#003087"/></marker>
+            <marker id="arr2" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#c8a028"/></marker>
+          </defs>
+        </g>
+      </svg>
+      <figcaption>Figure 1 — Call stack for factorial(4). Each frame waits for its child before returning.</figcaption>
+    </div>
+
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">def</span> <span class="fn">factorial</span>(n: int) -> int:
+    <span class="kw">if</span> n <span class="op">&lt;=</span> <span class="nu">1</span>:          <span class="cm"># base case</span>
+        <span class="kw">return</span> <span class="nu">1</span>
+    <span class="kw">return</span> n * <span class="fn">factorial</span>(n - <span class="nu">1</span>)  <span class="cm"># recursive case</span>
+
+<span class="cm"># Time O(n), Space O(n) — n frames on the call stack</span>
+
+<span class="kw">def</span> <span class="fn">sum_digits</span>(n: int) -> int:
+    <span class="cm">"""Sum of digits of a non-negative integer. e.g. 123 → 6"""</span>
+    <span class="kw">if</span> n <span class="op">&lt;</span> <span class="nu">10</span>:
+        <span class="kw">return</span> n
+    <span class="kw">return</span> n % <span class="nu">10</span> + <span class="fn">sum_digits</span>(n // <span class="nu">10</span>)
+</pre>
+
+    <h3>Analyzing Recursive Complexity</h3>
+    <div class="concept-box">
+      <strong>Method:</strong> Draw the call tree. Count nodes (total calls) for time complexity. Count the maximum stack depth for space complexity.<br><br>
+      <strong>Pattern:</strong> If each call spawns <em>b</em> sub-calls and the depth is <em>d</em>, total calls ≈ b<sup>d</sup>.<br>
+      Factorial: 1 sub-call, depth n → O(n) time, O(n) space.
+    </div>
+  </div>
+
+  <!-- SECTION 2: PERMUTATIONS -->
+  <div class="card">
+    <h2>🔄 2 · Generating Permutations</h2>
+    <p>A <strong>permutation</strong> is an arrangement of all elements in a specific order. For n distinct elements there are <strong>n!</strong> permutations.</p>
+    <p>Strategy: fix one element at each position, recurse for the rest, then restore (backtrack).</p>
+
+    <div class="diagram-wrap">
+      <svg width="600" height="260" viewBox="0 0 600 260" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;height:auto;">
+        <g font-family="'Segoe UI',sans-serif" font-size="12" text-anchor="middle">
+          <!-- Root -->
+          <rect x="235" y="8" width="130" height="30" rx="5" fill="#003087"/>
+          <text x="300" y="28" fill="#fff" font-weight="bold">perm([], [A,B,C])</text>
+          <!-- Level 1 -->
+          <rect x="30"  y="68" width="110" height="28" rx="5" fill="#1a4fa0"/>
+          <text x="85"  y="87" fill="#fff">pick A → [A],[B,C]</text>
+          <rect x="245" y="68" width="110" height="28" rx="5" fill="#1a4fa0"/>
+          <text x="300" y="87" fill="#fff">pick B → [B],[A,C]</text>
+          <rect x="460" y="68" width="110" height="28" rx="5" fill="#1a4fa0"/>
+          <text x="515" y="87" fill="#fff">pick C → [C],[A,B]</text>
+          <!-- Arrows L1 -->
+          <line x1="270" y1="38" x2="100" y2="66" stroke="#003087" stroke-width="1.5" marker-end="url(#a1)"/>
+          <line x1="300" y1="38" x2="300" y2="66" stroke="#003087" stroke-width="1.5" marker-end="url(#a1)"/>
+          <line x1="330" y1="38" x2="500" y2="66" stroke="#003087" stroke-width="1.5" marker-end="url(#a1)"/>
+          <!-- Level 2 under A -->
+          <rect x="0"   y="128" width="80" height="24" rx="4" fill="#c8a028"/>
+          <text x="40"  y="145" fill="#000" font-size="11">AB → ABC</text>
+          <rect x="100" y="128" width="80" height="24" rx="4" fill="#c8a028"/>
+          <text x="140" y="145" fill="#000" font-size="11">AC → ACB</text>
+          <!-- Level 2 under B -->
+          <rect x="212" y="128" width="80" height="24" rx="4" fill="#c8a028"/>
+          <text x="252" y="145" fill="#000" font-size="11">BA → BAC</text>
+          <rect x="312" y="128" width="80" height="24" rx="4" fill="#c8a028"/>
+          <text x="352" y="145" fill="#000" font-size="11">BC → BCA</text>
+          <!-- Level 2 under C -->
+          <rect x="424" y="128" width="80" height="24" rx="4" fill="#c8a028"/>
+          <text x="464" y="145" fill="#000" font-size="11">CA → CAB</text>
+          <rect x="516" y="128" width="80" height="24" rx="4" fill="#c8a028"/>
+          <text x="556" y="145" fill="#000" font-size="11">CB → CBA</text>
+          <!-- arrows L2 -->
+          <line x1="70"  y1="96" x2="40"  y2="126" stroke="#1a4fa0" stroke-width="1.2" marker-end="url(#a1)"/>
+          <line x1="100" y1="96" x2="140" y2="126" stroke="#1a4fa0" stroke-width="1.2" marker-end="url(#a1)"/>
+          <line x1="285" y1="96" x2="252" y2="126" stroke="#1a4fa0" stroke-width="1.2" marker-end="url(#a1)"/>
+          <line x1="315" y1="96" x2="352" y2="126" stroke="#1a4fa0" stroke-width="1.2" marker-end="url(#a1)"/>
+          <line x1="500" y1="96" x2="464" y2="126" stroke="#1a4fa0" stroke-width="1.2" marker-end="url(#a1)"/>
+          <line x1="530" y1="96" x2="556" y2="126" stroke="#1a4fa0" stroke-width="1.2" marker-end="url(#a1)"/>
+          <!-- Legend -->
+          <text x="300" y="190" fill="#003087" font-size="12" font-weight="bold">Total leaves = 3! = 6 permutations</text>
+          <text x="300" y="215" fill="#c8a028" font-size="11" font-weight="bold">Gold nodes = base case (result recorded)</text>
+          <text x="300" y="235" fill="#5a6070" font-size="11">After recording each result we UNCHOOSE (backtrack)</text>
+          <defs><marker id="a1" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#003087"/></marker></defs>
+        </g>
+      </svg>
+      <figcaption>Figure 2 — Call tree for permutations of [A, B, C]. Each level fixes one more element.</figcaption>
+    </div>
+
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">def</span> <span class="fn">permutations</span>(chars: list[str]) -> list[list[str]]:
+    <span class="cm">"""Generate all permutations. Time O(n·n!), Space O(n·n!)."""</span>
+    results = []
+
+    <span class="kw">def</span> <span class="fn">backtrack</span>(current: list[str], remaining: list[str]):
+        <span class="kw">if</span> <span class="kw">not</span> remaining:          <span class="cm"># base case: nothing left to pick</span>
+            results.append(list(current))
+            <span class="kw">return</span>
+        <span class="kw">for</span> i <span class="kw">in</span> range(len(remaining)):
+            current.append(remaining[i])              <span class="cm"># CHOOSE</span>
+            <span class="fn">backtrack</span>(current, remaining[:i] + remaining[i+<span class="nu">1</span>:])  <span class="cm"># EXPLORE</span>
+            current.pop()                             <span class="cm"># UNCHOOSE (backtrack)</span>
+
+    <span class="fn">backtrack</span>([], chars)
+    <span class="kw">return</span> results
+
+<span class="cm"># Example: permutations(['A','B','C'])
+# → [['A','B','C'],['A','C','B'],['B','A','C'],
+#    ['B','C','A'],['C','A','B'],['C','B','A']]</span>
+</pre>
+
+    <div class="alert">
+      <strong>⚠ Why O(n·n!)?</strong> There are n! permutations and each requires O(n) time to copy into results. The total calls in the tree is 1 + n + n(n-1) + … ≈ e·n! which is still O(n!).
+    </div>
+  </div>
+
+  <!-- SECTION 3: SUBSETS -->
+  <div class="card">
+    <h2>📦 3 · Generating Subsets (Power Set)</h2>
+    <p>The power set of n elements has <strong>2ⁿ</strong> subsets (including empty set). For each element, we make a binary choice: <em>include it</em> or <em>skip it</em>.</p>
+
+    <div class="diagram-wrap">
+      <svg width="560" height="220" viewBox="0 0 560 220" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;height:auto;">
+        <g font-family="'Segoe UI',sans-serif" font-size="12" text-anchor="middle">
+          <!-- Root -->
+          <rect x="220" y="5" width="120" height="28" rx="5" fill="#003087"/>
+          <text x="280" y="24" fill="#fff" font-weight="bold">start idx=0 []</text>
+          <!-- L1 -->
+          <rect x="90"  y="60" width="120" height="26" rx="4" fill="#1a4fa0"/>
+          <text x="150" y="77" fill="#fff">include 1 → [1]</text>
+          <rect x="350" y="60" width="120" height="26" rx="4" fill="#5a6070"/>
+          <text x="410" y="77" fill="#fff">skip 1 → []</text>
+          <!-- L2 -->
+          <rect x="20"  y="120" width="110" height="24" rx="4" fill="#1a4fa0"/>
+          <text x="75"  y="137" fill="#fff">include 2→[1,2]</text>
+          <rect x="150" y="120" width="110" height="24" rx="4" fill="#5a6070"/>
+          <text x="205" y="137" fill="#fff">skip 2→[1]</text>
+          <rect x="280" y="120" width="110" height="24" rx="4" fill="#1a4fa0"/>
+          <text x="335" y="137" fill="#fff">include 2→[2]</text>
+          <rect x="410" y="120" width="110" height="24" rx="4" fill="#5a6070"/>
+          <text x="465" y="137" fill="#fff">skip 2→[]</text>
+          <!-- Leaves -->
+          <rect x="0"   y="178" width="80" height="22" rx="4" fill="#c8a028"/>
+          <text x="40"  y="194" fill="#000">[1,2,3]</text>
+          <rect x="90"  y="178" width="80" height="22" rx="4" fill="#c8a028"/>
+          <text x="130" y="194" fill="#000">[1,2]</text>
+          <rect x="182" y="178" width="80" height="22" rx="4" fill="#c8a028"/>
+          <text x="222" y="194" fill="#000">[1,3]</text>
+          <rect x="272" y="178" width="80" height="22" rx="4" fill="#c8a028"/>
+          <text x="312" y="194" fill="#000">[1]</text>
+          <rect x="364" y="178" width="80" height="22" rx="4" fill="#c8a028"/>
+          <text x="404" y="194" fill="#000">[2,3]</text>
+          <!-- partial shown -->
+          <text x="480" y="194" fill="#5a6070" font-size="11">…[2],[3],[]</text>
+          <!-- Arrows L0→L1 -->
+          <line x1="265" y1="33" x2="180" y2="58" stroke="#003087" stroke-width="1.5" marker-end="url(#a2)"/>
+          <line x1="295" y1="33" x2="390" y2="58" stroke="#003087" stroke-width="1.5" marker-end="url(#a2)"/>
+          <!-- Arrows L1→L2 -->
+          <line x1="130" y1="86" x2="80" y2="118" stroke="#1a4fa0" stroke-width="1.2" marker-end="url(#a2)"/>
+          <line x1="165" y1="86" x2="200" y2="118" stroke="#1a4fa0" stroke-width="1.2" marker-end="url(#a2)"/>
+          <line x1="395" y1="86" x2="340" y2="118" stroke="#5a6070" stroke-width="1.2" marker-end="url(#a2)"/>
+          <line x1="430" y1="86" x2="460" y2="118" stroke="#5a6070" stroke-width="1.2" marker-end="url(#a2)"/>
+          <defs><marker id="a2" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#003087"/></marker></defs>
+          <text x="280" y="215" fill="#c8a028" font-size="11" font-weight="bold">2³ = 8 subsets total (include=blue, skip=grey)</text>
+        </g>
+      </svg>
+      <figcaption>Figure 3 — Binary decision tree for subsets of {1,2,3}. Left = include, Right = skip.</figcaption>
+    </div>
+
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">def</span> <span class="fn">subsets</span>(nums: list[int]) -> list[list[int]]:
+    <span class="cm">"""Power set. Time O(n·2ⁿ), Space O(n·2ⁿ)."""</span>
+    results = []
+
+    <span class="kw">def</span> <span class="fn">backtrack</span>(start: int, current: list[int]):
+        results.append(list(current))  <span class="cm"># every node is a valid subset</span>
+        <span class="kw">for</span> i <span class="kw">in</span> range(start, len(nums)):
+            current.append(nums[i])    <span class="cm"># CHOOSE</span>
+            <span class="fn">backtrack</span>(i + <span class="nu">1</span>, current) <span class="cm"># EXPLORE (only elements after i)</span>
+            current.pop()              <span class="cm"># UNCHOOSE</span>
+
+    <span class="fn">backtrack</span>(<span class="nu">0</span>, [])
+    <span class="kw">return</span> results
+
+<span class="cm"># subsets([1,2,3]) → [[], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3]]</span>
+</pre>
+  </div>
+
+  <!-- SECTION 4: BACKTRACKING TEMPLATE -->
+  <div class="card">
+    <h2>🔙 4 · The Backtracking Template</h2>
+    <p>Backtracking is a controlled brute-force: build a candidate solution incrementally and <strong>abandon a path early</strong> ("prune") when it can no longer lead to a valid solution.</p>
+
+    <div class="concept-box gold">
+      <strong>Template (memorize this):</strong><br>
+      <code>CHOOSE</code> → make a decision, add to current state<br>
+      <code>EXPLORE</code> → recurse into the next level<br>
+      <code>UNCHOOSE</code> → undo the decision (restore state)
+    </div>
+
+    <h3>Application: Combinations of size k</h3>
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">def</span> <span class="fn">combinations</span>(n: int, k: int) -> list[list[int]]:
+    <span class="cm">"""All k-length combinations from 1..n. Time O(k·C(n,k))."""</span>
+    results = []
+
+    <span class="kw">def</span> <span class="fn">backtrack</span>(start: int, current: list[int]):
+        <span class="kw">if</span> len(current) <span class="op">==</span> k:        <span class="cm"># base case: found a complete combination</span>
+            results.append(list(current))
+            <span class="kw">return</span>
+        <span class="cm"># pruning: no need to go past n-(k-len(current))+1</span>
+        limit = n - (k - len(current)) + <span class="nu">2</span>
+        <span class="kw">for</span> i <span class="kw">in</span> range(start, limit):
+            current.append(i)          <span class="cm"># CHOOSE</span>
+            <span class="fn">backtrack</span>(i + <span class="nu">1</span>, current) <span class="cm"># EXPLORE</span>
+            current.pop()              <span class="cm"># UNCHOOSE</span>
+
+    <span class="fn">backtrack</span>(<span class="nu">1</span>, [])
+    <span class="kw">return</span> results
+
+<span class="cm"># combinations(4, 2) → [[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]]</span>
+</pre>
+
+    <h3>Complexity summary</h3>
+    <table>
+      <tr><th>Problem</th><th>Time</th><th>Space (output)</th><th>Key insight</th></tr>
+      <tr><td>Factorial</td><td class="good">O(n)</td><td class="good">O(n)</td><td>One path, no branching</td></tr>
+      <tr><td>Permutations</td><td class="bad">O(n·n!)</td><td class="bad">O(n·n!)</td><td>n choices at each of n levels</td></tr>
+      <tr><td>Subsets</td><td class="bad">O(n·2ⁿ)</td><td class="bad">O(n·2ⁿ)</td><td>2 choices (include/skip) at n levels</td></tr>
+      <tr><td>Combinations k of n</td><td>O(k·C(n,k))</td><td>O(k·C(n,k))</td><td>Pruning reduces constant factor</td></tr>
+    </table>
+
+    <div class="alert">
+      <strong>💡 Interview tip:</strong> Always state the complexity in terms of <em>output size</em> for backtracking problems. The output itself is exponential — the best possible algorithm still has to write each result, so exponential output implies exponential time.
+    </div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="card">
+    <h2>📋 Week 2 Summary</h2>
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+      <span class="tag">Recursion</span><span class="tag">Base case</span><span class="tag">Call stack O(n)</span>
+      <span class="tag">Permutations O(n!)</span><span class="tag">Subsets O(2ⁿ)</span><span class="tag">Backtracking: choose/explore/unchoose</span>
+    </div>
+    <div class="concept-box">
+      <strong>Decision checklist for recursion:</strong><br>
+      1. What is the base case (smallest solvable input)?<br>
+      2. How does one recursive call reduce the problem?<br>
+      3. What do I do with the recursive result?<br>
+      4. What is the maximum call-stack depth? (space complexity)
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📚 References &amp; Further Reading</h2>
+    <ul style="line-height:2.2">
+      <li><strong>Cracking the Coding Interview</strong> (McDowell) — Chapter 8: Recursion and Dynamic Programming</li>
+      <li><strong>Skilled.dev</strong> — <em>4. Recursion</em>, <em>4.1 Sum All Digits</em>, <em>4.2 Generate All Permutations</em></li>
+      <li><strong>NeetCode.io</strong> — Backtracking section (Subsets, Permutations, Combination Sum)</li>
+      <li><strong>LeetCode</strong> — #78 Subsets, #46 Permutations, #77 Combinations</li>
+    </ul>
+  </div>
+
+</main>
+
+<footer>
+  <strong>Algoritmia Aplicada y Diseño Moderno de Sistemas</strong> · UDES · Block 1 – Week 2 · Professor: Jorge Galvis
+</footer>
+</body>
+</html>

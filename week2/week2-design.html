@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 2 – Building Blocks | Algoritmia Aplicada</title>
+<style>
+  :root{--udes-blue:#003087;--udes-blue-dark:#001f5c;--udes-blue-light:#1a4fa0;--udes-gold:#C8A028;--bg:#f4f6fb;--surface:#fff;--surface2:#eef2fa;--text:#1a1a2e;--text-muted:#5a6070;--border:#d0d8ea;--success:#2e7d32;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  .top-nav{background:var(--udes-blue-dark);color:#fff;padding:0.6rem 2rem;display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;}
+  .course-label{color:var(--udes-gold);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;}
+  .lesson-breadcrumb{display:flex;gap:1.2rem;align-items:center;}
+  .prev{color:#aab4cc;}.current{background:var(--udes-gold);color:#000;font-weight:700;padding:0.2rem 0.7rem;border-radius:4px;}
+  header{background:linear-gradient(135deg,var(--udes-blue) 0%,var(--udes-blue-light) 100%);color:#fff;padding:3rem 2rem 2.5rem;text-align:center;border-bottom:4px solid var(--udes-gold);}
+  .block-tag{display:inline-block;background:var(--udes-gold);color:#000;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:0.25rem 0.9rem;border-radius:20px;margin-bottom:1rem;}
+  header h1{font-size:2.2rem;font-weight:800;margin-bottom:0.4rem;}
+  header p.subtitle{font-size:1.05rem;color:#b8ccee;max-width:660px;margin:0 auto;}
+  .container{max-width:960px;margin:0 auto;padding:2rem 1.5rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.8rem 2rem;margin-bottom:2rem;box-shadow:0 2px 8px rgba(0,48,135,0.06);}
+  .card h2{color:var(--udes-blue);font-size:1.35rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--udes-gold);}
+  .card h3{color:var(--udes-blue-dark);font-size:1.1rem;margin:1.4rem 0 0.6rem;}
+  .objectives ul{list-style:none;padding:0;}
+  .objectives li{padding:0.4rem 0 0.4rem 1.8rem;position:relative;}
+  .objectives li::before{content:"✓";position:absolute;left:0;color:var(--udes-gold);font-weight:900;}
+  .concept-box{background:var(--surface2);border-left:4px solid var(--udes-blue);border-radius:0 8px 8px 0;padding:1rem 1.2rem;margin:1rem 0;font-size:0.97rem;}
+  .concept-box.gold{border-left-color:var(--udes-gold);}
+  .diagram-wrap{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1.2rem;margin:1.2rem 0;text-align:center;}
+  .diagram-wrap figcaption{font-size:0.82rem;color:var(--text-muted);margin-top:0.6rem;font-style:italic;}
+  .alert{background:#fff8e1;border-left:4px solid var(--udes-gold);border-radius:0 8px 8px 0;padding:0.9rem 1.2rem;margin:1rem 0;font-size:0.95rem;}
+  .tag{display:inline-block;background:#e3ebfa;color:var(--udes-blue);border-radius:4px;padding:0.15rem 0.55rem;font-size:0.78rem;font-weight:600;margin:0.15rem;}
+  table{width:100%;border-collapse:collapse;font-size:0.92rem;margin:1rem 0;}
+  th{background:var(--udes-blue);color:#fff;padding:0.6rem 1rem;text-align:left;}
+  td{padding:0.55rem 1rem;border-bottom:1px solid var(--border);}
+  tr:nth-child(even) td{background:var(--surface2);}
+  .good{color:var(--success);font-weight:700;} .bad{color:#c62828;font-weight:700;}
+  footer{background:var(--udes-blue-dark);color:#8899bb;text-align:center;padding:1.2rem;font-size:0.82rem;margin-top:3rem;}
+  footer strong{color:var(--udes-gold);}
+</style>
+</head>
+<body>
+<nav class="top-nav">
+  <span class="course-label">Algoritmia Aplicada y Diseño Moderno de Sistemas</span>
+  <div class="lesson-breadcrumb">
+    <span class="prev">⬅ Week 1: Design Intro</span>
+    <span class="current">Week 2 · Design</span>
+    <span>→ Week 3: Databases</span>
+  </div>
+</nav>
+<header>
+  <div class="block-tag">Block 1 – Foundations · Week 2 of 4 · System Design</div>
+  <h1>System Design Building Blocks</h1>
+  <p class="subtitle">DNS · CDN · Load Balancers · API Gateways · Proxies · Cache (Redis)</p>
+</header>
+
+<main class="container">
+  <div class="card objectives">
+    <h2>🎯 Learning Objectives</h2>
+    <ul>
+      <li>Explain the role of DNS in translating hostnames to IP addresses.</li>
+      <li>Describe how a CDN improves latency for static assets and how it relates to cache invalidation.</li>
+      <li>Distinguish between layer-4 and layer-7 load balancers and common balancing strategies.</li>
+      <li>Identify the responsibilities of an API gateway (auth, rate limiting, routing).</li>
+      <li>Explain forward vs. reverse proxy and their use cases.</li>
+      <li>Describe Redis caching patterns: cache-aside, write-through, and TTL-based eviction.</li>
+    </ul>
+  </div>
+
+  <!-- DNS -->
+  <div class="card">
+    <h2>🌐 1 · DNS — Domain Name System</h2>
+    <p>DNS is the internet's phonebook. When you type <code>www.example.com</code>, your browser does not know the IP address. DNS translates the human-readable domain name into the IP address of the server.</p>
+
+    <div class="diagram-wrap">
+      <svg width="660" height="200" viewBox="0 0 660 200" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;height:auto;">
+        <defs><marker id="a" markerWidth="7" markerHeight="7" refX="4" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#003087"/></marker></defs>
+        <g font-family="'Segoe UI',sans-serif" font-size="11" text-anchor="middle">
+          <!-- Browser -->
+          <rect x="10" y="75" width="80" height="50" rx="6" fill="#eef2fa" stroke="#003087" stroke-width="2"/>
+          <text x="50" y="96" fill="#003087" font-weight="bold" font-size="12">Browser</text>
+          <text x="50" y="112" fill="#5a6070">User device</text>
+          <!-- Step 1 arrow -->
+          <line x1="92" y1="90" x2="138" y2="90" stroke="#003087" stroke-width="1.8" marker-end="url(#a)"/>
+          <text x="115" y="82" fill="#003087">① query</text>
+          <!-- Recursive resolver -->
+          <rect x="140" y="65" width="90" height="70" rx="6" fill="#1a4fa0" stroke="#003087" stroke-width="2"/>
+          <text x="185" y="87" fill="#fff" font-weight="bold">Recursive</text>
+          <text x="185" y="101" fill="#fff">Resolver</text>
+          <text x="185" y="116" fill="#b8ccee" font-size="10">(ISP / 8.8.8.8)</text>
+          <!-- Step 2 -->
+          <line x1="232" y1="80" x2="278" y2="60" stroke="#003087" stroke-width="1.5" marker-end="url(#a)"/>
+          <text x="260" y="60" fill="#5a6070" text-anchor="start">② root</text>
+          <!-- Root NS -->
+          <rect x="280" y="30" width="80" height="40" rx="5" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <text x="320" y="50" fill="#003087" font-weight="bold">Root NS</text>
+          <text x="320" y="64" fill="#5a6070" font-size="10">→ TLD NS</text>
+          <!-- Step 3 -->
+          <line x1="232" y1="100" x2="278" y2="100" stroke="#003087" stroke-width="1.5" marker-end="url(#a)"/>
+          <text x="256" y="93" fill="#5a6070">③ TLD</text>
+          <!-- TLD NS -->
+          <rect x="280" y="80" width="80" height="40" rx="5" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <text x="320" y="100" fill="#003087" font-weight="bold">TLD NS</text>
+          <text x="320" y="114" fill="#5a6070" font-size="10">(.com, .org)</text>
+          <!-- Step 4 -->
+          <line x1="232" y1="120" x2="278" y2="140" stroke="#003087" stroke-width="1.5" marker-end="url(#a)"/>
+          <text x="250" y="145" fill="#5a6070">④ authoritative</text>
+          <!-- Auth NS -->
+          <rect x="280" y="130" width="90" height="40" rx="5" fill="#c8a028" stroke="#a07800" stroke-width="2"/>
+          <text x="325" y="148" fill="#000" font-weight="bold">Auth NS</text>
+          <text x="325" y="162" fill="#000" font-size="10">has the A record</text>
+          <!-- Step 5 — IP returned -->
+          <line x1="372" y1="150" x2="450" y2="150" stroke="#c8a028" stroke-width="2" marker-end="url(#a)"/>
+          <rect x="452" y="125" width="100" height="50" rx="6" fill="#003087" stroke="#001f5c" stroke-width="2"/>
+          <text x="502" y="147" fill="#fff" font-weight="bold">IP Address</text>
+          <text x="502" y="163" fill="#c8a028" font-size="11">93.184.216.34</text>
+          <!-- Return to browser -->
+          <line x1="185" y1="137" x2="90" y2="137" stroke="#c8a028" stroke-width="2" marker-end="url(#a)"/>
+          <text x="138" y="150" fill="#c8a028" font-weight="bold">⑤ IP returned</text>
+          <!-- Legend -->
+          <text x="330" y="192" fill="#5a6070">Cached at each step with TTL (Time-To-Live) to avoid re-querying</text>
+        </g>
+      </svg>
+      <figcaption>Figure 1 — DNS resolution chain. The answer is cached at each level to reduce future lookups.</figcaption>
+    </div>
+
+    <div class="concept-box">
+      <strong>TTL (Time-To-Live):</strong> DNS records have a TTL value in seconds. Until TTL expires, the IP is cached locally and no new DNS query is made. Long TTL = fewer queries but slower propagation of IP changes. Short TTL = faster changes but more load on DNS servers.
+    </div>
+  </div>
+
+  <!-- CDN -->
+  <div class="card">
+    <h2>🌍 2 · CDN — Content Delivery Network</h2>
+    <p>A CDN is a geographically distributed network of edge servers that cache static content (images, JS, CSS, videos) close to users. Instead of all users hitting your origin server in one country, they hit the nearest CDN edge node.</p>
+
+    <div class="diagram-wrap">
+      <svg width="620" height="200" viewBox="0 0 620 200" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;height:auto;">
+        <defs><marker id="b" markerWidth="7" markerHeight="7" refX="4" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#003087"/></marker></defs>
+        <g font-family="'Segoe UI',sans-serif" font-size="11" text-anchor="middle">
+          <!-- Origin server -->
+          <rect x="260" y="75" width="100" height="50" rx="6" fill="#003087" stroke="#001f5c" stroke-width="2"/>
+          <text x="310" y="97" fill="#fff" font-weight="bold">Origin Server</text>
+          <text x="310" y="113" fill="#c8a028" font-size="10">(US East)</text>
+          <!-- CDN nodes -->
+          <rect x="30"  y="30" width="90" height="40" rx="5" fill="#c8a028" stroke="#a07800" stroke-width="2"/>
+          <text x="75" y="48" fill="#000" font-weight="bold">CDN Edge</text>
+          <text x="75" y="62" fill="#000" font-size="10">São Paulo</text>
+          <rect x="30"  y="130" width="90" height="40" rx="5" fill="#c8a028" stroke="#a07800" stroke-width="2"/>
+          <text x="75" y="148" fill="#000" font-weight="bold">CDN Edge</text>
+          <text x="75" y="162" fill="#000" font-size="10">Bogotá</text>
+          <rect x="500" y="30" width="90" height="40" rx="5" fill="#c8a028" stroke="#a07800" stroke-width="2"/>
+          <text x="545" y="48" fill="#000" font-weight="bold">CDN Edge</text>
+          <text x="545" y="62" fill="#000" font-size="10">London</text>
+          <rect x="500" y="130" width="90" height="40" rx="5" fill="#c8a028" stroke="#a07800" stroke-width="2"/>
+          <text x="545" y="148" fill="#000" font-weight="bold">CDN Edge</text>
+          <text x="545" y="162" fill="#000" font-size="10">Singapore</text>
+          <!-- Arrows origin ↔ CDN -->
+          <line x1="258" y1="90"  x2="122" y2="55"  stroke="#1a4fa0" stroke-width="1.5" stroke-dasharray="4 2" marker-end="url(#b)"/>
+          <line x1="258" y1="110" x2="122" y2="148" stroke="#1a4fa0" stroke-width="1.5" stroke-dasharray="4 2" marker-end="url(#b)"/>
+          <line x1="362" y1="90"  x2="498" y2="55"  stroke="#1a4fa0" stroke-width="1.5" stroke-dasharray="4 2" marker-end="url(#b)"/>
+          <line x1="362" y1="110" x2="498" y2="148" stroke="#1a4fa0" stroke-width="1.5" stroke-dasharray="4 2" marker-end="url(#b)"/>
+          <!-- Users (small circles) -->
+          <circle cx="10" cy="50"  r="8" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <circle cx="10" cy="148" r="8" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <circle cx="610" cy="50"  r="8" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <circle cx="610" cy="148" r="8" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <line x1="18" y1="50"  x2="28" y2="50"  stroke="#003087" stroke-width="1.5" marker-end="url(#b)"/>
+          <line x1="18" y1="148" x2="28" y2="148" stroke="#003087" stroke-width="1.5" marker-end="url(#b)"/>
+          <line x1="602" y1="50"  x2="592" y2="50"  stroke="#003087" stroke-width="1.5" marker-end="url(#b)"/>
+          <line x1="602" y1="148" x2="592" y2="148" stroke="#003087" stroke-width="1.5" marker-end="url(#b)"/>
+          <text x="310" y="190" fill="#5a6070">Dashed = pull from origin on first request (cache miss). Solid = serve from edge (cache hit).</text>
+        </g>
+      </svg>
+      <figcaption>Figure 2 — CDN with global edge nodes. Users hit the nearest edge; edge pulls from origin only on first request.</figcaption>
+    </div>
+
+    <table>
+      <tr><th>CDN Strategy</th><th>How it works</th><th>Best for</th></tr>
+      <tr><td><strong>Pull CDN</strong></td><td>Edge fetches from origin on first miss, caches for TTL</td><td>Static assets that change infrequently</td></tr>
+      <tr><td><strong>Push CDN</strong></td><td>You push content to CDN before users request it</td><td>Large files (videos) where you control upload timing</td></tr>
+    </table>
+  </div>
+
+  <!-- LOAD BALANCERS -->
+  <div class="card">
+    <h2>⚖️ 3 · Load Balancers</h2>
+    <p>A load balancer distributes incoming traffic across multiple servers, preventing any single server from becoming a bottleneck.</p>
+
+    <h3>Layer 4 vs. Layer 7</h3>
+    <div class="concept-box">
+      <strong>Layer 4 (Transport):</strong> Routes based on IP/TCP. Fast, lower overhead. Cannot inspect HTTP content.<br>
+      <strong>Layer 7 (Application):</strong> Routes based on HTTP headers, URL path, cookies. Can implement content-based routing (e.g., /api/* → API servers, /static/* → CDN).
+    </div>
+
+    <h3>Load Balancing Algorithms</h3>
+    <table>
+      <tr><th>Algorithm</th><th>How it works</th><th>Best for</th></tr>
+      <tr><td>Round Robin</td><td>Cycle through servers in order</td><td>Servers with similar capacity</td></tr>
+      <tr><td>Weighted Round Robin</td><td>Servers get requests proportional to their weight</td><td>Heterogeneous server fleet</td></tr>
+      <tr><td>Least Connections</td><td>Send to server with fewest active connections</td><td>Long-lived connections (WebSocket)</td></tr>
+      <tr><td>IP Hash</td><td>Hash client IP → always same server</td><td>Session stickiness (stateful apps)</td></tr>
+    </table>
+
+    <div class="alert">
+      <strong>Health checks:</strong> Load balancers periodically ping each server (e.g., GET /health → 200 OK). If a server fails, the LB stops sending traffic to it. This is how the system achieves high availability without human intervention.
+    </div>
+  </div>
+
+  <!-- API GATEWAY & PROXY -->
+  <div class="card">
+    <h2>🚪 4 · API Gateway &amp; Proxies</h2>
+
+    <h3>API Gateway</h3>
+    <p>An API gateway is the single entry point for all clients. It sits in front of your microservices and handles cross-cutting concerns.</p>
+    <div class="concept-box gold">
+      <strong>What an API gateway does:</strong><br>
+      • <strong>Authentication &amp; Authorization</strong> — verify JWT tokens before requests reach services<br>
+      • <strong>Rate Limiting</strong> — throttle abusive clients<br>
+      • <strong>Request Routing</strong> — forward to the correct microservice based on path<br>
+      • <strong>Protocol Translation</strong> — e.g., REST → gRPC<br>
+      • <strong>SSL Termination</strong> — handle HTTPS, pass HTTP internally
+    </div>
+
+    <h3>Forward vs. Reverse Proxy</h3>
+    <table>
+      <tr><th>Type</th><th>Sits between</th><th>Protects</th><th>Example</th></tr>
+      <tr><td><strong>Forward Proxy</strong></td><td>Clients → Internet</td><td>Clients (hides their identity)</td><td>Corporate VPN, privacy proxy</td></tr>
+      <tr><td><strong>Reverse Proxy</strong></td><td>Internet → Servers</td><td>Servers (hides their identity/IP)</td><td>Nginx, Cloudflare, API Gateway</td></tr>
+    </table>
+  </div>
+
+  <!-- REDIS CACHE -->
+  <div class="card">
+    <h2>⚡ 5 · Caching with Redis</h2>
+    <p>A cache is a fast, in-memory store that keeps copies of frequently accessed data to reduce database load and latency. Redis (Remote Dictionary Server) is the most widely used cache in industry.</p>
+
+    <h3>Cache Strategies</h3>
+    <div class="concept-box">
+      <strong>Cache-Aside (Lazy Loading):</strong> App checks cache first. On miss, reads from DB and writes to cache. Most common pattern.<br>
+      <strong>Read-Through:</strong> Cache itself fetches from DB on miss. App only talks to cache.<br>
+      <strong>Write-Through:</strong> Write to cache AND DB simultaneously. Consistent but slower writes.<br>
+      <strong>Write-Back (Write-Behind):</strong> Write to cache only, flush to DB asynchronously. Fast writes, risk of data loss.
+    </div>
+
+    <div class="diagram-wrap">
+      <svg width="580" height="160" viewBox="0 0 580 160" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;height:auto;">
+        <defs>
+          <marker id="c" markerWidth="7" markerHeight="7" refX="4" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#003087"/></marker>
+          <marker id="cgold" markerWidth="7" markerHeight="7" refX="4" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#c8a028"/></marker>
+        </defs>
+        <g font-family="'Segoe UI',sans-serif" font-size="11" text-anchor="middle">
+          <!-- App -->
+          <rect x="10" y="60" width="80" height="40" rx="6" fill="#1a4fa0" stroke="#003087" stroke-width="2"/>
+          <text x="50" y="85" fill="#fff" font-weight="bold">App Server</text>
+          <!-- Redis -->
+          <rect x="180" y="20" width="80" height="40" rx="6" fill="#c8a028" stroke="#a07800" stroke-width="2"/>
+          <text x="220" y="38" fill="#000" font-weight="bold">Redis</text>
+          <text x="220" y="52" fill="#000" font-size="10">Cache HIT ✓</text>
+          <!-- DB -->
+          <ellipse cx="380" cy="110" rx="50" ry="22" fill="#eef2fa" stroke="#003087" stroke-width="2"/>
+          <rect x="330" y="110" width="100" height="30" fill="#eef2fa" stroke="#003087" stroke-width="2"/>
+          <ellipse cx="380" cy="140" rx="50" ry="22" fill="#eef2fa" stroke="#003087" stroke-width="2"/>
+          <text x="380" y="128" fill="#003087" font-weight="bold">Database</text>
+          <!-- arrows -->
+          <line x1="92" y1="68" x2="178" y2="42" stroke="#c8a028" stroke-width="2" marker-end="url(#cgold)"/>
+          <text x="137" y="42" fill="#c8a028" font-weight="bold">① read</text>
+          <line x1="220" y1="62" x2="195" y2="100" stroke="#5a6070" stroke-width="1.5" stroke-dasharray="4 2"/>
+          <text x="185" y="95" fill="#5a6070" font-size="10">MISS</text>
+          <line x1="200" y1="110" x2="328" y2="118" stroke="#003087" stroke-width="2" marker-end="url(#c)"/>
+          <text x="265" y="108" fill="#003087">② DB query on miss</text>
+          <line x1="330" y1="100" x2="182" y2="62" stroke="#003087" stroke-width="1.8" stroke-dasharray="4 2" marker-end="url(#c)"/>
+          <text x="240" y="70" fill="#5a6070" font-size="10">③ populate cache</text>
+          <line x1="178" y1="42" x2="94" y2="72" stroke="#c8a028" stroke-width="2" marker-end="url(#cgold)"/>
+          <text x="107" y="50" fill="#c8a028" font-weight="bold">④ return</text>
+          <text x="290" y="155" fill="#5a6070">Cache TTL evicts stale data automatically after expiry</text>
+        </g>
+      </svg>
+      <figcaption>Figure 3 — Cache-aside pattern. Cache hit returns immediately (fast path). Cache miss fetches from DB, populates cache, then returns.</figcaption>
+    </div>
+
+    <h3>Redis Data Structures</h3>
+    <table>
+      <tr><th>Type</th><th>Use case in system design</th></tr>
+      <tr><td>String</td><td>Simple key-value (session data, counters)</td></tr>
+      <tr><td>Hash</td><td>User profile fields (hash per user ID)</td></tr>
+      <tr><td>List</td><td>Message queues, activity feed (recent items)</td></tr>
+      <tr><td>Sorted Set</td><td>Leaderboards (score → member, O(log n) rank)</td></tr>
+      <tr><td>Set</td><td>Unique visitor tracking, tag membership</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>📋 Week 2 Summary</h2>
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+      <span class="tag">DNS → IP resolution</span><span class="tag">CDN pull vs. push</span>
+      <span class="tag">L4 vs. L7 LB</span><span class="tag">Round-robin / Least Connections</span>
+      <span class="tag">API Gateway</span><span class="tag">Forward vs. Reverse Proxy</span>
+      <span class="tag">Cache-aside</span><span class="tag">Redis data types</span>
+    </div>
+    <div class="concept-box gold">
+      <strong>The request journey:</strong> User browser → DNS resolution → CDN (cache hit?) → Load Balancer → API Gateway (auth/rate limit) → App Server → Redis (cache hit?) → Database. Understanding every hop in this chain lets you identify where latency or failures occur.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📚 References</h2>
+    <ul style="line-height:2.2">
+      <li><strong>System Design Interview Vol. 1</strong> (Alex Xu) — Chapters 1 (scale), the CDN, Load Balancer, and Cache sections</li>
+      <li><strong>ByteByteGo</strong> — "A Crash Course on DNS", "What is a CDN and how does it work?"</li>
+      <li><strong>1. From0To1M.pdf</strong> (course material) — building blocks for scaling</li>
+      <li><strong>Redis documentation</strong> (redis.io) — free, official data types overview</li>
+    </ul>
+  </div>
+</main>
+<footer><strong>Algoritmia Aplicada y Diseño Moderno de Sistemas</strong> · UDES · Block 1 – Week 2 Design · Professor: Jorge Galvis</footer>
+</body>
+</html>

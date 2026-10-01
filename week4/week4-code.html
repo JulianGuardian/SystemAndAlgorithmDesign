@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 4 – Hash Tables & Linked Lists | Algoritmia Aplicada</title>
+<style>
+  :root{--udes-blue:#003087;--udes-blue-dark:#001f5c;--udes-blue-light:#1a4fa0;--udes-gold:#C8A028;--bg:#f4f6fb;--surface:#fff;--surface2:#eef2fa;--text:#1a1a2e;--text-muted:#5a6070;--border:#d0d8ea;--code-bg:#1e2340;--code-text:#e8eaf0;--success:#2e7d32;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  .top-nav{background:var(--udes-blue-dark);color:#fff;padding:0.6rem 2rem;display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;}
+  .course-label{color:var(--udes-gold);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;}
+  .lesson-breadcrumb{display:flex;gap:1.2rem;align-items:center;}
+  .prev{color:#aab4cc;} .current{background:var(--udes-gold);color:#000;font-weight:700;padding:0.2rem 0.7rem;border-radius:4px;}
+  header{background:linear-gradient(135deg,var(--udes-blue) 0%,var(--udes-blue-light) 100%);color:#fff;padding:3rem 2rem 2.5rem;text-align:center;border-bottom:4px solid var(--udes-gold);}
+  .block-tag{display:inline-block;background:var(--udes-gold);color:#000;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:0.25rem 0.9rem;border-radius:20px;margin-bottom:1rem;}
+  header h1{font-size:2.2rem;font-weight:800;margin-bottom:0.4rem;}
+  header p.subtitle{font-size:1.05rem;color:#b8ccee;max-width:640px;margin:0 auto;}
+  .container{max-width:960px;margin:0 auto;padding:2rem 1.5rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.8rem 2rem;margin-bottom:2rem;box-shadow:0 2px 8px rgba(0,48,135,0.06);}
+  .card h2{color:var(--udes-blue);font-size:1.35rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--udes-gold);}
+  .card h3{color:var(--udes-blue-dark);font-size:1.1rem;margin:1.4rem 0 0.6rem;}
+  .objectives ul{list-style:none;padding:0;}
+  .objectives li{padding:0.4rem 0 0.4rem 1.8rem;position:relative;}
+  .objectives li::before{content:"✓";position:absolute;left:0;color:var(--udes-gold);font-weight:900;}
+  .concept-box{background:var(--surface2);border-left:4px solid var(--udes-blue);border-radius:0 8px 8px 0;padding:1rem 1.2rem;margin:1rem 0;font-size:0.97rem;}
+  .concept-box.gold{border-left-color:var(--udes-gold);}
+  .code-block{background:var(--code-bg);color:var(--code-text);border-radius:8px;padding:1.2rem 1.4rem;overflow-x:auto;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:0.88rem;line-height:1.65;margin:1rem 0;position:relative;}
+  .code-block .label{position:absolute;top:0.5rem;right:0.8rem;font-size:0.7rem;background:var(--udes-gold);color:#000;padding:0.1rem 0.5rem;border-radius:4px;font-weight:700;font-family:sans-serif;}
+  .kw{color:#c678dd;}.fn{color:#61afef;}.cm{color:#7f848e;font-style:italic;}.st{color:#98c379;}.nu{color:#d19a66;}.op{color:#56b6c2;}
+  .diagram-wrap{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1.2rem;margin:1.2rem 0;text-align:center;}
+  .diagram-wrap figcaption{font-size:0.82rem;color:var(--text-muted);margin-top:0.6rem;font-style:italic;}
+  .alert{background:#fff8e1;border-left:4px solid var(--udes-gold);border-radius:0 8px 8px 0;padding:0.9rem 1.2rem;margin:1rem 0;font-size:0.95rem;}
+  .tag{display:inline-block;background:#e3ebfa;color:var(--udes-blue);border-radius:4px;padding:0.15rem 0.55rem;font-size:0.78rem;font-weight:600;margin:0.15rem;}
+  table{width:100%;border-collapse:collapse;font-size:0.92rem;margin:1rem 0;}
+  th{background:var(--udes-blue);color:#fff;padding:0.6rem 1rem;text-align:left;}
+  td{padding:0.55rem 1rem;border-bottom:1px solid var(--border);}
+  tr:nth-child(even) td{background:var(--surface2);}
+  .good{color:var(--success);font-weight:700;} .bad{color:#c62828;font-weight:700;}
+  footer{background:var(--udes-blue-dark);color:#8899bb;text-align:center;padding:1.2rem;font-size:0.82rem;margin-top:3rem;}
+  footer strong{color:var(--udes-gold);}
+</style>
+</head>
+<body>
+<nav class="top-nav">
+  <span class="course-label">Algoritmia Aplicada y Diseño Moderno de Sistemas</span>
+  <div class="lesson-breadcrumb">
+    <span class="prev">⬅ Week 3: Arrays &amp; Strings</span>
+    <span class="current">Week 4 · Code</span>
+    <span>→ Week 5: Corte 1 Evaluation</span>
+  </div>
+</nav>
+<header>
+  <div class="block-tag">Block 1 – Foundations · Week 4 of 4</div>
+  <h1>Hash Tables &amp; Linked Lists</h1>
+  <p class="subtitle">Collision handling · Frequency maps · Cycle detection · Reverse · Merge sorted lists</p>
+</header>
+
+<main class="container">
+  <div class="card objectives">
+    <h2>🎯 Learning Objectives</h2>
+    <ul>
+      <li>Explain how a hash table works internally: hash function, buckets, and collision resolution.</li>
+      <li>Apply chaining and open addressing to handle hash collisions.</li>
+      <li>Use frequency maps (dicts) to solve counting, deduplication, and lookup problems in O(n).</li>
+      <li>Detect a cycle in a linked list using Floyd's tortoise-and-hare algorithm.</li>
+      <li>Reverse a singly linked list in-place in O(n) time and O(1) space.</li>
+      <li>Merge two sorted linked lists into one sorted linked list.</li>
+    </ul>
+  </div>
+
+  <!-- HASH TABLE INTERNALS -->
+  <div class="card">
+    <h2>🗂 1 · Hash Tables — How They Work</h2>
+    <p>A hash table maps <strong>keys to values</strong> with average O(1) get/set. Under the hood: a hash function converts any key to an integer index; that index identifies a bucket in an array.</p>
+
+    <div class="diagram-wrap">
+      <svg width="640" height="220" viewBox="0 0 640 220" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;height:auto;">
+        <defs><marker id="a" markerWidth="7" markerHeight="7" refX="4" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#003087"/></marker></defs>
+        <g font-family="'Segoe UI',sans-serif" font-size="12">
+          <!-- Keys -->
+          <text x="30" y="40" fill="#003087" font-weight="bold">Keys</text>
+          <rect x="20" y="50" width="80" height="26" rx="4" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <text x="60" y="68" text-anchor="middle" fill="#1a1a2e">"apple"</text>
+          <rect x="20" y="90" width="80" height="26" rx="4" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <text x="60" y="108" text-anchor="middle" fill="#1a1a2e">"cat"</text>
+          <rect x="20" y="130" width="80" height="26" rx="4" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <text x="60" y="148" text-anchor="middle" fill="#1a1a2e">"dog"</text>
+          <rect x="20" y="170" width="80" height="26" rx="4" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <text x="60" y="188" text-anchor="middle" fill="#1a1a2e">"bat"</text>
+
+          <!-- Hash fn box -->
+          <rect x="160" y="100" width="110" height="40" rx="6" fill="#003087"/>
+          <text x="215" y="118" text-anchor="middle" fill="#fff" font-weight="bold">hash(key)</text>
+          <text x="215" y="132" text-anchor="middle" fill="#c8a028" font-size="10">% buckets</text>
+
+          <!-- Arrows to hash fn -->
+          <line x1="102" y1="63"  x2="158" y2="110" stroke="#003087" stroke-width="1.5" marker-end="url(#a)"/>
+          <line x1="102" y1="103" x2="158" y2="115" stroke="#003087" stroke-width="1.5" marker-end="url(#a)"/>
+          <line x1="102" y1="143" x2="158" y2="120" stroke="#003087" stroke-width="1.5" marker-end="url(#a)"/>
+          <line x1="102" y1="183" x2="158" y2="128" stroke="#003087" stroke-width="1.5" marker-end="url(#a)"/>
+
+          <!-- Buckets array -->
+          <text x="360" y="20" text-anchor="middle" fill="#003087" font-weight="bold">Buckets (array)</text>
+          <rect x="310" y="28" width="100" height="28" rx="3" fill="#eef2fa" stroke="#aab" stroke-width="1"/>
+          <text x="360" y="47" text-anchor="middle" fill="#888" font-size="11">0  [ ]</text>
+          <rect x="310" y="58" width="100" height="28" rx="3" fill="#c8a028" stroke="#a07800" stroke-width="2"/>
+          <text x="360" y="77" text-anchor="middle" fill="#000" font-weight="bold">1  "apple"→5</text>
+          <rect x="310" y="88" width="100" height="28" rx="3" fill="#eef2fa" stroke="#aab" stroke-width="1"/>
+          <text x="360" y="107" text-anchor="middle" fill="#888" font-size="11">2  [ ]</text>
+          <rect x="310" y="118" width="100" height="28" rx="3" fill="#1a4fa0" stroke="#003087" stroke-width="2"/>
+          <text x="360" y="137" text-anchor="middle" fill="#fff">3  "cat"→2</text>
+          <rect x="310" y="148" width="100" height="28" rx="3" fill="#1a4fa0" stroke="#003087" stroke-width="2"/>
+          <text x="360" y="167" text-anchor="middle" fill="#fff">4  "dog"→7</text>
+          <rect x="310" y="178" width="100" height="28" rx="3" fill="#eef2fa" stroke="#aab" stroke-width="1"/>
+          <text x="360" y="197" text-anchor="middle" fill="#888" font-size="11">5  [ ]</text>
+
+          <!-- Chaining example -->
+          <text x="490" y="20" fill="#003087" font-weight="bold" text-anchor="middle">Chaining (collision)</text>
+          <rect x="440" y="118" width="80" height="28" rx="4" fill="#c62828"/>
+          <text x="480" y="137" text-anchor="middle" fill="#fff" font-size="11">"bat" [col!]</text>
+          <rect x="440" y="155" width="80" height="28" rx="4" fill="#c8a028"/>
+          <text x="480" y="174" text-anchor="middle" fill="#000" font-size="11">"cat"→2</text>
+          <!-- chain link -->
+          <line x1="480" y1="146" x2="480" y2="153" stroke="#c62828" stroke-width="2" marker-end="url(#a)"/>
+          <line x1="410" y1="148" x2="438" y2="133" stroke="#c62828" stroke-width="1.5" stroke-dasharray="4 2" marker-end="url(#a)"/>
+          <text x="480" y="200" text-anchor="middle" fill="#5a6070" font-size="10">"bat" hashes to bucket 3 → chain</text>
+        </g>
+      </svg>
+      <figcaption>Figure 1 — Hash table internals. Keys hash to bucket indices; collisions resolved by chaining (linked list per bucket).</figcaption>
+    </div>
+
+    <h3>Collision Resolution Strategies</h3>
+    <table>
+      <tr><th>Strategy</th><th>Idea</th><th>Best case</th><th>Worst case (all keys same bucket)</th></tr>
+      <tr><td><strong>Chaining</strong></td><td>Each bucket holds a linked list</td><td class="good">O(1)</td><td class="bad">O(n)</td></tr>
+      <tr><td><strong>Open Addressing (linear probe)</strong></td><td>Find next empty slot in array</td><td class="good">O(1)</td><td class="bad">O(n)</td></tr>
+    </table>
+    <div class="alert">
+      <strong>In practice:</strong> Python's <code>dict</code> uses open addressing with a pseudo-random probe sequence. Java's <code>HashMap</code> uses chaining. Both give amortized O(1) with a good load factor (typically kept below 0.75).
+    </div>
+
+    <h3>Frequency Map Pattern</h3>
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">from</span> collections <span class="kw">import</span> Counter, defaultdict
+
+<span class="cm"># Pattern 1: count element frequencies</span>
+<span class="kw">def</span> <span class="fn">first_unique_char</span>(s: str) -> int:
+    count = Counter(s)   <span class="cm"># {'l':2, 'e':1, 't':1, 'r':1, 'd':1}</span>
+    <span class="kw">for</span> i, ch <span class="kw">in</span> enumerate(s):
+        <span class="kw">if</span> count[ch] == <span class="nu">1</span>:
+            <span class="kw">return</span> i
+    <span class="kw">return</span> -<span class="nu">1</span>   <span class="cm"># O(n) time, O(1) space (at most 26 keys)</span>
+
+<span class="cm"># Pattern 2: two-sum lookup table</span>
+<span class="kw">def</span> <span class="fn">two_sum</span>(nums: list[int], target: int) -> list[int]:
+    seen = {}   <span class="cm"># value → index</span>
+    <span class="kw">for</span> i, n <span class="kw">in</span> enumerate(nums):
+        complement = target - n
+        <span class="kw">if</span> complement <span class="kw">in</span> seen:
+            <span class="kw">return</span> [seen[complement], i]
+        seen[n] = i
+    <span class="kw">return</span> []   <span class="cm"># O(n) time, O(n) space</span>
+</pre>
+  </div>
+
+  <!-- LINKED LISTS -->
+  <div class="card">
+    <h2>🔗 2 · Linked Lists — Core Operations</h2>
+    <p>A linked list is a chain of <strong>nodes</strong>, each storing a value and a pointer to the next node. Unlike arrays, insertion/deletion at the head is O(1) — but random access is O(n).</p>
+
+    <div class="diagram-wrap">
+      <svg width="580" height="80" viewBox="0 0 580 80" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;height:auto;">
+        <defs><marker id="b" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#003087"/></marker></defs>
+        <g font-family="monospace" font-size="13" text-anchor="middle">
+          <!-- Nodes -->
+          <rect x="10" y="20" width="80" height="40" rx="6" fill="#003087" stroke="#001f5c" stroke-width="2"/>
+          <text x="50" y="45" fill="#fff">1 | →</text>
+          <rect x="130" y="20" width="80" height="40" rx="6" fill="#1a4fa0" stroke="#003087" stroke-width="1.5"/>
+          <text x="170" y="45" fill="#fff">2 | →</text>
+          <rect x="250" y="20" width="80" height="40" rx="6" fill="#1a4fa0" stroke="#003087" stroke-width="1.5"/>
+          <text x="290" y="45" fill="#fff">3 | →</text>
+          <rect x="370" y="20" width="80" height="40" rx="6" fill="#1a4fa0" stroke="#003087" stroke-width="1.5"/>
+          <text x="410" y="45" fill="#fff">4 | →</text>
+          <rect x="490" y="20" width="80" height="40" rx="6" fill="#c8a028" stroke="#a07800" stroke-width="2"/>
+          <text x="530" y="45" fill="#000" font-weight="bold">5 | ✗</text>
+          <!-- Arrows -->
+          <line x1="90" y1="40" x2="128" y2="40" stroke="#003087" stroke-width="2" marker-end="url(#b)"/>
+          <line x1="210" y1="40" x2="248" y2="40" stroke="#003087" stroke-width="2" marker-end="url(#b)"/>
+          <line x1="330" y1="40" x2="368" y2="40" stroke="#003087" stroke-width="2" marker-end="url(#b)"/>
+          <line x1="450" y1="40" x2="488" y2="40" stroke="#003087" stroke-width="2" marker-end="url(#b)"/>
+          <!-- Labels -->
+          <text x="50" y="13" fill="#003087" font-size="10" font-family="sans-serif">head</text>
+          <text x="530" y="13" fill="#c8a028" font-size="10" font-family="sans-serif">tail (.next=None)</text>
+        </g>
+      </svg>
+      <figcaption>Figure 2 — Singly linked list. Head node (1) is the entry point; tail's next is None.</figcaption>
+    </div>
+
+    <h3>Node Definition</h3>
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">class</span> <span class="fn">ListNode</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, val=<span class="nu">0</span>, next=<span class="kw">None</span>):
+        self.val = val
+        self.next = next
+</pre>
+  </div>
+
+  <!-- REVERSE -->
+  <div class="card">
+    <h2>↩ 3 · Reverse a Linked List</h2>
+    <p>Reverse the direction of all next pointers. Three-pointer technique: track <code>prev</code>, <code>curr</code>, and save <code>next</code> before overwriting.</p>
+
+    <div class="diagram-wrap">
+      <svg width="560" height="160" viewBox="0 0 560 160" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;height:auto;">
+        <defs><marker id="c" markerWidth="7" markerHeight="7" refX="4" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#003087"/></marker>
+        <marker id="cr" markerWidth="7" markerHeight="7" refX="3" refY="3.5" orient="auto"><path d="M7,0 L0,3.5 L7,7 Z" fill="#c8a028"/></marker></defs>
+        <g font-family="monospace" font-size="13" text-anchor="middle">
+          <!-- BEFORE -->
+          <text x="10" y="18" fill="#5a6070" font-size="11" font-family="sans-serif" text-anchor="start">BEFORE:</text>
+          <rect x="10" y="25" width="60" height="30" rx="4" fill="#003087"/>
+          <text x="40" y="45" fill="#fff">1</text>
+          <line x1="70" y1="40" x2="88" y2="40" stroke="#003087" stroke-width="2" marker-end="url(#c)"/>
+          <rect x="90" y="25" width="60" height="30" rx="4" fill="#1a4fa0"/>
+          <text x="120" y="45" fill="#fff">2</text>
+          <line x1="150" y1="40" x2="168" y2="40" stroke="#003087" stroke-width="2" marker-end="url(#c)"/>
+          <rect x="170" y="25" width="60" height="30" rx="4" fill="#1a4fa0"/>
+          <text x="200" y="45" fill="#fff">3</text>
+          <line x1="230" y1="40" x2="248" y2="40" stroke="#003087" stroke-width="2" marker-end="url(#c)"/>
+          <rect x="250" y="25" width="60" height="30" rx="4" fill="#c8a028"/>
+          <text x="280" y="45" fill="#000" font-weight="bold">None</text>
+          <!-- AFTER -->
+          <text x="10" y="105" fill="#5a6070" font-size="11" font-family="sans-serif" text-anchor="start">AFTER:</text>
+          <rect x="250" y="112" width="60" height="30" rx="4" fill="#003087"/>
+          <text x="280" y="132" fill="#fff">3</text>
+          <line x1="250" y1="127" x2="232" y2="127" stroke="#c8a028" stroke-width="2" marker-end="url(#cr)"/>
+          <rect x="170" y="112" width="60" height="30" rx="4" fill="#1a4fa0"/>
+          <text x="200" y="132" fill="#fff">2</text>
+          <line x1="170" y1="127" x2="152" y2="127" stroke="#c8a028" stroke-width="2" marker-end="url(#cr)"/>
+          <rect x="90" y="112" width="60" height="30" rx="4" fill="#1a4fa0"/>
+          <text x="120" y="132" fill="#fff">1</text>
+          <line x1="90" y1="127" x2="72" y2="127" stroke="#c8a028" stroke-width="2" marker-end="url(#cr)"/>
+          <rect x="10" y="112" width="60" height="30" rx="4" fill="#5a6070"/>
+          <text x="40" y="132" fill="#fff">None</text>
+          <text x="280" y="155" fill="#5a6070" font-size="10" font-family="sans-serif">new head = 3</text>
+        </g>
+      </svg>
+      <figcaption>Figure 3 — Reversing 1→2→3 becomes 3→2→1. Arrows flip direction (gold arrows show new direction).</figcaption>
+    </div>
+
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">def</span> <span class="fn">reverse_list</span>(head: ListNode) -> ListNode:
+    <span class="cm">"""Iterative. O(n) time, O(1) space."""</span>
+    prev = <span class="kw">None</span>
+    curr = head
+    <span class="kw">while</span> curr:
+        nxt       = curr.next   <span class="cm"># save</span>
+        curr.next = prev        <span class="cm"># flip pointer</span>
+        prev      = curr        <span class="cm"># advance prev</span>
+        curr      = nxt         <span class="cm"># advance curr</span>
+    <span class="kw">return</span> prev   <span class="cm"># prev is now the new head</span>
+</pre>
+  </div>
+
+  <!-- CYCLE DETECTION -->
+  <div class="card">
+    <h2>🐢🐇 4 · Cycle Detection — Floyd's Algorithm</h2>
+    <p>Floyd's <strong>tortoise and hare</strong> uses two pointers moving at different speeds. If there is a cycle, the fast pointer will eventually lap the slow pointer and they will meet.</p>
+
+    <div class="diagram-wrap">
+      <svg width="560" height="130" viewBox="0 0 560 130" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;height:auto;">
+        <defs><marker id="d" markerWidth="7" markerHeight="7" refX="4" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#003087"/></marker></defs>
+        <g font-family="monospace" font-size="13" text-anchor="middle">
+          <!-- Linear part -->
+          <rect x="10" y="45" width="50" height="30" rx="4" fill="#1a4fa0"/><text x="35" y="65" fill="#fff">1</text>
+          <line x1="60" y1="60" x2="78" y2="60" stroke="#003087" stroke-width="2" marker-end="url(#d)"/>
+          <rect x="80" y="45" width="50" height="30" rx="4" fill="#1a4fa0"/><text x="105" y="65" fill="#fff">2</text>
+          <line x1="130" y1="60" x2="148" y2="60" stroke="#003087" stroke-width="2" marker-end="url(#d)"/>
+          <!-- Cycle nodes -->
+          <rect x="150" y="45" width="50" height="30" rx="4" fill="#c8a028" stroke="#a07800" stroke-width="2"/><text x="175" y="65" fill="#000" font-weight="bold">3</text>
+          <line x1="200" y1="60" x2="218" y2="60" stroke="#003087" stroke-width="2" marker-end="url(#d)"/>
+          <rect x="220" y="45" width="50" height="30" rx="4" fill="#1a4fa0"/><text x="245" y="65" fill="#fff">4</text>
+          <line x1="270" y1="60" x2="288" y2="60" stroke="#003087" stroke-width="2" marker-end="url(#d)"/>
+          <rect x="290" y="45" width="50" height="30" rx="4" fill="#1a4fa0"/><text x="315" y="65" fill="#fff">5</text>
+          <line x1="340" y1="60" x2="358" y2="60" stroke="#003087" stroke-width="2" marker-end="url(#d)"/>
+          <rect x="360" y="45" width="50" height="30" rx="4" fill="#1a4fa0"/><text x="385" y="65" fill="#fff">6</text>
+          <!-- Cycle back arrow -->
+          <path d="M385,75 Q385,110 280,110 Q175,110 175,75" fill="none" stroke="#c62828" stroke-width="2.5" marker-end="url(#d)" stroke-dasharray="5 3"/>
+          <!-- Labels -->
+          <text x="35" y="38" fill="#003087" font-size="11" font-family="sans-serif">🐢 slow</text>
+          <text x="105" y="38" fill="#c8a028" font-size="11" font-family="sans-serif">🐇 fast</text>
+          <text x="175" y="15" fill="#c8a028" font-size="11" font-family="sans-serif">cycle entry</text>
+          <text x="280" y="125" fill="#c62828" font-size="11" font-family="sans-serif">→ back to node 3</text>
+        </g>
+      </svg>
+      <figcaption>Figure 4 — Cycle in list. Red dashed arrow loops back to node 3. Slow moves 1 step, fast moves 2 steps per iteration.</figcaption>
+    </div>
+
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">def</span> <span class="fn">has_cycle</span>(head: ListNode) -> bool:
+    <span class="cm">"""Floyd's tortoise and hare. O(n) time, O(1) space."""</span>
+    slow = fast = head
+    <span class="kw">while</span> fast <span class="kw">and</span> fast.next:
+        slow = slow.next
+        fast = fast.next.next
+        <span class="kw">if</span> slow <span class="op">==</span> fast:
+            <span class="kw">return</span> <span class="kw">True</span>
+    <span class="kw">return</span> <span class="kw">False</span>
+
+<span class="kw">def</span> <span class="fn">find_cycle_start</span>(head: ListNode) -> ListNode:
+    <span class="cm">"""Find the node where the cycle begins. Phase 1: detect. Phase 2: locate."""</span>
+    slow = fast = head
+    <span class="kw">while</span> fast <span class="kw">and</span> fast.next:
+        slow = slow.next
+        fast = fast.next.next
+        <span class="kw">if</span> slow <span class="op">==</span> fast: <span class="kw">break</span>
+    <span class="kw">else</span>:
+        <span class="kw">return</span> <span class="kw">None</span>
+    <span class="cm"># Phase 2: reset one pointer to head; advance both at speed 1</span>
+    slow = head
+    <span class="kw">while</span> slow != fast:
+        slow = slow.next
+        fast = fast.next
+    <span class="kw">return</span> slow   <span class="cm"># cycle entry point</span>
+</pre>
+  </div>
+
+  <!-- MERGE SORTED -->
+  <div class="card">
+    <h2>🔀 5 · Merge Two Sorted Linked Lists</h2>
+    <p>Use a <strong>dummy head</strong> node to avoid special-casing the first element. Compare heads of both lists, attach the smaller one, advance that pointer.</p>
+
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">def</span> <span class="fn">merge_two_sorted</span>(l1: ListNode, l2: ListNode) -> ListNode:
+    <span class="cm">"""O(n+m) time, O(1) space (no new nodes created)."""</span>
+    dummy = ListNode(<span class="nu">0</span>)
+    tail = dummy
+    <span class="kw">while</span> l1 <span class="kw">and</span> l2:
+        <span class="kw">if</span> l1.val <span class="op">&lt;=</span> l2.val:
+            tail.next = l1
+            l1 = l1.next
+        <span class="kw">else</span>:
+            tail.next = l2
+            l2 = l2.next
+        tail = tail.next
+    tail.next = l1 <span class="kw">or</span> l2   <span class="cm"># attach remaining non-empty list</span>
+    <span class="kw">return</span> dummy.next        <span class="cm"># skip the dummy head</span>
+</pre>
+
+    <h3>Summary of Linked List Complexities</h3>
+    <table>
+      <tr><th>Operation</th><th>Time</th><th>Space</th></tr>
+      <tr><td>Access by index</td><td class="bad">O(n)</td><td class="good">O(1)</td></tr>
+      <tr><td>Insert/delete at head</td><td class="good">O(1)</td><td class="good">O(1)</td></tr>
+      <tr><td>Insert/delete in middle (given node)</td><td class="good">O(1)</td><td class="good">O(1)</td></tr>
+      <tr><td>Reverse</td><td class="good">O(n)</td><td class="good">O(1)</td></tr>
+      <tr><td>Cycle detection (Floyd's)</td><td class="good">O(n)</td><td class="good">O(1)</td></tr>
+      <tr><td>Merge two sorted lists</td><td class="good">O(n+m)</td><td class="good">O(1)</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>📋 Week 4 Summary — Block 1 Complete</h2>
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+      <span class="tag">Hash Table O(1) avg</span><span class="tag">Chaining vs. Open Addressing</span>
+      <span class="tag">Frequency map</span><span class="tag">Two Sum O(n)</span>
+      <span class="tag">Reverse list O(1) space</span><span class="tag">Floyd's cycle detection</span>
+      <span class="tag">Dummy head trick</span><span class="tag">Merge sorted O(n+m)</span>
+    </div>
+    <div class="concept-box gold">
+      <strong>Block 1 pattern connections:</strong><br>
+      Week 1 → Week 4: Binary search (sorted array) ≡ hash lookup (unsorted data) — both give fast lookup, different prerequisites.<br>
+      Week 2 → Week 4: Recursive list operations (reverse, merge) vs. iterative — recursive is cleaner but O(n) space; iterative is O(1) space.<br>
+      Week 3 → Week 4: Frequency maps bridge string/array problems with hash table internals.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📚 References</h2>
+    <ul style="line-height:2.2">
+      <li><strong>Cracking the Coding Interview</strong> — Chapter 2: Linked Lists, Chapter 7: Hash Tables</li>
+      <li><strong>Skilled.dev</strong> — <em>2. Hash Tables</em>, <em>2.1 Implement a Hash Table</em>, <em>2.3 Two Sum</em>, <em>6. Linked Lists</em>, <em>6.4 Merge Two Sorted</em>, <em>6.5 Reverse a Linked List</em></li>
+      <li><strong>LeetCode</strong> — #1 Two Sum, #206 Reverse Linked List, #141 Linked List Cycle, #21 Merge Two Sorted Lists, #142 Linked List Cycle II</li>
+      <li><strong>NeetCode.io</strong> — Linked List section, Arrays &amp; Hashing section</li>
+    </ul>
+  </div>
+</main>
+<footer><strong>Algoritmia Aplicada y Diseño Moderno de Sistemas</strong> · UDES · Block 1 – Week 4 · Professor: Jorge Galvis</footer>
+</body>
+</html>

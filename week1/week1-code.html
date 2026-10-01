@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 1 – Complexity & Searching Patterns | Algoritmia Aplicada</title>
+<style>
+  :root {
+    --udes-blue: #003087;
+    --udes-blue-dark: #001f5c;
+    --udes-blue-light: #1a4fa0;
+    --udes-gold: #C8A028;
+    --udes-gold-light: #f0c84a;
+    --bg: #f4f6fb;
+    --surface: #ffffff;
+    --surface2: #eef2fa;
+    --text: #1a1a2e;
+    --text-muted: #5a6070;
+    --border: #d0d8ea;
+    --code-bg: #1e2340;
+    --code-text: #e8eaf0;
+    --success: #2e7d32;
+    --tag-bg: #e3ebfa;
+    --tag-text: #003087;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+
+  /* ── TOP NAV ── */
+  .top-nav {
+    background: var(--udes-blue-dark);
+    color: #fff;
+    padding: 0.6rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.82rem;
+    letter-spacing: 0.02em;
+  }
+  .top-nav .course-label { color: var(--udes-gold); font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; }
+  .lesson-breadcrumb { display: flex; gap: 1.2rem; align-items: center; }
+  .lesson-breadcrumb .prev { color: #aab4cc; }
+  .lesson-breadcrumb .current { background: var(--udes-gold); color: #000; font-weight: 700; padding: 0.2rem 0.7rem; border-radius: 4px; }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, var(--udes-blue) 0%, var(--udes-blue-light) 100%);
+    color: #fff;
+    padding: 3rem 2rem 2.5rem;
+    text-align: center;
+    border-bottom: 4px solid var(--udes-gold);
+  }
+  header .block-tag {
+    display: inline-block;
+    background: var(--udes-gold);
+    color: #000;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.25rem 0.9rem;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+  header h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 0.4rem; }
+  header p.subtitle { font-size: 1.05rem; color: #b8ccee; max-width: 620px; margin: 0 auto; }
+
+  /* ── LAYOUT ── */
+  .container { max-width: 960px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.8rem 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 8px rgba(0,48,135,0.06);
+  }
+  .card h2 {
+    color: var(--udes-blue);
+    font-size: 1.35rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--udes-gold);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .card h3 { color: var(--udes-blue-dark); font-size: 1.1rem; margin: 1.4rem 0 0.6rem; }
+
+  /* ── OBJECTIVES ── */
+  .objectives ul { list-style: none; padding: 0; }
+  .objectives li { padding: 0.4rem 0 0.4rem 1.8rem; position: relative; }
+  .objectives li::before { content: "✓"; position: absolute; left: 0; color: var(--udes-gold); font-weight: 900; }
+
+  /* ── CONCEPT BOX ── */
+  .concept-box {
+    background: var(--surface2);
+    border-left: 4px solid var(--udes-blue);
+    border-radius: 0 8px 8px 0;
+    padding: 1rem 1.2rem;
+    margin: 1rem 0;
+    font-size: 0.97rem;
+  }
+  .concept-box.gold { border-left-color: var(--udes-gold); }
+  .concept-box strong { color: var(--udes-blue); }
+
+  /* ── CODE BLOCK ── */
+  .code-block {
+    background: var(--code-bg);
+    color: var(--code-text);
+    border-radius: 8px;
+    padding: 1.2rem 1.4rem;
+    overflow-x: auto;
+    font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+    font-size: 0.88rem;
+    line-height: 1.65;
+    margin: 1rem 0;
+    position: relative;
+  }
+  .code-block .label {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.8rem;
+    font-size: 0.7rem;
+    background: var(--udes-gold);
+    color: #000;
+    padding: 0.1rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 700;
+    font-family: sans-serif;
+  }
+  .kw { color: #c678dd; }
+  .fn { color: #61afef; }
+  .cm { color: #7f848e; font-style: italic; }
+  .st { color: #98c379; }
+  .nu { color: #d19a66; }
+  .op { color: #56b6c2; }
+
+  /* ── SVG DIAGRAM ── */
+  .diagram-wrap {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.2rem;
+    margin: 1.2rem 0;
+    text-align: center;
+  }
+  .diagram-wrap figcaption {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-top: 0.6rem;
+    font-style: italic;
+  }
+
+  /* ── COMPLEXITY TABLE ── */
+  table { width: 100%; border-collapse: collapse; font-size: 0.92rem; margin: 1rem 0; }
+  th { background: var(--udes-blue); color: #fff; padding: 0.6rem 1rem; text-align: left; }
+  td { padding: 0.55rem 1rem; border-bottom: 1px solid var(--border); }
+  tr:nth-child(even) td { background: var(--surface2); }
+  .good { color: var(--success); font-weight: 700; }
+  .bad { color: #c62828; font-weight: 700; }
+  .mid { color: #e65100; font-weight: 700; }
+
+  /* ── TAGS ── */
+  .tag { display: inline-block; background: var(--tag-bg); color: var(--tag-text); border-radius: 4px; padding: 0.15rem 0.55rem; font-size: 0.78rem; font-weight: 600; margin: 0.15rem; }
+
+  /* ── ALERT ── */
+  .alert { background: #fff8e1; border-left: 4px solid var(--udes-gold); border-radius: 0 8px 8px 0; padding: 0.9rem 1.2rem; margin: 1rem 0; font-size: 0.95rem; }
+  .alert strong { color: #795500; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--udes-blue-dark);
+    color: #8899bb;
+    text-align: center;
+    padding: 1.2rem;
+    font-size: 0.82rem;
+    margin-top: 3rem;
+  }
+  footer strong { color: var(--udes-gold); }
+
+  /* ── SECTION DIVIDER ── */
+  .divider { border: none; border-top: 2px solid var(--border); margin: 2rem 0; }
+</style>
+</head>
+<body>
+
+<!-- TOP NAVIGATION -->
+<nav class="top-nav">
+  <span class="course-label">Algoritmia Aplicada y Diseño Moderno de Sistemas</span>
+  <div class="lesson-breadcrumb">
+    <span class="prev">⬅ Course Start</span>
+    <span class="current">Week 1 · Code</span>
+    <span>→ Week 2: Recursion</span>
+  </div>
+</nav>
+
+<!-- HEADER -->
+<header>
+  <div class="block-tag">Block 1 – Foundations · Week 1 of 4</div>
+  <h1>Complexity Analysis &amp; Searching Patterns</h1>
+  <p class="subtitle">Big O · Binary Search · Two Pointers · Sliding Window</p>
+</header>
+
+<main class="container">
+
+  <!-- LEARNING OBJECTIVES -->
+  <div class="card objectives">
+    <h2>🎯 Learning Objectives</h2>
+    <ul>
+      <li>Analyze time and space complexity using Big O, Big Theta, and Big Omega notation.</li>
+      <li>Identify the best, average, and worst-case complexity of an algorithm.</li>
+      <li>Implement binary search correctly and know when to apply it.</li>
+      <li>Apply the two-pointer technique to reduce nested-loop problems from O(n²) to O(n).</li>
+      <li>Use the sliding window pattern to solve substring and subarray problems efficiently.</li>
+    </ul>
+  </div>
+
+  <!-- SECTION 1: BIG O -->
+  <div class="card">
+    <h2>📐 1 · Complexity Analysis</h2>
+
+    <p>When you solve a problem, you need to answer two questions before writing a single line: <strong>How much time will this take?</strong> and <strong>How much memory will it use?</strong> Complexity notation gives us a language-independent way to answer both.</p>
+
+    <h3>The Three Notations</h3>
+    <div class="concept-box">
+      <strong>Big O (O)</strong> — Upper bound. The worst case. "It will never take longer than this."<br>
+      <strong>Big Omega (Ω)</strong> — Lower bound. The best case. "It can't be faster than this."<br>
+      <strong>Big Theta (Θ)</strong> — Tight bound. When worst and best are the same order. Most useful in practice.
+    </div>
+
+    <h3>Common Complexity Classes (ranked fastest → slowest)</h3>
+
+    <div class="diagram-wrap">
+      <svg width="680" height="260" viewBox="0 0 680 260" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;height:auto;">
+        <!-- Axes -->
+        <line x1="50" y1="230" x2="650" y2="230" stroke="#003087" stroke-width="2"/>
+        <line x1="50" y1="230" x2="50" y2="20" stroke="#003087" stroke-width="2"/>
+        <text x="340" y="255" text-anchor="middle" fill="#5a6070" font-size="12">Input size (n)</text>
+        <text x="18" y="130" text-anchor="middle" fill="#5a6070" font-size="12" transform="rotate(-90,18,130)">Operations</text>
+        <!-- O(1) -->
+        <line x1="50" y1="220" x2="640" y2="220" stroke="#2e7d32" stroke-width="2.5" stroke-dasharray="0"/>
+        <text x="645" y="224" fill="#2e7d32" font-size="11" font-weight="bold">O(1)</text>
+        <!-- O(log n) -->
+        <path d="M50,218 Q200,190 640,175" fill="none" stroke="#1565c0" stroke-width="2.5"/>
+        <text x="645" y="179" fill="#1565c0" font-size="11" font-weight="bold">O(log n)</text>
+        <!-- O(n) -->
+        <line x1="50" y1="220" x2="640" y2="110" stroke="#c8a028" stroke-width="2.5"/>
+        <text x="645" y="114" fill="#c8a028" font-size="11" font-weight="bold">O(n)</text>
+        <!-- O(n log n) -->
+        <path d="M50,220 Q300,120 640,70" fill="none" stroke="#e65100" stroke-width="2.5"/>
+        <text x="645" y="74" fill="#e65100" font-size="11" font-weight="bold">O(n log n)</text>
+        <!-- O(n²) -->
+        <path d="M50,220 Q200,200 350,120 Q500,40 640,28" fill="none" stroke="#c62828" stroke-width="2.5"/>
+        <text x="600" y="24" fill="#c62828" font-size="11" font-weight="bold">O(n²)</text>
+        <!-- x-axis labels -->
+        <text x="50" y="245" fill="#5a6070" font-size="10" text-anchor="middle">0</text>
+        <text x="200" y="245" fill="#5a6070" font-size="10" text-anchor="middle">10</text>
+        <text x="350" y="245" fill="#5a6070" font-size="10" text-anchor="middle">50</text>
+        <text x="500" y="245" fill="#5a6070" font-size="10" text-anchor="middle">100</text>
+        <text x="640" y="245" fill="#5a6070" font-size="10" text-anchor="middle">500</text>
+      </svg>
+      <figcaption>Figure 1 — Growth rate of common complexity classes as input size increases.</figcaption>
+    </div>
+
+    <table>
+      <tr><th>Notation</th><th>Name</th><th>Example</th><th>n=1000 ops (approx)</th></tr>
+      <tr><td class="good">O(1)</td><td>Constant</td><td>Array index access</td><td class="good">1</td></tr>
+      <tr><td class="good">O(log n)</td><td>Logarithmic</td><td>Binary search</td><td class="good">~10</td></tr>
+      <tr><td class="good">O(n)</td><td>Linear</td><td>Single loop</td><td class="good">1,000</td></tr>
+      <tr><td class="mid">O(n log n)</td><td>Linearithmic</td><td>Merge sort</td><td class="mid">~10,000</td></tr>
+      <tr><td class="bad">O(n²)</td><td>Quadratic</td><td>Nested loops</td><td class="bad">1,000,000</td></tr>
+      <tr><td class="bad">O(2ⁿ)</td><td>Exponential</td><td>Naive subset enumeration</td><td class="bad">10³⁰¹ 🚫</td></tr>
+    </table>
+
+    <h3>Rules for Simplifying Big O</h3>
+    <div class="concept-box">
+      <strong>Drop constants:</strong> O(2n) → O(n)<br>
+      <strong>Drop lower-order terms:</strong> O(n² + n) → O(n²)<br>
+      <strong>Different variables stay separate:</strong> O(a + b) is NOT simplified to O(n)<br>
+      <strong>Multiplication for nested work:</strong> outer loop × inner work = O(n × m)
+    </div>
+
+    <h3>Space Complexity</h3>
+    <p>Space complexity counts <strong>auxiliary memory</strong> your algorithm allocates (not the input itself). A recursive function with depth <em>d</em> uses O(d) call-stack space — always account for this.</p>
+
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">def</span> <span class="fn">example_space</span>(nums: list[int]) -> list[int]:
+    <span class="cm"># O(n) time, O(n) space — we allocate a new list of same size</span>
+    result = []
+    <span class="kw">for</span> x <span class="kw">in</span> nums:
+        result.append(x * <span class="nu">2</span>)
+    <span class="kw">return</span> result
+
+<span class="kw">def</span> <span class="fn">in_place_double</span>(nums: list[int]) -> <span class="kw">None</span>:
+    <span class="cm"># O(n) time, O(1) space — mutates input, no extra allocation</span>
+    <span class="kw">for</span> i <span class="kw">in</span> range(len(nums)):
+        nums[i] *= <span class="nu">2</span>
+</pre>
+  </div>
+
+  <!-- SECTION 2: BINARY SEARCH -->
+  <div class="card">
+    <h2>🔍 2 · Binary Search</h2>
+
+    <p>Binary search works on any <strong>monotonic</strong> (sorted or decision-able) space. Each step <em>halves</em> the search space → O(log n). The key insight is the invariant: the answer always lies within <code>[lo, hi]</code>.</p>
+
+    <h3>The Three Templates</h3>
+    <div class="concept-box gold">
+      <strong>Template 1 — Classic (exact match):</strong> while lo &lt;= hi<br>
+      <strong>Template 2 — Left boundary:</strong> while lo &lt; hi, answer is lo<br>
+      <strong>Template 3 — Right boundary:</strong> while lo &lt; hi, answer is hi-1
+    </div>
+
+    <div class="diagram-wrap">
+      <svg width="600" height="120" viewBox="0 0 600 120" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;height:auto;">
+        <!-- Array boxes -->
+        <g font-family="monospace" font-size="15" text-anchor="middle">
+          <!-- indices -->
+          <text x="50"  y="20" fill="#5a6070" font-size="11">0</text>
+          <text x="110" y="20" fill="#5a6070" font-size="11">1</text>
+          <text x="170" y="20" fill="#5a6070" font-size="11">2</text>
+          <text x="230" y="20" fill="#5a6070" font-size="11">3</text>
+          <text x="290" y="20" fill="#5a6070" font-size="11">4</text>
+          <text x="350" y="20" fill="#5a6070" font-size="11">5</text>
+          <text x="410" y="20" fill="#5a6070" font-size="11">6</text>
+          <text x="470" y="20" fill="#5a6070" font-size="11">7</text>
+          <!-- cells -->
+          <rect x="25" y="28" width="50" height="36" rx="4" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <text x="50"  y="52">1</text>
+          <rect x="85" y="28" width="50" height="36" rx="4" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <text x="110" y="52">3</text>
+          <rect x="145" y="28" width="50" height="36" rx="4" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <text x="170" y="52">5</text>
+          <rect x="205" y="28" width="50" height="36" rx="4" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <text x="230" y="52">7</text>
+          <!-- mid highlighted -->
+          <rect x="265" y="28" width="50" height="36" rx="4" fill="#c8a028" stroke="#003087" stroke-width="2"/>
+          <text x="290" y="52" fill="#fff" font-weight="bold">9</text>
+          <rect x="325" y="28" width="50" height="36" rx="4" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <text x="350" y="52">11</text>
+          <rect x="385" y="28" width="50" height="36" rx="4" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <text x="410" y="52">13</text>
+          <rect x="445" y="28" width="50" height="36" rx="4" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <text x="470" y="52">15</text>
+          <!-- labels -->
+          <text x="50"  y="85" fill="#003087" font-size="12" font-weight="bold" text-anchor="middle">lo</text>
+          <text x="290" y="85" fill="#c8a028" font-size="12" font-weight="bold" text-anchor="middle">mid</text>
+          <text x="470" y="85" fill="#003087" font-size="12" font-weight="bold" text-anchor="middle">hi</text>
+          <text x="280" y="110" fill="#5a6070" font-size="11" text-anchor="middle">Searching for target=7 → mid=9 > 7 → search LEFT half next</text>
+        </g>
+      </svg>
+      <figcaption>Figure 2 — Binary search step: mid=9, target=7. Because target &lt; mid, hi moves to mid−1.</figcaption>
+    </div>
+
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">def</span> <span class="fn">binary_search</span>(nums: list[int], target: int) -> int:
+    <span class="cm">"""Returns index of target or -1. Time O(log n), Space O(1)."""</span>
+    lo, hi = <span class="nu">0</span>, len(nums) - <span class="nu">1</span>
+    <span class="kw">while</span> lo <span class="op">&lt;=</span> hi:
+        mid = lo + (hi - lo) // <span class="nu">2</span>  <span class="cm"># avoids integer overflow vs (lo+hi)//2</span>
+        <span class="kw">if</span> nums[mid] <span class="op">==</span> target:
+            <span class="kw">return</span> mid
+        <span class="kw">elif</span> nums[mid] <span class="op">&lt;</span> target:
+            lo = mid + <span class="nu">1</span>
+        <span class="kw">else</span>:
+            hi = mid - <span class="nu">1</span>
+    <span class="kw">return</span> -<span class="nu">1</span>
+
+<span class="cm"># ── Generalized: "find first index where condition is True" ──</span>
+<span class="kw">def</span> <span class="fn">first_true</span>(nums: list[int], target: int) -> int:
+    <span class="cm">"""Returns leftmost position where nums[i] >= target."""</span>
+    lo, hi = <span class="nu">0</span>, len(nums)
+    <span class="kw">while</span> lo <span class="op">&lt;</span> hi:
+        mid = (lo + hi) // <span class="nu">2</span>
+        <span class="kw">if</span> nums[mid] <span class="op">&gt;=</span> target:
+            hi = mid
+        <span class="kw">else</span>:
+            lo = mid + <span class="nu">1</span>
+    <span class="kw">return</span> lo
+</pre>
+
+    <div class="alert">
+      <strong>⚠ Classic bug:</strong> Writing <code>mid = (lo + hi) // 2</code> is fine in Python (arbitrary integers), but in other languages this can overflow for large arrays. Always use <code>lo + (hi - lo) // 2</code> as a habit.
+    </div>
+  </div>
+
+  <!-- SECTION 3: TWO POINTERS -->
+  <div class="card">
+    <h2>👉👈 3 · Two Pointers</h2>
+    <p>Two pointers eliminates the need for nested loops when you need to find a <strong>pair</strong> (or range) in a sorted structure. Instead of O(n²), you scan once from both ends: O(n).</p>
+
+    <h3>When to use it</h3>
+    <div class="concept-box">
+      ✔ Array/string is <strong>sorted</strong> (or can be sorted cheaply)<br>
+      ✔ You need to find a pair/triplet that satisfies a sum or condition<br>
+      ✔ You need to compare characters from both ends (palindrome check)
+    </div>
+
+    <div class="diagram-wrap">
+      <svg width="560" height="130" viewBox="0 0 560 130" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;height:auto;">
+        <g font-family="monospace" font-size="15" text-anchor="middle">
+          <!-- Array -->
+          <rect x="20"  y="35" width="50" height="40" rx="4" fill="#1a4fa0" stroke="#003087" stroke-width="2"/>
+          <text x="45"  y="61" fill="#fff">1</text>
+          <rect x="80"  y="35" width="50" height="40" rx="4" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <text x="105" y="61">3</text>
+          <rect x="140" y="35" width="50" height="40" rx="4" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <text x="165" y="61">4</text>
+          <rect x="200" y="35" width="50" height="40" rx="4" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <text x="225" y="61">6</text>
+          <rect x="260" y="35" width="50" height="40" rx="4" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <text x="285" y="61">7</text>
+          <rect x="320" y="35" width="50" height="40" rx="4" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <text x="345" y="61">9</text>
+          <rect x="380" y="35" width="50" height="40" rx="4" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <text x="405" y="61">11</text>
+          <rect x="440" y="35" width="50" height="40" rx="4" fill="#c8a028" stroke="#003087" stroke-width="2"/>
+          <text x="465" y="61" fill="#fff">14</text>
+          <!-- Arrows -->
+          <text x="45"  y="22" fill="#003087" font-size="13" font-weight="bold">L</text>
+          <text x="465" y="22" fill="#c8a028" font-size="13" font-weight="bold">R</text>
+          <line x1="45" y1="26" x2="45" y2="33" stroke="#003087" stroke-width="2" marker-end="url(#arr)"/>
+          <line x1="465" y1="26" x2="465" y2="33" stroke="#c8a028" stroke-width="2" marker-end="url(#arr2)"/>
+          <defs>
+            <marker id="arr"  markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#003087"/></marker>
+            <marker id="arr2" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#c8a028"/></marker>
+          </defs>
+          <text x="255" y="110" fill="#5a6070" font-size="11" text-anchor="middle">sum(L,R)=15. If target=10: sum>target → move R left. If sum&lt;target → move L right.</text>
+        </g>
+      </svg>
+      <figcaption>Figure 3 — Two-pointer approach on a sorted array. L starts at left, R at right.</figcaption>
+    </div>
+
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">def</span> <span class="fn">two_sum_sorted</span>(nums: list[int], target: int) -> tuple[int, int]:
+    <span class="cm">"""Find indices of two numbers that add to target. O(n) time, O(1) space."""</span>
+    lo, hi = <span class="nu">0</span>, len(nums) - <span class="nu">1</span>
+    <span class="kw">while</span> lo <span class="op">&lt;</span> hi:
+        s = nums[lo] + nums[hi]
+        <span class="kw">if</span> s <span class="op">==</span> target:
+            <span class="kw">return</span> (lo, hi)
+        <span class="kw">elif</span> s <span class="op">&lt;</span> target:
+            lo += <span class="nu">1</span>   <span class="cm"># need bigger sum</span>
+        <span class="kw">else</span>:
+            hi -= <span class="nu">1</span>   <span class="cm"># need smaller sum</span>
+    <span class="kw">return</span> (-<span class="nu">1</span>, -<span class="nu">1</span>)
+
+<span class="kw">def</span> <span class="fn">is_palindrome</span>(s: str) -> bool:
+    <span class="cm">"""Two-pointer palindrome check. O(n) time, O(1) space."""</span>
+    lo, hi = <span class="nu">0</span>, len(s) - <span class="nu">1</span>
+    <span class="kw">while</span> lo <span class="op">&lt;</span> hi:
+        <span class="kw">if</span> s[lo] != s[hi]:
+            <span class="kw">return</span> <span class="kw">False</span>
+        lo += <span class="nu">1</span>
+        hi -= <span class="nu">1</span>
+    <span class="kw">return</span> <span class="kw">True</span>
+</pre>
+  </div>
+
+  <!-- SECTION 4: SLIDING WINDOW -->
+  <div class="card">
+    <h2>🪟 4 · Sliding Window</h2>
+    <p>Use a sliding window when you need to examine a <strong>contiguous subarray or substring</strong> of variable or fixed size. A window expands by moving the right pointer and contracts by moving the left pointer — each element is added and removed at most once, giving O(n).</p>
+
+    <h3>Fixed-size vs. Variable-size windows</h3>
+    <div class="concept-box">
+      <strong>Fixed window:</strong> right − left + 1 == k always. Slide by one each step.<br>
+      <strong>Variable window:</strong> expand right until constraint is violated, then shrink from left.
+    </div>
+
+    <div class="diagram-wrap">
+      <svg width="580" height="150" viewBox="0 0 580 150" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;height:auto;">
+        <g font-family="monospace" font-size="15" text-anchor="middle">
+          <!-- Values -->
+          <text x="45"  y="22" fill="#5a6070" font-size="11">0</text>
+          <text x="105" y="22" fill="#5a6070" font-size="11">1</text>
+          <text x="165" y="22" fill="#5a6070" font-size="11">2</text>
+          <text x="225" y="22" fill="#5a6070" font-size="11">3</text>
+          <text x="285" y="22" fill="#5a6070" font-size="11">4</text>
+          <text x="345" y="22" fill="#5a6070" font-size="11">5</text>
+          <text x="405" y="22" fill="#5a6070" font-size="11">6</text>
+          <text x="465" y="22" fill="#5a6070" font-size="11">7</text>
+          <!-- Cells (grey = outside window) -->
+          <rect x="20" y="30" width="50" height="40" rx="4" fill="#dde3ee" stroke="#aab" stroke-width="1"/>
+          <text x="45" y="56" fill="#888">2</text>
+          <!-- window cells highlighted -->
+          <rect x="80"  y="30" width="50" height="40" rx="4" fill="#1a4fa0" stroke="#003087" stroke-width="2"/>
+          <text x="105" y="56" fill="#fff">1</text>
+          <rect x="140" y="30" width="50" height="40" rx="4" fill="#1a4fa0" stroke="#003087" stroke-width="2"/>
+          <text x="165" y="56" fill="#fff">5</text>
+          <rect x="200" y="30" width="50" height="40" rx="4" fill="#1a4fa0" stroke="#003087" stroke-width="2"/>
+          <text x="225" y="56" fill="#fff">2</text>
+          <rect x="260" y="30" width="50" height="40" rx="4" fill="#c8a028" stroke="#c8a028" stroke-width="2"/>
+          <text x="285" y="56" fill="#fff">3</text>
+          <!-- grey -->
+          <rect x="320" y="30" width="50" height="40" rx="4" fill="#dde3ee" stroke="#aab" stroke-width="1"/>
+          <text x="345" y="56" fill="#888">4</text>
+          <rect x="380" y="30" width="50" height="40" rx="4" fill="#dde3ee" stroke="#aab" stroke-width="1"/>
+          <text x="405" y="56" fill="#888">7</text>
+          <rect x="440" y="30" width="50" height="40" rx="4" fill="#dde3ee" stroke="#aab" stroke-width="1"/>
+          <text x="465" y="56" fill="#888">1</text>
+          <!-- bracket -->
+          <rect x="78" y="28" width="234" height="44" rx="5" fill="none" stroke="#003087" stroke-width="2.5" stroke-dasharray="6 3"/>
+          <!-- labels -->
+          <text x="105" y="90" fill="#003087" font-size="12" font-weight="bold">L</text>
+          <text x="285" y="90" fill="#c8a028" font-size="12" font-weight="bold">R</text>
+          <text x="285" y="115" fill="#5a6070" font-size="11">Current window [1,2,3]: sum=11 (exceeds 9 → move L right)</text>
+          <text x="285" y="132" fill="#5a6070" font-size="11">Target: longest subarray with sum ≤ 9</text>
+        </g>
+      </svg>
+      <figcaption>Figure 4 — Variable sliding window. When the constraint is violated, the left pointer advances.</figcaption>
+    </div>
+
+<pre class="code-block">
+<span class="label">Python</span><span class="cm"># ── Fixed window: max sum of k consecutive elements ──</span>
+<span class="kw">def</span> <span class="fn">max_sum_k</span>(nums: list[int], k: int) -> int:
+    <span class="cm">"""O(n) time, O(1) space."""</span>
+    window = sum(nums[:k])
+    best = window
+    <span class="kw">for</span> i <span class="kw">in</span> range(k, len(nums)):
+        window += nums[i] - nums[i - k]   <span class="cm"># slide: add right, drop left</span>
+        best = max(best, window)
+    <span class="kw">return</span> best
+
+
+<span class="cm"># ── Variable window: longest substring without repeating chars ──</span>
+<span class="kw">def</span> <span class="fn">length_of_longest_substring</span>(s: str) -> int:
+    <span class="cm">"""O(n) time, O(min(n, 26)) space."""</span>
+    seen = {}   <span class="cm"># char → last seen index</span>
+    lo = best = <span class="nu">0</span>
+    <span class="kw">for</span> hi, ch <span class="kw">in</span> enumerate(s):
+        <span class="kw">if</span> ch <span class="kw">in</span> seen <span class="kw">and</span> seen[ch] <span class="op">&gt;=</span> lo:
+            lo = seen[ch] + <span class="nu">1</span>   <span class="cm"># shrink: jump lo past duplicate</span>
+        seen[ch] = hi
+        best = max(best, hi - lo + <span class="nu">1</span>)
+    <span class="kw">return</span> best
+</pre>
+
+    <h3>Decision Framework: Which pattern do I use?</h3>
+    <div class="concept-box">
+      <strong>Sorted array + find pair/triplet?</strong> → Two Pointers<br>
+      <strong>Contiguous subarray/substring + optimal length?</strong> → Sliding Window<br>
+      <strong>Sorted array + find element / boundary?</strong> → Binary Search<br>
+      <strong>Anything + brute-force nested loops?</strong> → First ask: can I binary search or use two pointers?
+    </div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="card">
+    <h2>📋 Week 1 Summary</h2>
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+      <span class="tag">Big O</span>
+      <span class="tag">Time complexity</span>
+      <span class="tag">Space complexity</span>
+      <span class="tag">Binary Search O(log n)</span>
+      <span class="tag">Two Pointers O(n)</span>
+      <span class="tag">Sliding Window O(n)</span>
+    </div>
+    <table>
+      <tr><th>Pattern</th><th>Time</th><th>Space</th><th>Key condition</th></tr>
+      <tr><td>Binary Search</td><td class="good">O(log n)</td><td class="good">O(1)</td><td>Monotonic / sorted space</td></tr>
+      <tr><td>Two Pointers</td><td class="good">O(n)</td><td class="good">O(1)</td><td>Sorted array, pair/range problem</td></tr>
+      <tr><td>Sliding Window</td><td class="good">O(n)</td><td class="good">O(k)</td><td>Contiguous subarray/substring</td></tr>
+    </table>
+  </div>
+
+  <!-- REFERENCES -->
+  <div class="card">
+    <h2>📚 References &amp; Further Reading</h2>
+    <ul style="line-height:2.2">
+      <li><strong>Cracking the Coding Interview</strong> (McDowell, 2019) — Chapter VI: Big O</li>
+      <li><strong>NeetCode.io</strong> — Arrays &amp; Hashing, Two Pointers, Sliding Window sections</li>
+      <li><strong>LeetCode</strong> — Problems: #704 Binary Search, #167 Two Sum II, #3 Longest Substring Without Repeating Characters</li>
+      <li><strong>Skilled.dev</strong> — <em>0. Big O Notation</em>, <em>1. Arrays</em>, <em>5.1 Searching and Binary Search</em></li>
+    </ul>
+  </div>
+
+</main>
+
+<footer>
+  <strong>Algoritmia Aplicada y Diseño Moderno de Sistemas</strong> · Universidad de Santander (UDES) · Block 1 – Week 1 ·
+  Professor: Jorge Galvis
+</footer>
+
+</body>
+</html>

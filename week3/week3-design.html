@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 3 – Databases | Algoritmia Aplicada</title>
+<style>
+  :root{--udes-blue:#003087;--udes-blue-dark:#001f5c;--udes-blue-light:#1a4fa0;--udes-gold:#C8A028;--bg:#f4f6fb;--surface:#fff;--surface2:#eef2fa;--text:#1a1a2e;--text-muted:#5a6070;--border:#d0d8ea;--success:#2e7d32;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  .top-nav{background:var(--udes-blue-dark);color:#fff;padding:0.6rem 2rem;display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;}
+  .course-label{color:var(--udes-gold);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;}
+  .lesson-breadcrumb{display:flex;gap:1.2rem;align-items:center;}
+  .prev{color:#aab4cc;}.current{background:var(--udes-gold);color:#000;font-weight:700;padding:0.2rem 0.7rem;border-radius:4px;}
+  header{background:linear-gradient(135deg,var(--udes-blue) 0%,var(--udes-blue-light) 100%);color:#fff;padding:3rem 2rem 2.5rem;text-align:center;border-bottom:4px solid var(--udes-gold);}
+  .block-tag{display:inline-block;background:var(--udes-gold);color:#000;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:0.25rem 0.9rem;border-radius:20px;margin-bottom:1rem;}
+  header h1{font-size:2.2rem;font-weight:800;margin-bottom:0.4rem;}
+  header p.subtitle{font-size:1.05rem;color:#b8ccee;max-width:660px;margin:0 auto;}
+  .container{max-width:960px;margin:0 auto;padding:2rem 1.5rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.8rem 2rem;margin-bottom:2rem;box-shadow:0 2px 8px rgba(0,48,135,0.06);}
+  .card h2{color:var(--udes-blue);font-size:1.35rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--udes-gold);}
+  .card h3{color:var(--udes-blue-dark);font-size:1.1rem;margin:1.4rem 0 0.6rem;}
+  .objectives ul{list-style:none;padding:0;}
+  .objectives li{padding:0.4rem 0 0.4rem 1.8rem;position:relative;}
+  .objectives li::before{content:"✓";position:absolute;left:0;color:var(--udes-gold);font-weight:900;}
+  .concept-box{background:var(--surface2);border-left:4px solid var(--udes-blue);border-radius:0 8px 8px 0;padding:1rem 1.2rem;margin:1rem 0;font-size:0.97rem;}
+  .concept-box.gold{border-left-color:var(--udes-gold);}
+  .diagram-wrap{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1.2rem;margin:1.2rem 0;text-align:center;}
+  .diagram-wrap figcaption{font-size:0.82rem;color:var(--text-muted);margin-top:0.6rem;font-style:italic;}
+  .alert{background:#fff8e1;border-left:4px solid var(--udes-gold);border-radius:0 8px 8px 0;padding:0.9rem 1.2rem;margin:1rem 0;font-size:0.95rem;}
+  .tag{display:inline-block;background:#e3ebfa;color:var(--udes-blue);border-radius:4px;padding:0.15rem 0.55rem;font-size:0.78rem;font-weight:600;margin:0.15rem;}
+  table{width:100%;border-collapse:collapse;font-size:0.92rem;margin:1rem 0;}
+  th{background:var(--udes-blue);color:#fff;padding:0.6rem 1rem;text-align:left;}
+  td{padding:0.55rem 1rem;border-bottom:1px solid var(--border);}
+  tr:nth-child(even) td{background:var(--surface2);}
+  .good{color:var(--success);font-weight:700;} .bad{color:#c62828;font-weight:700;}
+  footer{background:var(--udes-blue-dark);color:#8899bb;text-align:center;padding:1.2rem;font-size:0.82rem;margin-top:3rem;}
+  footer strong{color:var(--udes-gold);}
+</style>
+</head>
+<body>
+<nav class="top-nav">
+  <span class="course-label">Algoritmia Aplicada y Diseño Moderno de Sistemas</span>
+  <div class="lesson-breadcrumb">
+    <span class="prev">⬅ Week 2: Building Blocks</span>
+    <span class="current">Week 3 · Design</span>
+    <span>→ Week 4: URL Shortener &amp; Rate Limiting</span>
+  </div>
+</nav>
+<header>
+  <div class="block-tag">Block 1 – Foundations · Week 3 of 4 · System Design</div>
+  <h1>Databases at Scale</h1>
+  <p class="subtitle">SQL vs NoSQL · Indexing · Replication · Sharding · CAP Theorem</p>
+</header>
+
+<main class="container">
+  <div class="card objectives">
+    <h2>🎯 Learning Objectives</h2>
+    <ul>
+      <li>Articulate the differences between SQL and NoSQL and when to choose each.</li>
+      <li>Explain how a B-tree index speeds up queries and what trade-offs it introduces.</li>
+      <li>Describe primary-replica replication and how it improves read throughput and availability.</li>
+      <li>Apply horizontal sharding (partitioning) to distribute data across multiple DB nodes.</li>
+      <li>State the CAP theorem and explain why no distributed database can guarantee all three properties.</li>
+    </ul>
+  </div>
+
+  <!-- SQL vs NoSQL -->
+  <div class="card">
+    <h2>🗃 1 · SQL vs. NoSQL</h2>
+    <table>
+      <tr><th></th><th>SQL (Relational)</th><th>NoSQL (Non-Relational)</th></tr>
+      <tr><td><strong>Structure</strong></td><td>Tables, rows, columns. Fixed schema.</td><td>Documents, key-value, graph, columnar. Flexible schema.</td></tr>
+      <tr><td><strong>Query language</strong></td><td>SQL (standardized)</td><td>Vendor-specific (MongoDB MQL, DynamoDB API…)</td></tr>
+      <tr><td><strong>ACID</strong></td><td class="good">Yes (full ACID transactions)</td><td>Usually eventual consistency; ACID optional</td></tr>
+      <tr><td><strong>Scaling</strong></td><td>Vertical (scale-up) + limited horizontal</td><td class="good">Designed for horizontal scale-out</td></tr>
+      <tr><td><strong>Joins</strong></td><td class="good">Native, efficient</td><td class="bad">No native joins — must denormalize</td></tr>
+      <tr><td><strong>Examples</strong></td><td>PostgreSQL, MySQL, SQLite</td><td>MongoDB, Cassandra, DynamoDB, Redis</td></tr>
+    </table>
+
+    <h3>When to choose what</h3>
+    <div class="concept-box gold">
+      <strong>Choose SQL when:</strong> Data has clear relationships, you need complex queries/joins, financial/transactional data requires ACID, team knows SQL well.<br><br>
+      <strong>Choose NoSQL when:</strong> Data is unstructured or semi-structured, you need horizontal scaling, schema changes frequently, very high write throughput (Cassandra, DynamoDB).
+    </div>
+
+    <div class="alert">
+      <strong>Interview answer:</strong> In most system design interviews, defaulting to SQL (PostgreSQL) is correct unless you have a specific reason not to — high write load, need for horizontal shard-scale-out, or a document/graph data model. Always justify your choice.
+    </div>
+  </div>
+
+  <!-- INDEXING -->
+  <div class="card">
+    <h2>📇 2 · Indexing</h2>
+    <p>Without an index, a database performs a <strong>full table scan</strong> — reading every row to find matches: O(n). An index is a separate data structure (usually a B-tree) that pre-organizes a column's values so lookups are O(log n).</p>
+
+    <div class="diagram-wrap">
+      <svg width="600" height="200" viewBox="0 0 600 200" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;height:auto;">
+        <defs><marker id="a" markerWidth="7" markerHeight="7" refX="4" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#003087"/></marker></defs>
+        <g font-family="'Segoe UI',sans-serif" font-size="11" text-anchor="middle">
+          <!-- B-tree root -->
+          <rect x="240" y="10" width="120" height="32" rx="5" fill="#003087"/><text x="300" y="31" fill="#fff" font-weight="bold">Root: 50</text>
+          <!-- Level 1 -->
+          <rect x="80"  y="70" width="100" height="30" rx="4" fill="#1a4fa0"/><text x="130" y="90" fill="#fff">25 | 37</text>
+          <rect x="330" y="70" width="100" height="30" rx="4" fill="#1a4fa0"/><text x="380" y="90" fill="#fff">62 | 81</text>
+          <!-- Level 2 leaves -->
+          <rect x="10"  y="135" width="70" height="26" rx="3" fill="#c8a028"/><text x="45"  y="152" fill="#000">10,18</text>
+          <rect x="90"  y="135" width="70" height="26" rx="3" fill="#c8a028"/><text x="125" y="152" fill="#000">25,30</text>
+          <rect x="170" y="135" width="70" height="26" rx="3" fill="#c8a028"/><text x="205" y="152" fill="#000">37,44</text>
+          <rect x="270" y="135" width="70" height="26" rx="3" fill="#c8a028"/><text x="305" y="152" fill="#000">50,58</text>
+          <rect x="350" y="135" width="70" height="26" rx="3" fill="#c8a028"/><text x="385" y="152" fill="#000">62,70</text>
+          <rect x="430" y="135" width="70" height="26" rx="3" fill="#c8a028"/><text x="465" y="152" fill="#000">81,95</text>
+          <!-- arrows -->
+          <line x1="270" y1="42" x2="170" y2="68" stroke="#003087" stroke-width="1.5" marker-end="url(#a)"/>
+          <line x1="330" y1="42" x2="380" y2="68" stroke="#003087" stroke-width="1.5" marker-end="url(#a)"/>
+          <line x1="100" y1="100" x2="50"  y2="133" stroke="#1a4fa0" stroke-width="1.2" marker-end="url(#a)"/>
+          <line x1="130" y1="100" x2="130" y2="133" stroke="#1a4fa0" stroke-width="1.2" marker-end="url(#a)"/>
+          <line x1="165" y1="100" x2="205" y2="133" stroke="#1a4fa0" stroke-width="1.2" marker-end="url(#a)"/>
+          <line x1="355" y1="100" x2="305" y2="133" stroke="#1a4fa0" stroke-width="1.2" marker-end="url(#a)"/>
+          <line x1="380" y1="100" x2="380" y2="133" stroke="#1a4fa0" stroke-width="1.2" marker-end="url(#a)"/>
+          <line x1="410" y1="100" x2="465" y2="133" stroke="#1a4fa0" stroke-width="1.2" marker-end="url(#a)"/>
+          <text x="300" y="185" fill="#5a6070">B-tree height ≈ log(n) — search for any value in 3 comparisons even for millions of rows</text>
+        </g>
+      </svg>
+      <figcaption>Figure 1 — B-tree index. 3 levels cover millions of rows. Leaf nodes (gold) hold the actual row pointers.</figcaption>
+    </div>
+
+    <h3>Index Trade-offs</h3>
+    <div class="concept-box">
+      <strong>Benefit:</strong> Reads are O(log n) instead of O(n).<br>
+      <strong>Cost:</strong> Every INSERT/UPDATE/DELETE must also update the index → slower writes.<br>
+      <strong>Rule of thumb:</strong> Index columns that appear in WHERE, JOIN, and ORDER BY clauses. Avoid indexing columns with low cardinality (e.g., boolean, gender).
+    </div>
+
+    <h3>Composite Index</h3>
+    <p>An index on (user_id, created_at) can satisfy queries on user_id alone OR (user_id AND created_at), but NOT on created_at alone. The leftmost prefix rule: always place the most selective or most-queried column first.</p>
+  </div>
+
+  <!-- REPLICATION -->
+  <div class="card">
+    <h2>📋 3 · Replication</h2>
+    <p>Replication keeps copies of data on multiple database nodes. The most common pattern is <strong>primary-replica</strong> (formerly master-slave).</p>
+
+    <div class="diagram-wrap">
+      <svg width="580" height="180" viewBox="0 0 580 180" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;height:auto;">
+        <defs><marker id="b" markerWidth="7" markerHeight="7" refX="4" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#003087"/></marker>
+        <marker id="br" markerWidth="7" markerHeight="7" refX="4" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#2e7d32"/></marker></defs>
+        <g font-family="'Segoe UI',sans-serif" font-size="11" text-anchor="middle">
+          <!-- App layer -->
+          <rect x="240" y="10" width="100" height="32" rx="5" fill="#1a4fa0"/>
+          <text x="290" y="31" fill="#fff" font-weight="bold">App Servers</text>
+          <!-- Arrows writes/reads -->
+          <line x1="260" y1="44" x2="170" y2="78" stroke="#c62828" stroke-width="2" marker-end="url(#b)"/>
+          <text x="195" y="66" fill="#c62828" font-weight="bold">WRITE</text>
+          <line x1="310" y1="44" x2="370" y2="78" stroke="#2e7d32" stroke-width="2" marker-end="url(#br)"/>
+          <line x1="320" y1="44" x2="470" y2="78" stroke="#2e7d32" stroke-width="2" marker-end="url(#br)"/>
+          <text x="420" y="66" fill="#2e7d32" font-weight="bold">READs</text>
+          <!-- Primary DB -->
+          <ellipse cx="130" cy="118" rx="60" ry="24" fill="#003087" stroke="#001f5c" stroke-width="2"/>
+          <rect x="70" y="118" width="120" height="30" fill="#003087" stroke="#001f5c" stroke-width="2"/>
+          <ellipse cx="130" cy="148" rx="60" ry="24" fill="#003087" stroke="#001f5c" stroke-width="2"/>
+          <text x="130" y="137" fill="#fff" font-weight="bold">Primary DB</text>
+          <!-- Replica 1 -->
+          <ellipse cx="340" cy="118" rx="55" ry="22" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <rect x="285" y="118" width="110" height="28" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <ellipse cx="340" cy="146" rx="55" ry="22" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <text x="340" y="136" fill="#003087">Replica 1</text>
+          <!-- Replica 2 -->
+          <ellipse cx="470" cy="118" rx="55" ry="22" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <rect x="415" y="118" width="110" height="28" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <ellipse cx="470" cy="146" rx="55" ry="22" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <text x="470" y="136" fill="#003087">Replica 2</text>
+          <!-- Replication arrows -->
+          <line x1="192" y1="135" x2="283" y2="135" stroke="#c8a028" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#b)"/>
+          <line x1="192" y1="140" x2="413" y2="140" stroke="#c8a028" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#b)"/>
+          <text x="290" y="165" fill="#c8a028" font-weight="bold">Async replication</text>
+        </g>
+      </svg>
+      <figcaption>Figure 2 — Primary-replica replication. All writes go to primary; reads distributed across replicas. Replication is typically asynchronous.</figcaption>
+    </div>
+
+    <div class="concept-box">
+      <strong>Benefits of replication:</strong><br>
+      • <strong>Read scalability:</strong> Add replicas to handle more read traffic<br>
+      • <strong>High availability:</strong> If primary fails, promote a replica<br>
+      • <strong>Disaster recovery:</strong> Geographic replicas survive data center outage<br><br>
+      <strong>Replication lag:</strong> Async replication means replicas may be slightly behind the primary. A user who just wrote may not see their write if routed to a replica → "read-your-writes" consistency issue.
+    </div>
+  </div>
+
+  <!-- SHARDING -->
+  <div class="card">
+    <h2>🍰 4 · Sharding (Horizontal Partitioning)</h2>
+    <p>When a single database can no longer handle the write load or storage, you shard — split the data across multiple database nodes, each responsible for a subset of the data (a <strong>shard</strong>).</p>
+
+    <h3>Sharding Strategies</h3>
+    <table>
+      <tr><th>Strategy</th><th>How</th><th>Pro</th><th>Con</th></tr>
+      <tr><td><strong>Range-based</strong></td><td>Shard 1: user_id 0-1M, Shard 2: 1M-2M…</td><td>Simple range queries</td><td>Hot partition if new users cluster</td></tr>
+      <tr><td><strong>Hash-based</strong></td><td>shard = hash(user_id) % N</td><td>Uniform distribution</td><td>Range queries span all shards; hard to add shards</td></tr>
+      <tr><td><strong>Directory-based</strong></td><td>Lookup table maps key → shard</td><td>Flexible</td><td>Lookup table is a single point of failure</td></tr>
+    </table>
+
+    <div class="diagram-wrap">
+      <svg width="560" height="150" viewBox="0 0 560 150" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;height:auto;">
+        <defs><marker id="c" markerWidth="7" markerHeight="7" refX="4" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#003087"/></marker></defs>
+        <g font-family="'Segoe UI',sans-serif" font-size="11" text-anchor="middle">
+          <rect x="210" y="5" width="140" height="32" rx="5" fill="#1a4fa0"/><text x="280" y="26" fill="#fff" font-weight="bold">Shard Router</text>
+          <text x="280" y="45" fill="#5a6070" font-size="10">hash(user_id) % 3 → shard</text>
+          <!-- Shards -->
+          <ellipse cx="80"  cy="110" rx="60" ry="22" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <rect x="20" y="110" width="120" height="28" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <ellipse cx="80"  cy="138" rx="60" ry="22" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <text x="80"  y="128" fill="#003087" font-weight="bold">Shard 0</text>
+          <text x="80"  y="143" fill="#5a6070" font-size="10">IDs 0,3,6,9…</text>
+          <ellipse cx="280" cy="110" rx="60" ry="22" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <rect x="220" y="110" width="120" height="28" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <ellipse cx="280" cy="138" rx="60" ry="22" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <text x="280" y="128" fill="#003087" font-weight="bold">Shard 1</text>
+          <text x="280" y="143" fill="#5a6070" font-size="10">IDs 1,4,7,10…</text>
+          <ellipse cx="480" cy="110" rx="60" ry="22" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <rect x="420" y="110" width="120" height="28" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <ellipse cx="480" cy="138" rx="60" ry="22" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/>
+          <text x="480" y="128" fill="#003087" font-weight="bold">Shard 2</text>
+          <text x="480" y="143" fill="#5a6070" font-size="10">IDs 2,5,8,11…</text>
+          <!-- arrows -->
+          <line x1="240" y1="38" x2="100" y2="108" stroke="#003087" stroke-width="1.8" marker-end="url(#c)"/>
+          <line x1="280" y1="38" x2="280" y2="108" stroke="#003087" stroke-width="1.8" marker-end="url(#c)"/>
+          <line x1="320" y1="38" x2="460" y2="108" stroke="#003087" stroke-width="1.8" marker-end="url(#c)"/>
+        </g>
+      </svg>
+      <figcaption>Figure 3 — Hash-based sharding with 3 shards. The shard router computes hash(user_id) % 3 to determine which database node handles the request.</figcaption>
+    </div>
+
+    <div class="alert">
+      <strong>Sharding challenges:</strong> Cross-shard joins are expensive or impossible. Resharding (changing N) requires migrating all data. Celebrity/hotspot problem: one shard gets all traffic for a popular user.
+    </div>
+  </div>
+
+  <!-- CAP THEOREM -->
+  <div class="card">
+    <h2>🔺 5 · CAP Theorem</h2>
+    <p>In a distributed system, you can only guarantee <strong>two of three</strong> properties simultaneously:</p>
+
+    <div class="diagram-wrap">
+      <svg width="420" height="260" viewBox="0 0 420 260" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;height:auto;">
+        <g font-family="'Segoe UI',sans-serif" font-size="12" text-anchor="middle">
+          <!-- Triangle -->
+          <polygon points="210,20 30,230 390,230" fill="#eef2fa" stroke="#003087" stroke-width="2.5"/>
+          <!-- Vertices -->
+          <circle cx="210" cy="20" r="28" fill="#003087" stroke="#001f5c" stroke-width="2"/>
+          <text x="210" y="16" fill="#fff" font-weight="bold" font-size="11">Consistency</text>
+          <text x="210" y="29" fill="#c8a028" font-size="10">(C)</text>
+          <circle cx="30" cy="230" r="28" fill="#003087" stroke="#001f5c" stroke-width="2"/>
+          <text x="30" y="225" fill="#fff" font-weight="bold" font-size="11">Availability</text>
+          <text x="30" y="238" fill="#c8a028" font-size="10">(A)</text>
+          <circle cx="390" cy="230" r="28" fill="#003087" stroke="#001f5c" stroke-width="2"/>
+          <text x="390" y="225" fill="#fff" font-weight="bold" font-size="11">Partition</text>
+          <text x="390" y="238" fill="#c8a028" font-size="10">(P) Tolerance</text>
+          <!-- Labels on sides -->
+          <text x="95"  y="120" fill="#1a4fa0" font-weight="bold" transform="rotate(-60,95,120)">CA</text>
+          <text x="305" y="120" fill="#1a4fa0" font-weight="bold" transform="rotate(60,305,120)">CP</text>
+          <text x="210" y="242" fill="#1a4fa0" font-weight="bold">AP</text>
+          <!-- Examples -->
+          <text x="70"  y="170" fill="#5a6070" font-size="10" transform="rotate(-60,70,170)">PostgreSQL</text>
+          <text x="345" y="175" fill="#5a6070" font-size="10" transform="rotate(60,345,175)">MongoDB</text>
+          <text x="210" y="218" fill="#5a6070" font-size="10">Cassandra · DynamoDB</text>
+        </g>
+      </svg>
+      <figcaption>Figure 4 — CAP theorem triangle. Network partitions always happen in practice, so real systems choose between CP or AP.</figcaption>
+    </div>
+
+    <div class="concept-box">
+      <strong>Consistency (C):</strong> Every read returns the most recent write or an error.<br>
+      <strong>Availability (A):</strong> Every request receives a response (not necessarily the latest data).<br>
+      <strong>Partition Tolerance (P):</strong> System continues operating even when network messages are lost.<br><br>
+      <strong>In practice:</strong> Networks fail, so P is non-optional. You must choose between C and A during a partition.<br>
+      <strong>CP systems</strong> (PostgreSQL, HBase): return error if they can't guarantee fresh data.<br>
+      <strong>AP systems</strong> (Cassandra, DynamoDB): return possibly stale data but always respond.
+    </div>
+
+    <h3>ACID vs. BASE</h3>
+    <table>
+      <tr><th>ACID (SQL)</th><th>BASE (NoSQL)</th></tr>
+      <tr><td><strong>A</strong>tomic: all-or-nothing transactions</td><td><strong>B</strong>asically <strong>A</strong>vailable: system always responds</td></tr>
+      <tr><td><strong>C</strong>onsistent: always valid state</td><td><strong>S</strong>oft state: data may be in transition</td></tr>
+      <tr><td><strong>I</strong>solated: transactions don't interfere</td><td><strong>E</strong>ventually consistent: converges over time</td></tr>
+      <tr><td><strong>D</strong>urable: committed data survives crashes</td><td>Trade-off for higher availability and performance</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>📋 Week 3 Summary</h2>
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+      <span class="tag">SQL = ACID, joins, fixed schema</span>
+      <span class="tag">NoSQL = scale-out, flexible</span>
+      <span class="tag">B-tree index = O(log n) reads</span>
+      <span class="tag">Primary-replica = read scalability</span>
+      <span class="tag">Hash sharding</span>
+      <span class="tag">CAP: choose CP or AP</span>
+    </div>
+    <div class="concept-box gold">
+      <strong>Decision tree for database choice:</strong><br>
+      Need complex joins or transactions? → SQL (PostgreSQL)<br>
+      Need extreme write throughput (millions/sec)? → Cassandra (AP)<br>
+      Need flexible document schema? → MongoDB (CP)<br>
+      Need fast key-value lookup? → DynamoDB or Redis
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📚 References</h2>
+    <ul style="line-height:2.2">
+      <li><strong>System Design Interview Vol. 1</strong> (Alex Xu) — Chapters on databases, replication, sharding</li>
+      <li><strong>ByteByteGo</strong> — "SQL vs NoSQL", "CAP Theorem Explained"</li>
+      <li><strong>1630659442326.pdf</strong>, <strong>1690198198096.pdf</strong> (course materials) — database fundamentals</li>
+    </ul>
+  </div>
+</main>
+<footer><strong>Algoritmia Aplicada y Diseño Moderno de Sistemas</strong> · UDES · Block 1 – Week 3 Design · Professor: Jorge Galvis</footer>
+</body>
+</html>

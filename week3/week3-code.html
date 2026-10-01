@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 3 – Arrays & Strings | Algoritmia Aplicada</title>
+<style>
+  :root{--udes-blue:#003087;--udes-blue-dark:#001f5c;--udes-blue-light:#1a4fa0;--udes-gold:#C8A028;--bg:#f4f6fb;--surface:#fff;--surface2:#eef2fa;--text:#1a1a2e;--text-muted:#5a6070;--border:#d0d8ea;--code-bg:#1e2340;--code-text:#e8eaf0;--success:#2e7d32;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  .top-nav{background:var(--udes-blue-dark);color:#fff;padding:0.6rem 2rem;display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;}
+  .course-label{color:var(--udes-gold);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;}
+  .lesson-breadcrumb{display:flex;gap:1.2rem;align-items:center;}
+  .prev{color:#aab4cc;}
+  .current{background:var(--udes-gold);color:#000;font-weight:700;padding:0.2rem 0.7rem;border-radius:4px;}
+  header{background:linear-gradient(135deg,var(--udes-blue) 0%,var(--udes-blue-light) 100%);color:#fff;padding:3rem 2rem 2.5rem;text-align:center;border-bottom:4px solid var(--udes-gold);}
+  .block-tag{display:inline-block;background:var(--udes-gold);color:#000;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:0.25rem 0.9rem;border-radius:20px;margin-bottom:1rem;}
+  header h1{font-size:2.2rem;font-weight:800;margin-bottom:0.4rem;}
+  header p.subtitle{font-size:1.05rem;color:#b8ccee;max-width:640px;margin:0 auto;}
+  .container{max-width:960px;margin:0 auto;padding:2rem 1.5rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.8rem 2rem;margin-bottom:2rem;box-shadow:0 2px 8px rgba(0,48,135,0.06);}
+  .card h2{color:var(--udes-blue);font-size:1.35rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--udes-gold);}
+  .card h3{color:var(--udes-blue-dark);font-size:1.1rem;margin:1.4rem 0 0.6rem;}
+  .objectives ul{list-style:none;padding:0;}
+  .objectives li{padding:0.4rem 0 0.4rem 1.8rem;position:relative;}
+  .objectives li::before{content:"✓";position:absolute;left:0;color:var(--udes-gold);font-weight:900;}
+  .concept-box{background:var(--surface2);border-left:4px solid var(--udes-blue);border-radius:0 8px 8px 0;padding:1rem 1.2rem;margin:1rem 0;font-size:0.97rem;}
+  .concept-box.gold{border-left-color:var(--udes-gold);}
+  .code-block{background:var(--code-bg);color:var(--code-text);border-radius:8px;padding:1.2rem 1.4rem;overflow-x:auto;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:0.88rem;line-height:1.65;margin:1rem 0;position:relative;}
+  .code-block .label{position:absolute;top:0.5rem;right:0.8rem;font-size:0.7rem;background:var(--udes-gold);color:#000;padding:0.1rem 0.5rem;border-radius:4px;font-weight:700;font-family:sans-serif;}
+  .kw{color:#c678dd;}.fn{color:#61afef;}.cm{color:#7f848e;font-style:italic;}.st{color:#98c379;}.nu{color:#d19a66;}.op{color:#56b6c2;}
+  .diagram-wrap{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1.2rem;margin:1.2rem 0;text-align:center;}
+  .diagram-wrap figcaption{font-size:0.82rem;color:var(--text-muted);margin-top:0.6rem;font-style:italic;}
+  .alert{background:#fff8e1;border-left:4px solid var(--udes-gold);border-radius:0 8px 8px 0;padding:0.9rem 1.2rem;margin:1rem 0;font-size:0.95rem;}
+  .tag{display:inline-block;background:#e3ebfa;color:var(--udes-blue);border-radius:4px;padding:0.15rem 0.55rem;font-size:0.78rem;font-weight:600;margin:0.15rem;}
+  table{width:100%;border-collapse:collapse;font-size:0.92rem;margin:1rem 0;}
+  th{background:var(--udes-blue);color:#fff;padding:0.6rem 1rem;text-align:left;}
+  td{padding:0.55rem 1rem;border-bottom:1px solid var(--border);}
+  tr:nth-child(even) td{background:var(--surface2);}
+  .good{color:var(--success);font-weight:700;}
+  footer{background:var(--udes-blue-dark);color:#8899bb;text-align:center;padding:1.2rem;font-size:0.82rem;margin-top:3rem;}
+  footer strong{color:var(--udes-gold);}
+</style>
+</head>
+<body>
+<nav class="top-nav">
+  <span class="course-label">Algoritmia Aplicada y Diseño Moderno de Sistemas</span>
+  <div class="lesson-breadcrumb">
+    <span class="prev">⬅ Week 2: Recursion</span>
+    <span class="current">Week 3 · Code</span>
+    <span>→ Week 4: Hash Tables &amp; Linked Lists</span>
+  </div>
+</nav>
+<header>
+  <div class="block-tag">Block 1 – Foundations · Week 3 of 4</div>
+  <h1>Arrays &amp; Strings</h1>
+  <p class="subtitle">Prefix Sum · Matrix Traversal · Anagrams · Substring Search</p>
+</header>
+
+<main class="container">
+  <div class="card objectives">
+    <h2>🎯 Learning Objectives</h2>
+    <ul>
+      <li>Compute range sum queries in O(1) using a prefix sum array built in O(n).</li>
+      <li>Traverse a 2D matrix in spiral, diagonal, and layer-by-layer patterns.</li>
+      <li>Detect anagrams and group anagram families using frequency maps.</li>
+      <li>Implement substring search with the sliding window and understand the naive O(nm) vs. KMP O(n+m) approaches.</li>
+      <li>Apply the prefix sum pattern to 2D matrices for rectangle sum queries.</li>
+    </ul>
+  </div>
+
+  <!-- PREFIX SUM -->
+  <div class="card">
+    <h2>➕ 1 · Prefix Sum</h2>
+    <p>A prefix sum (a.k.a. cumulative sum) array allows answering <em>range sum queries</em> in O(1) after an O(n) build step. Instead of re-summing a subarray every time, precompute the total up to each index.</p>
+
+    <div class="concept-box gold">
+      <strong>prefix[i] = prefix[i-1] + nums[i-1]</strong> (1-indexed, prefix[0]=0)<br>
+      <strong>Sum from index l to r</strong> = prefix[r+1] − prefix[l]
+    </div>
+
+    <div class="diagram-wrap">
+      <svg width="620" height="140" viewBox="0 0 620 140" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;height:auto;">
+        <g font-family="monospace" font-size="13" text-anchor="middle">
+          <!-- nums row -->
+          <text x="40" y="30" fill="#5a6070" font-size="11" font-family="sans-serif">nums:</text>
+          <rect x="70"  y="15" width="60" height="30" rx="4" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/><text x="100"  y="35">3</text>
+          <rect x="140" y="15" width="60" height="30" rx="4" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/><text x="170"  y="35">1</text>
+          <rect x="210" y="15" width="60" height="30" rx="4" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/><text x="240"  y="35">4</text>
+          <rect x="280" y="15" width="60" height="30" rx="4" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/><text x="310"  y="35">1</text>
+          <rect x="350" y="15" width="60" height="30" rx="4" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/><text x="380"  y="35">5</text>
+          <rect x="420" y="15" width="60" height="30" rx="4" fill="#eef2fa" stroke="#003087" stroke-width="1.5"/><text x="450"  y="35">9</text>
+          <!-- prefix row -->
+          <text x="40" y="90" fill="#5a6070" font-size="11" font-family="sans-serif">prefix:</text>
+          <rect x="70"  y="75" width="60" height="30" rx="4" fill="#003087" stroke="#001f5c" stroke-width="1.5"/><text x="100"  y="95" fill="#fff">0</text>
+          <rect x="140" y="75" width="60" height="30" rx="4" fill="#003087" stroke="#001f5c" stroke-width="1.5"/><text x="170"  y="95" fill="#fff">3</text>
+          <rect x="210" y="75" width="60" height="30" rx="4" fill="#003087" stroke="#001f5c" stroke-width="1.5"/><text x="240"  y="95" fill="#fff">4</text>
+          <rect x="280" y="75" width="60" height="30" rx="4" fill="#c8a028" stroke="#a07800" stroke-width="2"/><text x="310"  y="95" fill="#000" font-weight="bold">8</text>
+          <rect x="350" y="75" width="60" height="30" rx="4" fill="#003087" stroke="#001f5c" stroke-width="1.5"/><text x="380"  y="95" fill="#fff">9</text>
+          <rect x="420" y="75" width="60" height="30" rx="4" fill="#c8a028" stroke="#a07800" stroke-width="2"/><text x="450"  y="95" fill="#000" font-weight="bold">14</text>
+          <rect x="490" y="75" width="60" height="30" rx="4" fill="#003087" stroke="#001f5c" stroke-width="1.5"/><text x="520"  y="95" fill="#fff">23</text>
+          <text x="350" y="135" fill="#5a6070" font-size="11" font-family="sans-serif">sum(l=2, r=4) = prefix[5] − prefix[2] = 14 − 4 = 10  ✓</text>
+        </g>
+      </svg>
+      <figcaption>Figure 1 — nums=[3,1,4,1,5,9], prefix=[0,3,4,8,9,14,23]. Gold = query boundaries.</figcaption>
+    </div>
+
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">def</span> <span class="fn">build_prefix</span>(nums: list[int]) -> list[int]:
+    prefix = [<span class="nu">0</span>] * (len(nums) + <span class="nu">1</span>)
+    <span class="kw">for</span> i, v <span class="kw">in</span> enumerate(nums):
+        prefix[i + <span class="nu">1</span>] = prefix[i] + v
+    <span class="kw">return</span> prefix   <span class="cm"># O(n) time, O(n) space</span>
+
+<span class="kw">def</span> <span class="fn">range_sum</span>(prefix: list[int], l: int, r: int) -> int:
+    <span class="kw">return</span> prefix[r + <span class="nu">1</span>] - prefix[l]   <span class="cm"># O(1) per query</span>
+
+<span class="cm"># ── 2D prefix sum (rectangle query) ──</span>
+<span class="kw">def</span> <span class="fn">build_2d_prefix</span>(matrix: list[list[int]]) -> list[list[int]]:
+    m, n = len(matrix), len(matrix[<span class="nu">0</span>])
+    p = [[<span class="nu">0</span>] * (n + <span class="nu">1</span>) <span class="kw">for</span> _ <span class="kw">in</span> range(m + <span class="nu">1</span>)]
+    <span class="kw">for</span> r <span class="kw">in</span> range(m):
+        <span class="kw">for</span> c <span class="kw">in</span> range(n):
+            p[r+<span class="nu">1</span>][c+<span class="nu">1</span>] = (matrix[r][c] + p[r][c+<span class="nu">1</span>]
+                           + p[r+<span class="nu">1</span>][c] - p[r][c])
+    <span class="kw">return</span> p   <span class="cm"># inclusion-exclusion principle</span>
+</pre>
+  </div>
+
+  <!-- MATRIX TRAVERSAL -->
+  <div class="card">
+    <h2>🔲 2 · Matrix Traversal</h2>
+    <p>Many interview problems reduce to exploring a 2D grid. Mastering the traversal patterns and their boundary conditions is essential.</p>
+
+    <h3>Pattern 1 — Walk the matrix (all cells, row by row)</h3>
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">def</span> <span class="fn">walk_matrix</span>(matrix: list[list[int]]) -> list[int]:
+    result = []
+    <span class="kw">for</span> row <span class="kw">in</span> matrix:
+        <span class="kw">for</span> val <span class="kw">in</span> row:
+            result.append(val)
+    <span class="kw">return</span> result   <span class="cm"># O(m×n) time, O(1) extra space</span>
+</pre>
+
+    <h3>Pattern 2 — 4-directional BFS/DFS (flood fill, islands)</h3>
+<pre class="code-block">
+<span class="label">Python</span>DIRS = [(-<span class="nu">1</span>,<span class="nu">0</span>),(+<span class="nu">1</span>,<span class="nu">0</span>),(<span class="nu">0</span>,-<span class="nu">1</span>),(<span class="nu">0</span>,+<span class="nu">1</span>)]
+
+<span class="kw">def</span> <span class="fn">dfs</span>(grid, r, c, visited):
+    <span class="kw">if</span> (r, c) <span class="kw">in</span> visited: <span class="kw">return</span>
+    visited.add((r, c))
+    <span class="kw">for</span> dr, dc <span class="kw">in</span> DIRS:
+        nr, nc = r + dr, c + dc
+        <span class="kw">if</span> <span class="nu">0</span> <span class="op">&lt;=</span> nr <span class="op">&lt;</span> len(grid) <span class="kw">and</span> <span class="nu">0</span> <span class="op">&lt;=</span> nc <span class="op">&lt;</span> len(grid[<span class="nu">0</span>]):
+            <span class="fn">dfs</span>(grid, nr, nc, visited)
+</pre>
+
+    <h3>Pattern 3 — Spiral traversal</h3>
+    <div class="diagram-wrap">
+      <svg width="300" height="200" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg" style="max-width:100%;height:auto;">
+        <g font-family="monospace" font-size="14" text-anchor="middle">
+          <!-- 3x3 grid -->
+          <rect x="40"  y="20" width="50" height="50" rx="3" fill="#1a4fa0" stroke="#003087" stroke-width="2"/><text x="65"  y="50" fill="#fff">1</text>
+          <rect x="90"  y="20" width="50" height="50" rx="3" fill="#1a4fa0" stroke="#003087" stroke-width="2"/><text x="115" y="50" fill="#fff">2</text>
+          <rect x="140" y="20" width="50" height="50" rx="3" fill="#1a4fa0" stroke="#003087" stroke-width="2"/><text x="165" y="50" fill="#fff">3</text>
+          <rect x="140" y="70" width="50" height="50" rx="3" fill="#c8a028" stroke="#a07800" stroke-width="2"/><text x="165" y="100" fill="#000" font-weight="bold">6</text>
+          <rect x="140" y="120" width="50" height="50" rx="3" fill="#c8a028" stroke="#a07800" stroke-width="2"/><text x="165" y="150" fill="#000" font-weight="bold">9</text>
+          <rect x="90"  y="120" width="50" height="50" rx="3" fill="#5a6070" stroke="#444" stroke-width="2"/><text x="115" y="150" fill="#fff">8</text>
+          <rect x="40"  y="120" width="50" height="50" rx="3" fill="#5a6070" stroke="#444" stroke-width="2"/><text x="65"  y="150" fill="#fff">7</text>
+          <rect x="40"  y="70" width="50" height="50" rx="3" fill="#5a6070" stroke="#444" stroke-width="2"/><text x="65"  y="100" fill="#fff">4</text>
+          <rect x="90"  y="70" width="50" height="50" rx="3" fill="#eef2fa" stroke="#003087" stroke-width="2"/><text x="115" y="100">5</text>
+          <text x="150" y="190" fill="#5a6070" font-size="11">Order: 1→2→3→6→9→8→7→4→5</text>
+        </g>
+      </svg>
+      <figcaption>Figure 2 — Spiral traversal order. Blue=top row, gold=right+bottom columns, grey=left col+inner.</figcaption>
+    </div>
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">def</span> <span class="fn">spiral_order</span>(matrix: list[list[int]]) -> list[int]:
+    result = []
+    top, bottom = <span class="nu">0</span>, len(matrix) - <span class="nu">1</span>
+    left, right  = <span class="nu">0</span>, len(matrix[<span class="nu">0</span>]) - <span class="nu">1</span>
+    <span class="kw">while</span> top <span class="op">&lt;=</span> bottom <span class="kw">and</span> left <span class="op">&lt;=</span> right:
+        <span class="kw">for</span> c <span class="kw">in</span> range(left, right + <span class="nu">1</span>):   result.append(matrix[top][c])
+        top += <span class="nu">1</span>
+        <span class="kw">for</span> r <span class="kw">in</span> range(top, bottom + <span class="nu">1</span>):   result.append(matrix[r][right])
+        right -= <span class="nu">1</span>
+        <span class="kw">if</span> top <span class="op">&lt;=</span> bottom:
+            <span class="kw">for</span> c <span class="kw">in</span> range(right, left - <span class="nu">1</span>, -<span class="nu">1</span>): result.append(matrix[bottom][c])
+            bottom -= <span class="nu">1</span>
+        <span class="kw">if</span> left <span class="op">&lt;=</span> right:
+            <span class="kw">for</span> r <span class="kw">in</span> range(bottom, top - <span class="nu">1</span>, -<span class="nu">1</span>): result.append(matrix[r][left])
+            left += <span class="nu">1</span>
+    <span class="kw">return</span> result   <span class="cm"># O(m×n) time, O(1) extra space</span>
+</pre>
+  </div>
+
+  <!-- ANAGRAMS -->
+  <div class="card">
+    <h2>🔤 3 · Anagrams &amp; Frequency Maps</h2>
+    <p>Two strings are anagrams if they contain the same characters with the same frequencies. A <strong>character frequency map</strong> captures this in O(n) and supports O(1) comparison.</p>
+
+    <div class="concept-box">
+      <strong>Canonical key trick:</strong> Sort the string → anagrams share the same sorted key.<br>
+      <strong>Better:</strong> Use a tuple of 26 counts as the key (avoids O(k log k) sort per string).
+    </div>
+
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">from</span> collections <span class="kw">import</span> defaultdict
+
+<span class="kw">def</span> <span class="fn">is_anagram</span>(s: str, t: str) -> bool:
+    <span class="cm">"""O(n) time, O(1) space (fixed 26-char alphabet)."""</span>
+    <span class="kw">if</span> len(s) != len(t): <span class="kw">return</span> <span class="kw">False</span>
+    count = [<span class="nu">0</span>] * <span class="nu">26</span>
+    <span class="kw">for</span> a, b <span class="kw">in</span> zip(s, t):
+        count[ord(a) - ord(<span class="st">'a'</span>)] += <span class="nu">1</span>
+        count[ord(b) - ord(<span class="st">'a'</span>)] -= <span class="nu">1</span>
+    <span class="kw">return</span> all(x == <span class="nu">0</span> <span class="kw">for</span> x <span class="kw">in</span> count)
+
+<span class="kw">def</span> <span class="fn">group_anagrams</span>(strs: list[str]) -> list[list[str]]:
+    <span class="cm">"""Group strings that are anagrams of each other. O(n·k) time."""</span>
+    groups: dict[tuple, list] = defaultdict(list)
+    <span class="kw">for</span> s <span class="kw">in</span> strs:
+        key = tuple(sorted(s))   <span class="cm"># or tuple(count_array) for O(k) instead of O(k log k)</span>
+        groups[key].append(s)
+    <span class="kw">return</span> list(groups.values())
+
+<span class="cm"># group_anagrams(["eat","tea","tan","ate","nat","bat"])
+# → [["eat","tea","ate"], ["tan","nat"], ["bat"]]</span>
+</pre>
+  </div>
+
+  <!-- SUBSTRING SEARCH -->
+  <div class="card">
+    <h2>🔍 4 · Substring Search</h2>
+    <h3>Sliding Window Approach: Find all anagram positions</h3>
+    <p>Check every window of length <code>len(p)</code> in <code>s</code> using a frequency count that updates in O(1) per slide.</p>
+
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">def</span> <span class="fn">find_anagrams</span>(s: str, p: str) -> list[int]:
+    <span class="cm">"""All start indices in s where an anagram of p begins. O(n) time."""</span>
+    need = len(p)
+    <span class="kw">if</span> len(s) <span class="op">&lt;</span> need: <span class="kw">return</span> []
+    p_count = [<span class="nu">0</span>] * <span class="nu">26</span>
+    w_count = [<span class="nu">0</span>] * <span class="nu">26</span>
+    <span class="kw">for</span> ch <span class="kw">in</span> p: p_count[ord(ch) - <span class="nu">97</span>] += <span class="nu">1</span>
+    <span class="kw">for</span> ch <span class="kw">in</span> s[:need]: w_count[ord(ch) - <span class="nu">97</span>] += <span class="nu">1</span>
+    result = [<span class="nu">0</span>] <span class="kw">if</span> p_count == w_count <span class="kw">else</span> []
+    <span class="kw">for</span> i <span class="kw">in</span> range(need, len(s)):
+        w_count[ord(s[i]) - <span class="nu">97</span>] += <span class="nu">1</span>         <span class="cm"># add right</span>
+        w_count[ord(s[i - need]) - <span class="nu">97</span>] -= <span class="nu">1</span>  <span class="cm"># drop left</span>
+        <span class="kw">if</span> p_count == w_count:
+            result.append(i - need + <span class="nu">1</span>)
+    <span class="kw">return</span> result
+</pre>
+
+    <h3>Complexity Comparison</h3>
+    <table>
+      <tr><th>Algorithm</th><th>Time</th><th>Space</th><th>Notes</th></tr>
+      <tr><td>Naive (nested loop)</td><td style="color:#c62828;font-weight:700">O(n·m)</td><td class="good">O(1)</td><td>Simple but slow for large inputs</td></tr>
+      <tr><td>Sliding window (fixed k)</td><td class="good">O(n)</td><td class="good">O(k)</td><td>Best for fixed-length pattern matching</td></tr>
+      <tr><td>KMP algorithm</td><td class="good">O(n+m)</td><td>O(m)</td><td>General substring, not in scope this week</td></tr>
+    </table>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="card">
+    <h2>📋 Week 3 Summary</h2>
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1rem;">
+      <span class="tag">Prefix Sum O(n) build / O(1) query</span>
+      <span class="tag">2D Prefix Sum</span>
+      <span class="tag">Matrix Traversal</span>
+      <span class="tag">Spiral O(m×n)</span>
+      <span class="tag">Anagram = frequency map</span>
+      <span class="tag">Sliding window substring</span>
+    </div>
+    <div class="concept-box gold">
+      <strong>Connecting the dots:</strong> prefix sum + sliding window often appear together. The prefix sum preprocesses the data in O(n) so each window query costs O(1). The combined approach handles "subarray with sum = k" type problems that would otherwise require O(n²).
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>📚 References</h2>
+    <ul style="line-height:2.2">
+      <li><strong>Skilled.dev</strong> — <em>1.2 Walk a Matrix</em>, <em>1.3 Product Array</em>, <em>3.1 Palindromes, Permutations, Anagrams</em></li>
+      <li><strong>LeetCode</strong> — #303 Range Sum Query, #54 Spiral Matrix, #49 Group Anagrams, #438 Find All Anagrams in a String</li>
+      <li><strong>NeetCode.io</strong> — Arrays &amp; Hashing section, Sliding Window section</li>
+    </ul>
+  </div>
+</main>
+<footer><strong>Algoritmia Aplicada y Diseño Moderno de Sistemas</strong> · UDES · Block 1 – Week 3 · Professor: Jorge Galvis</footer>
+</body>
+</html>
