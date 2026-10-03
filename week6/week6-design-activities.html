@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 6 Design Activities – Notifications &amp; Rate Limiters | Algoritmia Aplicada</title>
+<style>
+  :root{--udes-blue:#003087;--udes-blue-dark:#001f5c;--udes-blue-light:#1a4fa0;--udes-gold:#C8A028;--bg:#f4f6fb;--surface:#fff;--surface2:#eef2fa;--text:#1a1a2e;--text-muted:#5a6070;--border:#d0d8ea;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  .top-nav{background:var(--udes-blue-dark);color:#fff;padding:0.6rem 2rem;display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;}
+  .top-nav .course-label{color:var(--udes-gold);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;}
+  .lesson-breadcrumb{display:flex;gap:1.2rem;align-items:center;}
+  .lesson-breadcrumb .prev{color:#aab4cc;}
+  .lesson-breadcrumb .current{background:var(--udes-gold);color:#000;font-weight:700;padding:0.2rem 0.7rem;border-radius:4px;}
+  header{background:linear-gradient(135deg,var(--udes-blue) 0%,var(--udes-blue-light) 100%);color:#fff;padding:2.5rem 2rem;text-align:center;border-bottom:4px solid var(--udes-gold);}
+  header .block-tag{display:inline-block;background:var(--udes-gold);color:#000;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:0.25rem 0.9rem;border-radius:20px;margin-bottom:1rem;}
+  header h1{font-size:2rem;font-weight:800;margin-bottom:0.4rem;}
+  header p.subtitle{font-size:1rem;color:#b8ccee;}
+  .container{max-width:900px;margin:0 auto;padding:2rem 1.5rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.8rem 2rem;margin-bottom:2rem;box-shadow:0 2px 8px rgba(0,48,135,0.06);}
+  .card h2{color:var(--udes-blue);font-size:1.3rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--udes-gold);}
+  .card h3{color:var(--udes-blue-dark);font-size:1.05rem;margin:1.3rem 0 0.5rem;}
+  .quiz-q{background:var(--surface2);border-left:4px solid var(--udes-blue);border-radius:0 8px 8px 0;padding:1rem 1.2rem;margin:1.2rem 0;}
+  .quiz-q .q-num{font-size:0.78rem;font-weight:700;color:var(--udes-gold);text-transform:uppercase;letter-spacing:0.08em;}
+  .options{list-style:none;padding:0;margin-top:0.8rem;}
+  .options li{padding:0.45rem 0.8rem;margin:0.3rem 0;border-radius:6px;border:1px solid var(--border);cursor:pointer;transition:background 0.15s;}
+  .options li:hover{background:var(--surface2);}
+  .options li.selected{background:#ddeaff;border-color:var(--udes-blue);}
+  .options li.correct{background:#e8f5e9;border-color:#2e7d32;color:#1b5e20;font-weight:600;}
+  .options li.wrong{background:#ffebee;border-color:#c62828;color:#b71c1c;}
+  .reveal-btn{margin-top:0.8rem;padding:0.4rem 1.1rem;background:var(--udes-blue);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:0.87rem;font-weight:600;}
+  .explanation{display:none;margin-top:0.8rem;padding:0.8rem 1rem;background:#fffde7;border-left:3px solid var(--udes-gold);border-radius:0 6px 6px 0;font-size:0.92rem;}
+  .scenario{background:#e3f2fd;border:1px solid #90caf9;border-radius:8px;padding:1.2rem 1.4rem;margin:1rem 0;}
+  .scenario h4{color:#0d47a1;margin-bottom:0.5rem;font-size:1rem;}
+  .scenario p{font-size:0.94rem;margin-top:0.4rem;}
+  .checklist{list-style:none;padding:0;}
+  .checklist li{padding:0.5rem 0.8rem;margin:0.3rem 0;display:flex;align-items:flex-start;gap:0.7rem;border-radius:6px;background:var(--surface2);}
+  .checklist input[type=checkbox]{margin-top:0.3rem;accent-color:var(--udes-blue);width:16px;height:16px;flex-shrink:0;}
+  #score-bar{background:var(--udes-blue-dark);color:#fff;text-align:center;padding:1rem;position:sticky;top:0;z-index:100;font-size:0.95rem;}
+  #score-bar span{color:var(--udes-gold);font-weight:800;font-size:1.1rem;}
+  footer{background:var(--udes-blue-dark);color:#8899bb;text-align:center;padding:1.2rem;font-size:0.82rem;margin-top:3rem;}
+  footer strong{color:var(--udes-gold);}
+  table{width:100%;border-collapse:collapse;font-size:0.91rem;margin:1rem 0;}
+  th{background:var(--udes-blue);color:#fff;padding:0.55rem 0.9rem;text-align:left;}
+  td{padding:0.5rem 0.9rem;border-bottom:1px solid var(--border);}
+  tr:nth-child(even) td{background:var(--surface2);}
+</style>
+</head>
+<body>
+<nav class="top-nav">
+  <span class="course-label">Algoritmia Aplicada y Diseño Moderno de Sistemas</span>
+  <div class="lesson-breadcrumb">
+    <span class="prev">⬅ Week 5: Exam Prep</span>
+    <span class="current">Week 6 · Design Activities</span>
+    <span>→ Week 7: Social Systems</span>
+  </div>
+</nav>
+<div id="score-bar">Quiz score: <span id="score">0 / 0</span> correct</div>
+<header>
+  <div class="block-tag">Block 2 – Design at Scale · Week 6 Activities</div>
+  <h1>Notifications, Leaderboards &amp; Rate Limiters — Activities</h1>
+  <p class="subtitle">Quiz · Design Workshops · Peer Review</p>
+</header>
+
+<main class="container">
+
+  <!-- PART A: QUIZ -->
+  <div class="card">
+    <h2>⚡ Part A — Conceptual Quiz</h2>
+
+    <div class="quiz-q" id="q1">
+      <div class="q-num">Question 1</div>
+      <p><strong>A celebrity with 50 million followers posts a tweet. The system uses fan-out on write. How many cache writes are triggered?</strong></p>
+      <ul class="options" data-correct="d">
+        <li data-val="a">1 — write to the celebrity's own feed cache</li>
+        <li data-val="b">As many as there are active followers right now</li>
+        <li data-val="c">0 — fan-out on write skips celebrity accounts</li>
+        <li data-val="d">~50 million — one write per follower's timeline cache</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q1')">Reveal</button>
+      <div class="explanation" id="q1-exp"><strong>~50 million writes</strong> — fan-out on write pushes the new post to every follower's pre-computed feed cache. This is the core write amplification problem of the push model. That's why hybrid approaches skip the push for celebrities and serve their posts on read instead.</div>
+    </div>
+
+    <div class="quiz-q" id="q2">
+      <div class="q-num">Question 2</div>
+      <p><strong>Redis Sorted Set operation <code>ZRANK leaderboard "player_42"</code> has what time complexity?</strong></p>
+      <ul class="options" data-correct="b">
+        <li data-val="a">O(1)</li>
+        <li data-val="b">O(log n)</li>
+        <li data-val="c">O(n)</li>
+        <li data-val="d">O(n log n)</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q2')">Reveal</button>
+      <div class="explanation" id="q2-exp"><strong>O(log n)</strong> — Redis Sorted Sets use a skip list internally. ZRANK, ZADD, and ZRANGE are all O(log n), making them ideal for real-time leaderboards at massive scale.</div>
+    </div>
+
+    <div class="quiz-q" id="q3">
+      <div class="q-num">Question 3</div>
+      <p><strong>The Token Bucket algorithm allows bursts. What does this mean in practice?</strong></p>
+      <ul class="options" data-correct="c">
+        <li data-val="a">Requests are queued and processed in order, never rejected</li>
+        <li data-val="b">Burst traffic causes the service to scale horizontally</li>
+        <li data-val="c">If tokens have accumulated (low traffic period), a burst of requests can all pass through until the bucket empties</li>
+        <li data-val="d">Burst tokens are tokens that represent failed requests</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q3')">Reveal</button>
+      <div class="explanation" id="q3-exp"><strong>Accumulated tokens allow bursts</strong> — if your bucket fills up to 100 tokens during a quiet period, a burst of 100 simultaneous requests all succeed. This is in contrast to the Sliding Window Counter, which enforces a strictly uniform rate at all times.</div>
+    </div>
+
+    <div class="quiz-q" id="q4">
+      <div class="q-num">Question 4</div>
+      <p><strong>Why does a notification service use Kafka between the notification server and delivery workers?</strong></p>
+      <ul class="options" data-correct="b">
+        <li data-val="a">Kafka is faster than HTTP for small payloads</li>
+        <li data-val="b">It decouples producers from consumers and buffers spikes so workers aren't overwhelmed</li>
+        <li data-val="c">Kafka provides end-to-end encryption for notifications</li>
+        <li data-val="d">Kafka automatically deduplicates notification messages</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q4')">Reveal</button>
+      <div class="explanation" id="q4-exp"><strong>Decoupling and buffering</strong> — Kafka absorbs traffic spikes (e.g., a breaking news event) so workers process at their sustainable rate. It also retains messages for replay on worker failure, guaranteeing delivery even when third-party providers (FCM, email) are temporarily down.</div>
+    </div>
+
+    <div class="quiz-q" id="q5">
+      <div class="q-num">Question 5</div>
+      <p><strong>An idempotency key is used in notification systems to:</strong></p>
+      <ul class="options" data-correct="a">
+        <li data-val="a">Prevent the same notification from being sent twice if a worker retries after a failure</li>
+        <li data-val="b">Encrypt the notification payload for the recipient</li>
+        <li data-val="c">Track the delivery time of each notification</li>
+        <li data-val="d">Route the notification to the correct provider (FCM vs APNs)</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q5')">Reveal</button>
+      <div class="explanation" id="q5-exp"><strong>Prevent duplicate delivery</strong> — with at-least-once delivery, a worker may retry after a crash. The idempotency key (e.g., a UUID stored in Redis) ensures the same logical notification is only sent once, even if the job runs multiple times.</div>
+    </div>
+  </div>
+
+  <!-- PART B: LEADERBOARD WORKSHOP -->
+  <div class="card">
+    <h2>🏆 Part B — Design Workshop: Live Gaming Leaderboard</h2>
+    <p style="font-size:0.93rem;margin-bottom:1rem;">In groups of 2, design a real-time leaderboard for a mobile game with the requirements below. Label all components on the whiteboard and justify every choice.</p>
+
+    <div class="scenario">
+      <h4>System Requirements</h4>
+      <p><strong>Users:</strong> 50 million registered players, 5 million daily active</p>
+      <p><strong>Score updates:</strong> 200,000 score submissions/second at peak (end of game)</p>
+      <p><strong>Read traffic:</strong> 1 million leaderboard reads/second (players checking top-100)</p>
+      <p><strong>Leaderboard types:</strong> Global all-time · Weekly · Friends-only (up to 500 friends)</p>
+      <p><strong>Latency targets:</strong> Score update &lt;50ms P99 · Leaderboard read &lt;30ms P99</p>
+    </div>
+
+    <h3>Guided Design Questions</h3>
+    <ol style="margin-left:1.4rem;line-height:2.4;font-size:0.95rem;">
+      <li>Which Redis data structure do you use for the global leaderboard? What commands handle a score update and a top-100 query?</li>
+      <li>At 200K updates/second, can a single Redis instance handle the write load? How would you shard the leaderboard?</li>
+      <li>The weekly leaderboard resets every Monday at midnight. How do you implement the reset without downtime?</li>
+      <li>The friends-only leaderboard requires knowing a player's friends. Where do you store friendship data, and how do you compute their leaderboard on read?</li>
+      <li>How do you prevent score manipulation (a player submitting fake scores from the client)?</li>
+      <li>A score update triggers a push notification to the player who just got overtaken in the top-10. How does this interact with your notification architecture from the lesson?</li>
+    </ol>
+  </div>
+
+  <!-- PART C: NOTIFICATION SYSTEM WORKSHOP -->
+  <div class="card">
+    <h2>📨 Part C — Design Workshop: Notification Service</h2>
+    <p style="font-size:0.93rem;margin-bottom:1rem;">Design a multi-channel notification service for a social app with 100 million users. Work through each dimension below.</p>
+
+    <div class="scenario">
+      <h4>Notification types to support</h4>
+      <p>• <strong>Push notifications</strong> (iOS via APNs, Android via FCM) — immediate, for active users</p>
+      <p>• <strong>Email</strong> (via SendGrid) — daily digest, marketing, security alerts</p>
+      <p>• <strong>SMS</strong> (via Twilio) — OTP verification, critical account alerts only</p>
+    </div>
+
+    <h3>Design Dimensions to Address</h3>
+    <table>
+      <tr><th>Dimension</th><th>Your Design Decision</th></tr>
+      <tr><td>User preference storage (opt-in/opt-out per channel)</td><td></td></tr>
+      <tr><td>Priority queuing (OTP SMS must arrive in &lt;5s; marketing email can wait hours)</td><td></td></tr>
+      <tr><td>Retry strategy when FCM returns a 503</td><td></td></tr>
+      <tr><td>Deduplication (user receives 10 comments in 1 min — send 1 digest, not 10 pings)</td><td></td></tr>
+      <tr><td>Analytics (open rate, click rate, unsubscribe rate)</td><td></td></tr>
+      <tr><td>Handling 50M notifications triggered by a single viral event</td><td></td></tr>
+    </table>
+  </div>
+
+  <!-- PART D: PEER REVIEW -->
+  <div class="card">
+    <h2>🤝 Part D — Peer Review Checklist</h2>
+    <p style="font-size:0.93rem;margin-bottom:1rem;">Review a partner's leaderboard or notification design using this checklist.</p>
+    <ul class="checklist">
+      <li><input type="checkbox" id="c1"><label for="c1">Redis Sorted Set used for leaderboard with correct commands (ZADD, ZRANK, ZRANGE)?</label></li>
+      <li><input type="checkbox" id="c2"><label for="c2">Sharding strategy specified — not just "multiple Redis instances"?</label></li>
+      <li><input type="checkbox" id="c3"><label for="c3">Kafka (or equivalent queue) included between notification server and delivery workers?</label></li>
+      <li><input type="checkbox" id="c4"><label for="c4">Idempotency key or deduplication mechanism addressed?</label></li>
+      <li><input type="checkbox" id="c5"><label for="c5">Rate limiter algorithm named (Token Bucket / Sliding Window) and justified?</label></li>
+      <li><input type="checkbox" id="c6"><label for="c6">Failure scenario for a third-party provider outage (FCM down) handled?</label></li>
+    </ul>
+  </div>
+
+  <!-- PART E: REFLECTION -->
+  <div class="card">
+    <h2>📝 Part E — Weekly Reflection</h2>
+    <ol style="margin-left:1.4rem;line-height:2.3;font-size:0.95rem;">
+      <li>Research the <strong>Sliding Window Log</strong> rate limiting algorithm. How does it differ from Sliding Window Counter, and when would you choose it despite its higher memory cost?</li>
+      <li>Twitter's hybrid fan-out uses a threshold (e.g., &gt;1M followers → pull). How would you determine the right threshold for your app? What metric would you monitor?</li>
+      <li>Design a "notification fatigue" system: a user should not receive more than 5 notifications per hour. How do you enforce this limit across 3 different notification workers running in parallel?</li>
+    </ol>
+  </div>
+
+</main>
+<footer><strong>Algoritmia Aplicada y Diseño Moderno de Sistemas</strong> · UDES · Block 2 – Week 6 Design Activities · Professor: Jorge Galvis</footer>
+<script>
+  let answered=0,correct=0;
+  function revealQuiz(qid){
+    const block=document.getElementById(qid);
+    const correctVal=block.querySelector('.options').dataset.correct;
+    const selected=block.querySelector('li.selected');
+    if(!selected){alert('Please select an answer first.');return;}
+    block.querySelectorAll('.options li').forEach(li=>{
+      if(li.dataset.val===correctVal)li.classList.add('correct');
+      else if(li.classList.contains('selected'))li.classList.add('wrong');
+    });
+    document.getElementById(qid+'-exp').style.display='block';
+    if(!block.dataset.counted){
+      answered++;
+      if(selected.dataset.val===correctVal)correct++;
+      block.dataset.counted='1';
+      document.getElementById('score').textContent=correct+' / '+answered;
+    }
+    block.querySelector('.reveal-btn').disabled=true;
+  }
+  document.querySelectorAll('.options').forEach(ul=>{
+    ul.querySelectorAll('li').forEach(li=>{
+      li.addEventListener('click',()=>{
+        if(ul.closest('.quiz-q').dataset.counted)return;
+        ul.querySelectorAll('li').forEach(x=>x.classList.remove('selected'));
+        li.classList.add('selected');
+      });
+    });
+  });
+  document.querySelectorAll('.checklist input').forEach((cb,i)=>{
+    cb.checked=sessionStorage.getItem('w6da-cb-'+i)==='1';
+    cb.addEventListener('change',()=>sessionStorage.setItem('w6da-cb-'+i,cb.checked?'1':'0'));
+  });
+</script>
+</body>
+</html>
