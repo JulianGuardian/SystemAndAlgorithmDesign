@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 7 Design Activities – Social Systems | Algoritmia Aplicada</title>
+<style>
+  :root{--udes-blue:#003087;--udes-blue-dark:#001f5c;--udes-blue-light:#1a4fa0;--udes-gold:#C8A028;--bg:#f4f6fb;--surface:#fff;--surface2:#eef2fa;--text:#1a1a2e;--text-muted:#5a6070;--border:#d0d8ea;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  .top-nav{background:var(--udes-blue-dark);color:#fff;padding:0.6rem 2rem;display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;}
+  .top-nav .course-label{color:var(--udes-gold);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;}
+  .lesson-breadcrumb{display:flex;gap:1.2rem;align-items:center;}
+  .lesson-breadcrumb .prev{color:#aab4cc;}
+  .lesson-breadcrumb .current{background:var(--udes-gold);color:#000;font-weight:700;padding:0.2rem 0.7rem;border-radius:4px;}
+  header{background:linear-gradient(135deg,var(--udes-blue) 0%,var(--udes-blue-light) 100%);color:#fff;padding:2.5rem 2rem;text-align:center;border-bottom:4px solid var(--udes-gold);}
+  header .block-tag{display:inline-block;background:var(--udes-gold);color:#000;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:0.25rem 0.9rem;border-radius:20px;margin-bottom:1rem;}
+  header h1{font-size:2rem;font-weight:800;margin-bottom:0.4rem;}
+  header p.subtitle{font-size:1rem;color:#b8ccee;}
+  .container{max-width:900px;margin:0 auto;padding:2rem 1.5rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.8rem 2rem;margin-bottom:2rem;box-shadow:0 2px 8px rgba(0,48,135,0.06);}
+  .card h2{color:var(--udes-blue);font-size:1.3rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--udes-gold);}
+  .card h3{color:var(--udes-blue-dark);font-size:1.05rem;margin:1.3rem 0 0.5rem;}
+  .quiz-q{background:var(--surface2);border-left:4px solid var(--udes-blue);border-radius:0 8px 8px 0;padding:1rem 1.2rem;margin:1.2rem 0;}
+  .quiz-q .q-num{font-size:0.78rem;font-weight:700;color:var(--udes-gold);text-transform:uppercase;letter-spacing:0.08em;}
+  .options{list-style:none;padding:0;margin-top:0.8rem;}
+  .options li{padding:0.45rem 0.8rem;margin:0.3rem 0;border-radius:6px;border:1px solid var(--border);cursor:pointer;transition:background 0.15s;}
+  .options li:hover{background:var(--surface2);}
+  .options li.selected{background:#ddeaff;border-color:var(--udes-blue);}
+  .options li.correct{background:#e8f5e9;border-color:#2e7d32;color:#1b5e20;font-weight:600;}
+  .options li.wrong{background:#ffebee;border-color:#c62828;color:#b71c1c;}
+  .reveal-btn{margin-top:0.8rem;padding:0.4rem 1.1rem;background:var(--udes-blue);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:0.87rem;font-weight:600;}
+  .explanation{display:none;margin-top:0.8rem;padding:0.8rem 1rem;background:#fffde7;border-left:3px solid var(--udes-gold);border-radius:0 6px 6px 0;font-size:0.92rem;}
+  .scenario{background:#e3f2fd;border:1px solid #90caf9;border-radius:8px;padding:1.2rem 1.4rem;margin:1rem 0;}
+  .scenario h4{color:#0d47a1;margin-bottom:0.5rem;}
+  .checklist{list-style:none;padding:0;}
+  .checklist li{padding:0.5rem 0.8rem;margin:0.3rem 0;display:flex;align-items:flex-start;gap:0.7rem;border-radius:6px;background:var(--surface2);}
+  .checklist input[type=checkbox]{margin-top:0.3rem;accent-color:var(--udes-blue);width:16px;height:16px;flex-shrink:0;}
+  #score-bar{background:var(--udes-blue-dark);color:#fff;text-align:center;padding:1rem;position:sticky;top:0;z-index:100;font-size:0.95rem;}
+  #score-bar span{color:var(--udes-gold);font-weight:800;font-size:1.1rem;}
+  footer{background:var(--udes-blue-dark);color:#8899bb;text-align:center;padding:1.2rem;font-size:0.82rem;margin-top:3rem;}
+  footer strong{color:var(--udes-gold);}
+</style>
+</head>
+<body>
+<nav class="top-nav">
+  <span class="course-label">Algoritmia Aplicada y Diseño Moderno de Sistemas</span>
+  <div class="lesson-breadcrumb">
+    <span class="prev">⬅ Week 6: Design Activities</span>
+    <span class="current">Week 7 · Design Activities</span>
+    <span>→ Week 8: Messaging Design</span>
+  </div>
+</nav>
+<div id="score-bar">Quiz score: <span id="score">0 / 0</span> correct</div>
+<header>
+  <div class="block-tag">Block 2 – Design at Scale · Week 7 Activities</div>
+  <h1>Social Systems Design Activities</h1>
+  <p class="subtitle">Feed Architecture · Fan-out · WhatsApp Delivery · Mock Interview Exercises</p>
+</header>
+
+<main class="container">
+
+  <div class="card">
+    <h2>⚡ Part A — Quiz</h2>
+
+    <div class="quiz-q" id="q1">
+      <div class="q-num">Question 1</div>
+      <p><strong>A celebrity with 50 million followers posts a tweet. Which fan-out model is most problematic and why?</strong></p>
+      <ul class="options" data-correct="b">
+        <li data-val="a">Fan-out on Read — too many DB reads at post time</li>
+        <li data-val="b">Fan-out on Write — must write tweet ID to 50M Redis entries, taking minutes</li>
+        <li data-val="c">Both are equally problematic for celebrities</li>
+        <li data-val="d">Neither — Redis handles this transparently</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q1')">Reveal</button>
+      <div class="explanation" id="q1-exp"><strong>Fan-out on Write.</strong> Writing to 50M Redis timeline caches is extremely slow and strains fan-out workers. Twitter's solution is the hybrid model: fan-out on write for regular users, pull for celebrities at read time.</div>
+    </div>
+
+    <div class="quiz-q" id="q2">
+      <div class="q-num">Question 2</div>
+      <p><strong>In WhatsApp, what does a double grey checkmark (✓✓) mean?</strong></p>
+      <ul class="options" data-correct="b">
+        <li data-val="a">Message sent to WhatsApp's servers</li>
+        <li data-val="b">Message delivered to the recipient's device</li>
+        <li data-val="c">Message read by the recipient</li>
+        <li data-val="d">Message encrypted successfully</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q2')">Reveal</button>
+      <div class="explanation" id="q2-exp"><strong>Delivered to device.</strong> Single grey ✓ = server received it. Double grey ✓✓ = device received it (may be in background, not yet opened). Blue ✓✓ = read in the app. This three-state receipt system requires the recipient's device to send acknowledgments back.</div>
+    </div>
+
+    <div class="quiz-q" id="q3">
+      <div class="q-num">Question 3</div>
+      <p><strong>Why does WhatsApp use WebSockets instead of standard HTTP polling for message delivery?</strong></p>
+      <ul class="options" data-correct="c">
+        <li data-val="a">WebSockets use less CPU</li>
+        <li data-val="b">WebSockets support end-to-end encryption natively</li>
+        <li data-val="c">WebSockets allow the server to push messages to clients without the client polling</li>
+        <li data-val="d">HTTP polling is not supported on mobile devices</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q3')">Reveal</button>
+      <div class="explanation" id="q3-exp"><strong>Server push.</strong> HTTP is request-response: the client must initiate every exchange. With WebSockets, a persistent bidirectional TCP connection is established, allowing the server to push a message the moment it arrives — critical for real-time chat.</div>
+    </div>
+
+    <div class="quiz-q" id="q4">
+      <div class="q-num">Question 4</div>
+      <p><strong>What Redis data structure is ideal for storing a user's pre-built newsfeed timeline?</strong></p>
+      <ul class="options" data-correct="a">
+        <li data-val="a">Sorted Set (ZSET) — score = timestamp, enables chronological feed slicing</li>
+        <li data-val="b">Hash Map — key = tweet ID, value = tweet content</li>
+        <li data-val="c">Set — for fast membership testing of tweet IDs</li>
+        <li data-val="d">String — serialize and store the entire feed as JSON</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q4')">Reveal</button>
+      <div class="explanation" id="q4-exp"><strong>Sorted Set.</strong> <code>ZADD user:feed {timestamp} {tweet_id}</code> lets you fetch the latest N tweets with <code>ZREVRANGE user:feed 0 N-1</code> in O(log n + N). The score (timestamp) provides chronological ordering and efficient range queries.</div>
+    </div>
+
+    <div class="quiz-q" id="q5">
+      <div class="q-num">Question 5</div>
+      <p><strong>In Twitter's hybrid fan-out model, what criterion typically triggers switching from fan-out on write to fan-out on read?</strong></p>
+      <ul class="options" data-correct="c">
+        <li data-val="a">Number of daily tweets by the user</li>
+        <li data-val="b">Geographic location of the user</li>
+        <li data-val="c">Follower count exceeding a threshold (e.g., 10,000–50,000)</li>
+        <li data-val="d">Whether the user is a verified account</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q5')">Reveal</button>
+      <div class="explanation" id="q5-exp"><strong>Follower count threshold.</strong> Beyond a certain follower count, the write amplification of fan-out on write becomes too expensive. The threshold (~10K–50K followers) is tuned based on observed system load. Verified status alone is not the criterion — a newly verified account with few followers still uses push.</div>
+    </div>
+  </div>
+
+  <!-- WORKSHOP 1 -->
+  <div class="card">
+    <h2>🖊️ Part B — Design Workshop: Instagram Newsfeed</h2>
+    <p style="margin-bottom:1rem;font-size:0.93rem;">In pairs, design the newsfeed system for an Instagram-like app with the following requirements:</p>
+    <div class="scenario">
+      <h4>Requirements</h4>
+      <ul style="margin-left:1.2rem;line-height:2;font-size:0.94rem;">
+        <li>500M registered users, 50M daily active users</li>
+        <li>Users can follow up to 2,000 accounts; some influencers have 5M+ followers</li>
+        <li>Feed shows latest 20 posts from followed accounts, in reverse-chronological order</li>
+        <li>Posts include image + caption; images are up to 5MB</li>
+        <li>Feed must load in &lt;300ms for 99th percentile</li>
+        <li>Users post an average of 2 times per day</li>
+      </ul>
+    </div>
+    <h3>Questions to answer in your design</h3>
+    <ol style="margin-left:1.2rem;line-height:2.2;font-size:0.94rem;">
+      <li>Which fan-out model will you use for regular users? For influencers?</li>
+      <li>What will you store in Redis vs. the persistent database?</li>
+      <li>How do you serve images at scale? Which CDN strategy?</li>
+      <li>How do you paginate the feed (infinite scroll)?</li>
+      <li>What happens when a followed account deletes a post that is already in a follower's pre-built cache?</li>
+    </ol>
+  </div>
+
+  <!-- WORKSHOP 2 -->
+  <div class="card">
+    <h2>🖊️ Part C — Design Workshop: WhatsApp Read Receipts</h2>
+    <div class="scenario">
+      <h4>Problem</h4>
+      <p style="font-size:0.94rem;margin-top:0.5rem;">Design the read receipt system for a messaging app with 2B users and 100B messages/day. When Alice sends a message to Bob, Alice sees: ✓ (sent), ✓✓ (delivered), 🔵✓✓ (read).</p>
+    </div>
+    <h3>Guiding questions</h3>
+    <ol style="margin-left:1.2rem;line-height:2.2;font-size:0.94rem;">
+      <li>Where is the receipt state stored? (On the sender's device? On the server? Both?)</li>
+      <li>How does the server know Bob's device has received the message vs. just pulled it from the queue?</li>
+      <li>How does the "read" state propagate back to Alice if she is offline when Bob reads it?</li>
+      <li>In a group of 200 members, how many receipt events fire when one person reads a message? How would you aggregate them?</li>
+      <li>What happens if Bob turns off read receipts in settings? Where do you enforce that privacy preference?</li>
+    </ol>
+  </div>
+
+  <!-- CHECKLIST -->
+  <div class="card">
+    <h2>🤝 Part D — Design Review Checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>Fan-out model chosen and justified with specific reasoning (not just "it's faster")?</span></li>
+      <li><input type="checkbox"><span>Hybrid threshold defined — what follower count triggers the switch, and why?</span></li>
+      <li><input type="checkbox"><span>Cache invalidation addressed — what happens when a followed user deletes a post?</span></li>
+      <li><input type="checkbox"><span>WebSocket vs. polling decision made explicit for real-time features?</span></li>
+      <li><input type="checkbox"><span>Storage tiering explained — what lives in Redis, what in the persistent DB?</span></li>
+      <li><input type="checkbox"><span>Single points of failure identified and redundancy proposed?</span></li>
+    </ul>
+  </div>
+
+  <!-- REFLECTION -->
+  <div class="card">
+    <h2>📝 Part E — Reflection</h2>
+    <ol style="margin-left:1.4rem;line-height:2.2;font-size:0.95rem;">
+      <li>Research: how does Instagram's algorithm rank posts in a feed (it's not purely chronological)? Which components of the architecture would change to support ranking?</li>
+      <li>If WhatsApp servers cannot read messages due to E2EE, how does the spam/abuse detection system work? Research client-side scanning.</li>
+      <li>Estimate the storage cost of Twitter's Redis timeline cache: assume 100M active users, each with a feed of 800 tweet IDs (each 8 bytes). How many GB of Redis RAM is needed?</li>
+    </ol>
+  </div>
+
+</main>
+
+<footer><strong>Algoritmia Aplicada y Diseño Moderno de Sistemas</strong> · UDES · Block 2 – Week 7 Design Activities · Professor: Jorge Galvis</footer>
+<script>
+  let answered=0,correct=0;
+  function revealQuiz(qid){
+    const block=document.getElementById(qid);
+    const correctVal=block.querySelector('.options').dataset.correct;
+    const selected=block.querySelector('li.selected');
+    if(!selected){alert('Please select an answer first.');return;}
+    block.querySelectorAll('.options li').forEach(li=>{
+      if(li.dataset.val===correctVal)li.classList.add('correct');
+      else if(li.classList.contains('selected'))li.classList.add('wrong');
+    });
+    document.getElementById(qid+'-exp').style.display='block';
+    if(!block.dataset.counted){
+      answered++;
+      if(selected.dataset.val===correctVal)correct++;
+      block.dataset.counted='1';
+      document.getElementById('score').textContent=correct+' / '+answered;
+    }
+    block.querySelector('.reveal-btn').disabled=true;
+  }
+  document.querySelectorAll('.options').forEach(ul=>{
+    ul.querySelectorAll('li').forEach(li=>{
+      li.addEventListener('click',()=>{
+        if(ul.closest('.quiz-q').dataset.counted)return;
+        ul.querySelectorAll('li').forEach(x=>x.classList.remove('selected'));
+        li.classList.add('selected');
+      });
+    });
+  });
+  document.querySelectorAll('.checklist input').forEach((cb,i)=>{
+    cb.checked=sessionStorage.getItem('w7d-cb-'+i)==='1';
+    cb.addEventListener('change',()=>sessionStorage.setItem('w7d-cb-'+i,cb.checked?'1':'0'));
+  });
+</script>
+</body>
+</html>

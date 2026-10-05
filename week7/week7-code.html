@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 7 – Binary Trees &amp; BST | Algoritmia Aplicada</title>
+<style>
+  :root{--udes-blue:#003087;--udes-blue-dark:#001f5c;--udes-blue-light:#1a4fa0;--udes-gold:#C8A028;--udes-gold-light:#f0c84a;--bg:#f4f6fb;--surface:#ffffff;--surface2:#eef2fa;--text:#1a1a2e;--text-muted:#5a6070;--border:#d0d8ea;--code-bg:#1e2340;--code-text:#e8eaf0;--success:#2e7d32;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  .top-nav{background:var(--udes-blue-dark);color:#fff;padding:0.6rem 2rem;display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;}
+  .top-nav .course-label{color:var(--udes-gold);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;}
+  .lesson-breadcrumb{display:flex;gap:1.2rem;align-items:center;}
+  .lesson-breadcrumb .prev{color:#aab4cc;}
+  .lesson-breadcrumb .current{background:var(--udes-gold);color:#000;font-weight:700;padding:0.2rem 0.7rem;border-radius:4px;}
+  header{background:linear-gradient(135deg,var(--udes-blue) 0%,var(--udes-blue-light) 100%);color:#fff;padding:3rem 2rem 2.5rem;text-align:center;border-bottom:4px solid var(--udes-gold);}
+  header .block-tag{display:inline-block;background:var(--udes-gold);color:#000;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:0.25rem 0.9rem;border-radius:20px;margin-bottom:1rem;}
+  header h1{font-size:2.2rem;font-weight:800;margin-bottom:0.4rem;}
+  header p.subtitle{font-size:1.05rem;color:#b8ccee;max-width:620px;margin:0 auto;}
+  .container{max-width:960px;margin:0 auto;padding:2rem 1.5rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.8rem 2rem;margin-bottom:2rem;box-shadow:0 2px 8px rgba(0,48,135,0.06);}
+  .card h2{color:var(--udes-blue);font-size:1.35rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--udes-gold);display:flex;align-items:center;gap:0.5rem;}
+  .card h3{color:var(--udes-blue-dark);font-size:1.1rem;margin:1.4rem 0 0.6rem;}
+  .objectives ul{list-style:none;padding:0;}
+  .objectives li{padding:0.4rem 0 0.4rem 1.8rem;position:relative;}
+  .objectives li::before{content:"✓";position:absolute;left:0;color:var(--udes-gold);font-weight:900;}
+  .concept-box{background:var(--surface2);border-left:4px solid var(--udes-blue);border-radius:0 8px 8px 0;padding:1rem 1.2rem;margin:1rem 0;font-size:0.97rem;}
+  .concept-box.gold{border-left-color:var(--udes-gold);}
+  .concept-box strong{color:var(--udes-blue);}
+  .code-block{background:var(--code-bg);color:var(--code-text);border-radius:8px;padding:1.2rem 1.4rem;overflow-x:auto;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:0.88rem;line-height:1.65;margin:1rem 0;position:relative;}
+  .code-block .label{position:absolute;top:0.5rem;right:0.8rem;font-size:0.7rem;background:var(--udes-gold);color:#000;padding:0.1rem 0.5rem;border-radius:4px;font-weight:700;font-family:sans-serif;}
+  .kw{color:#c678dd;} .fn{color:#61afef;} .cm{color:#7f848e;font-style:italic;} .st{color:#98c379;} .nu{color:#d19a66;} .op{color:#56b6c2;}
+  .diagram-wrap{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1.2rem;margin:1.2rem 0;text-align:center;}
+  .diagram-wrap figcaption{font-size:0.82rem;color:var(--text-muted);margin-top:0.6rem;font-style:italic;}
+  .alert{background:#fff8e1;border-left:4px solid var(--udes-gold);border-radius:0 8px 8px 0;padding:0.9rem 1.2rem;margin:1rem 0;font-size:0.95rem;}
+  .alert strong{color:#795500;}
+  .tag{display:inline-block;background:#e3ebfa;color:var(--udes-blue);border-radius:4px;padding:0.15rem 0.55rem;font-size:0.78rem;font-weight:600;margin:0.15rem;}
+  table{width:100%;border-collapse:collapse;font-size:0.92rem;margin:1rem 0;}
+  th{background:var(--udes-blue);color:#fff;padding:0.6rem 1rem;text-align:left;}
+  td{padding:0.55rem 1rem;border-bottom:1px solid var(--border);}
+  tr:nth-child(even) td{background:var(--surface2);}
+  .good{color:var(--success);font-weight:700;}
+  .bad{color:#c62828;font-weight:700;}
+  footer{background:var(--udes-blue-dark);color:#8899bb;text-align:center;padding:1.2rem;font-size:0.82rem;margin-top:3rem;}
+  footer strong{color:var(--udes-gold);}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <span class="course-label">Algoritmia Aplicada y Diseño Moderno de Sistemas</span>
+  <div class="lesson-breadcrumb">
+    <span class="prev">⬅ Week 6: Stacks &amp; Queues</span>
+    <span class="current">Week 7 · Code</span>
+    <span>→ Week 8: Heaps</span>
+  </div>
+</nav>
+
+<header>
+  <div class="block-tag">Block 2 – Advanced Structures · Week 7</div>
+  <h1>Binary Trees &amp; BST</h1>
+  <p class="subtitle">Tree Traversals · Height · LCA · Diameter · BST Insert / Search / Validate</p>
+</header>
+
+<main class="container">
+
+  <!-- OBJECTIVES -->
+  <div class="card objectives">
+    <h2>🎯 Learning Objectives</h2>
+    <ul>
+      <li>Implement and trace all three DFS traversal orders (in-order, pre-order, post-order) both recursively and iteratively.</li>
+      <li>Compute tree height and the diameter of a binary tree using a single DFS pass.</li>
+      <li>Find the Lowest Common Ancestor (LCA) for general binary trees and BSTs.</li>
+      <li>Insert, search, and validate a Binary Search Tree using the min/max bounds technique.</li>
+    </ul>
+  </div>
+
+  <!-- TREE FUNDAMENTALS -->
+  <div class="card">
+    <h2>🌳 1 · Tree Fundamentals</h2>
+
+    <h3>The Node</h3>
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">class</span> <span class="fn">TreeNode</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, val=<span class="nu">0</span>, left=<span class="kw">None</span>, right=<span class="kw">None</span>):
+        <span class="kw">self</span>.val   = val
+        <span class="kw">self</span>.left  = left
+        <span class="kw">self</span>.right = right
+</pre>
+
+    <h3>Vocabulary</h3>
+    <table>
+      <tr><th>Term</th><th>Definition</th></tr>
+      <tr><td><strong>Root</strong></td><td>The topmost node (no parent)</td></tr>
+      <tr><td><strong>Leaf</strong></td><td>A node with no children</td></tr>
+      <tr><td><strong>Height</strong></td><td>Longest path from root to any leaf (edges)</td></tr>
+      <tr><td><strong>Depth</strong></td><td>Distance from root to a specific node</td></tr>
+      <tr><td><strong>Balanced</strong></td><td>Height difference between left and right subtrees ≤ 1 at every node</td></tr>
+    </table>
+
+    <div class="concept-box gold">
+      <strong>Why trees in interviews?</strong> Trees appear in ~20% of FAANG coding problems. Mastering the DFS/BFS template and the "post-order aggregation" trick (computing a value from children and passing it up) unlocks a large class of problems.
+    </div>
+  </div>
+
+  <!-- TRAVERSALS -->
+  <div class="card">
+    <h2>🔄 2 · Traversals — In / Pre / Post-Order</h2>
+
+    <p>Given a tree rooted at <strong>4</strong> with left subtree <strong>2 (1, 3)</strong> and right subtree <strong>6 (5, 7)</strong>:</p>
+    <ul style="margin:0.7rem 0 0.7rem 1.5rem;line-height:2;">
+      <li><strong>In-order</strong> (Left → Root → Right): 1 2 3 <strong>4</strong> 5 6 7 — gives <em>sorted</em> output for a BST</li>
+      <li><strong>Pre-order</strong> (Root → Left → Right): <strong>4</strong> 2 1 3 6 5 7 — useful for copying/serializing a tree</li>
+      <li><strong>Post-order</strong> (Left → Right → Root): 1 3 2 5 7 6 <strong>4</strong> — children before parent; used in deletion/evaluation</li>
+    </ul>
+
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 560 200" width="100%" style="max-width:560px;">
+        <defs><marker id="arr" markerWidth="7" markerHeight="7" refX="3" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#003087"/></marker></defs>
+        <!-- root -->
+        <circle cx="280" cy="30" r="22" fill="#003087"/><text x="280" y="36" text-anchor="middle" fill="#fff" font-size="15" font-weight="bold">4</text>
+        <!-- level 2 -->
+        <circle cx="140" cy="100" r="22" fill="#1a4fa0"/><text x="140" y="106" text-anchor="middle" fill="#fff" font-size="14">2</text>
+        <circle cx="420" cy="100" r="22" fill="#1a4fa0"/><text x="420" y="106" text-anchor="middle" fill="#fff" font-size="14">6</text>
+        <!-- level 3 -->
+        <circle cx="70"  cy="170" r="20" fill="#C8A028"/><text x="70"  y="176" text-anchor="middle" fill="#000" font-size="13">1</text>
+        <circle cx="210" cy="170" r="20" fill="#C8A028"/><text x="210" y="176" text-anchor="middle" fill="#000" font-size="13">3</text>
+        <circle cx="350" cy="170" r="20" fill="#C8A028"/><text x="350" y="176" text-anchor="middle" fill="#000" font-size="13">5</text>
+        <circle cx="490" cy="170" r="20" fill="#C8A028"/><text x="490" y="176" text-anchor="middle" fill="#000" font-size="13">7</text>
+        <!-- edges -->
+        <line x1="262" y1="46" x2="158" y2="84" stroke="#003087" stroke-width="2"/>
+        <line x1="298" y1="46" x2="402" y2="84" stroke="#003087" stroke-width="2"/>
+        <line x1="123" y1="116" x2="86"  y2="152" stroke="#1a4fa0" stroke-width="1.5"/>
+        <line x1="157" y1="116" x2="194" y2="152" stroke="#1a4fa0" stroke-width="1.5"/>
+        <line x1="403" y1="116" x2="366" y2="152" stroke="#1a4fa0" stroke-width="1.5"/>
+        <line x1="437" y1="116" x2="474" y2="152" stroke="#1a4fa0" stroke-width="1.5"/>
+        <!-- legend -->
+        <text x="10" y="198" fill="#003087" font-size="10.5" font-weight="bold">In-order: 1 2 3 4 5 6 7</text>
+        <text x="195" y="198" fill="#c678dd" font-size="10.5" font-weight="bold">Pre-order: 4 2 1 3 6 5 7</text>
+        <text x="390" y="198" fill="#56b6c2" font-size="10.5" font-weight="bold">Post-order: 1 3 2 5 7 6 4</text>
+      </svg>
+      <figcaption>Figure 1 — Same tree, three different visit orderings depending on when the root is processed.</figcaption>
+    </div>
+
+    <h3>Recursive implementations</h3>
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">def</span> <span class="fn">inorder</span>(root: TreeNode) -> list[int]:
+    <span class="kw">if not</span> root:
+        <span class="kw">return</span> []
+    <span class="kw">return</span> <span class="fn">inorder</span>(root.left) + [root.val] + <span class="fn">inorder</span>(root.right)
+
+<span class="kw">def</span> <span class="fn">preorder</span>(root: TreeNode) -> list[int]:
+    <span class="kw">if not</span> root:
+        <span class="kw">return</span> []
+    <span class="kw">return</span> [root.val] + <span class="fn">preorder</span>(root.left) + <span class="fn">preorder</span>(root.right)
+
+<span class="kw">def</span> <span class="fn">postorder</span>(root: TreeNode) -> list[int]:
+    <span class="kw">if not</span> root:
+        <span class="kw">return</span> []
+    <span class="kw">return</span> <span class="fn">postorder</span>(root.left) + <span class="fn">postorder</span>(root.right) + [root.val]
+</pre>
+
+    <h3>Iterative in-order (stack-based)</h3>
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">def</span> <span class="fn">inorder_iterative</span>(root: TreeNode) -> list[int]:
+    result, stack = [], []
+    curr = root
+    <span class="kw">while</span> curr <span class="kw">or</span> stack:
+        <span class="kw">while</span> curr:               <span class="cm"># go as far left as possible</span>
+            stack.append(curr)
+            curr = curr.left
+        curr = stack.pop()        <span class="cm"># leftmost unvisited</span>
+        result.append(curr.val)
+        curr = curr.right         <span class="cm"># try right subtree</span>
+    <span class="kw">return</span> result
+</pre>
+    <div class="alert"><strong>Interview tip:</strong> Interviewers often ask for iterative traversal after you give the recursive solution. The pattern above — push left, pop, visit, go right — is the universal iterative in-order template.</div>
+  </div>
+
+  <!-- HEIGHT -->
+  <div class="card">
+    <h2>📏 3 · Tree Height &amp; Max Depth</h2>
+    <p>LeetCode #104 asks: "Given a binary tree, return its maximum depth." Max depth = height + 1 (counting nodes, not edges).</p>
+
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">def</span> <span class="fn">maxDepth</span>(root: TreeNode) -> int:
+    <span class="kw">if not</span> root:
+        <span class="kw">return</span> <span class="nu">0</span>                <span class="cm"># base case: empty tree has depth 0</span>
+    left_d  = <span class="fn">maxDepth</span>(root.left)
+    right_d = <span class="fn">maxDepth</span>(root.right)
+    <span class="kw">return</span> <span class="nu">1</span> + max(left_d, right_d)  <span class="cm"># add 1 for current node</span>
+</pre>
+
+    <div class="concept-box">
+      <strong>Complexity:</strong> O(n) time — every node is visited exactly once. O(h) space on the call stack, where h is the tree height: O(log n) for balanced, O(n) worst case (skewed tree).
+    </div>
+  </div>
+
+  <!-- LCA -->
+  <div class="card">
+    <h2>🔗 4 · Lowest Common Ancestor (LCA)</h2>
+    <p>The LCA of nodes <em>p</em> and <em>q</em> is the deepest node that has both p and q as descendants (a node is a descendant of itself). LeetCode #236.</p>
+
+    <div class="concept-box gold">
+      <strong>Key insight:</strong> Use post-order traversal. At each node, if the node itself is p or q → return it. If both subtrees return non-null → this node IS the LCA. If only one subtree returns non-null → bubble that up.
+    </div>
+
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">def</span> <span class="fn">lowestCommonAncestor</span>(root, p, q):
+    <span class="kw">if not</span> root <span class="kw">or</span> root <span class="kw">is</span> p <span class="kw">or</span> root <span class="kw">is</span> q:
+        <span class="kw">return</span> root              <span class="cm"># base: found one of the targets</span>
+    left  = <span class="fn">lowestCommonAncestor</span>(root.left,  p, q)
+    right = <span class="fn">lowestCommonAncestor</span>(root.right, p, q)
+    <span class="kw">if</span> left <span class="kw">and</span> right:
+        <span class="kw">return</span> root              <span class="cm"># p in one subtree, q in the other</span>
+    <span class="kw">return</span> left <span class="kw">or</span> right        <span class="cm"># one side found both (or neither)</span>
+</pre>
+
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 480 210" width="100%" style="max-width:480px;">
+        <!-- tree -->
+        <circle cx="240" cy="30" r="22" fill="#003087"/><text x="240" y="36" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">3</text>
+        <circle cx="120" cy="100" r="22" fill="#c678dd"/><text x="120" y="106" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">5</text>
+        <circle cx="360" cy="100" r="22" fill="#1a4fa0"/><text x="360" y="106" text-anchor="middle" fill="#fff" font-size="13">1</text>
+        <circle cx="60"  cy="170" r="20" fill="#C8A028"/><text x="60"  y="176" text-anchor="middle" fill="#000" font-size="12" font-weight="bold">6</text>
+        <circle cx="180" cy="170" r="20" fill="#C8A028"/><text x="180" y="176" text-anchor="middle" fill="#000" font-size="12" font-weight="bold">2</text>
+        <circle cx="300" cy="170" r="20" fill="#eef2fa"/><text x="300" y="176" text-anchor="middle" fill="#003087" font-size="12">0</text>
+        <circle cx="420" cy="170" r="20" fill="#eef2fa"/><text x="420" y="176" text-anchor="middle" fill="#003087" font-size="12">8</text>
+        <!-- edges -->
+        <line x1="222" y1="46" x2="138" y2="84" stroke="#003087" stroke-width="2"/>
+        <line x1="258" y1="46" x2="342" y2="84" stroke="#003087" stroke-width="2"/>
+        <line x1="103" y1="116" x2="76"  y2="152" stroke="#c678dd" stroke-width="1.5"/>
+        <line x1="137" y1="116" x2="164" y2="152" stroke="#c678dd" stroke-width="1.5"/>
+        <line x1="343" y1="116" x2="316" y2="152" stroke="#1a4fa0" stroke-width="1.5"/>
+        <line x1="377" y1="116" x2="404" y2="152" stroke="#1a4fa0" stroke-width="1.5"/>
+        <!-- labels -->
+        <text x="60"  y="198" text-anchor="middle" fill="#c678dd" font-size="10" font-weight="bold">p</text>
+        <text x="180" y="198" text-anchor="middle" fill="#56b6c2" font-size="10" font-weight="bold">q</text>
+        <text x="120" y="130" text-anchor="middle" fill="#c678dd" font-size="10">LCA(p,q)=5</text>
+      </svg>
+      <figcaption>Figure 2 — LCA of nodes 6 (p) and 2 (q) is node 5, their shared ancestor closest to them.</figcaption>
+    </div>
+  </div>
+
+  <!-- DIAMETER -->
+  <div class="card">
+    <h2>📐 5 · Diameter of a Binary Tree</h2>
+    <p>The diameter is the length (in edges) of the longest path between any two nodes. The path may or may not pass through the root. LeetCode #543.</p>
+    <div class="concept-box">
+      <strong>Trick:</strong> Use a <code>nonlocal</code> variable to track the running max. For each node, the longest path through it is <code>left_height + right_height</code>. The recursive return value is the height (for the parent's calculation), while the side effect updates the diameter.
+    </div>
+
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">def</span> <span class="fn">diameterOfBinaryTree</span>(root: TreeNode) -> int:
+    diameter = <span class="nu">0</span>
+
+    <span class="kw">def</span> <span class="fn">height</span>(node):
+        <span class="kw">nonlocal</span> diameter
+        <span class="kw">if not</span> node:
+            <span class="kw">return</span> <span class="nu">0</span>
+        left_h  = <span class="fn">height</span>(node.left)
+        right_h = <span class="fn">height</span>(node.right)
+        diameter = max(diameter, left_h + right_h)  <span class="cm"># path through this node</span>
+        <span class="kw">return</span> <span class="nu">1</span> + max(left_h, right_h)             <span class="cm"># height for parent</span>
+
+    <span class="fn">height</span>(root)
+    <span class="kw">return</span> diameter
+</pre>
+  </div>
+
+  <!-- BST -->
+  <div class="card">
+    <h2>🔍 6 · Binary Search Tree (BST)</h2>
+    <p>A BST enforces the invariant: <strong>left subtree values &lt; node &lt; right subtree values</strong> at every node. This enables O(log n) search on balanced trees.</p>
+
+    <h3>Insert</h3>
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">def</span> <span class="fn">insert</span>(root: TreeNode, val: int) -> TreeNode:
+    <span class="kw">if not</span> root:
+        <span class="kw">return</span> <span class="fn">TreeNode</span>(val)
+    <span class="kw">if</span> val < root.val:
+        root.left  = <span class="fn">insert</span>(root.left,  val)
+    <span class="kw">else</span>:
+        root.right = <span class="fn">insert</span>(root.right, val)
+    <span class="kw">return</span> root
+</pre>
+
+    <h3>Validate BST — min/max bounds</h3>
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">def</span> <span class="fn">isValidBST</span>(root: TreeNode) -> bool:
+    <span class="kw">def</span> <span class="fn">check</span>(node, lo, hi):
+        <span class="kw">if not</span> node:
+            <span class="kw">return</span> <span class="kw">True</span>
+        <span class="kw">if not</span> (lo < node.val < hi):
+            <span class="kw">return</span> <span class="kw">False</span>
+        <span class="kw">return</span> (<span class="fn">check</span>(node.left,  lo,       node.val) <span class="kw">and</span>
+                <span class="fn">check</span>(node.right, node.val, hi))
+
+    <span class="kw">return</span> <span class="fn">check</span>(root, float(<span class="st">'-inf'</span>), float(<span class="st">'inf'</span>))
+</pre>
+
+    <h3>Search</h3>
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">def</span> <span class="fn">searchBST</span>(root: TreeNode, val: int) -> TreeNode:
+    <span class="kw">if not</span> root <span class="kw">or</span> root.val == val:
+        <span class="kw">return</span> root
+    <span class="kw">if</span> val < root.val:
+        <span class="kw">return</span> <span class="fn">searchBST</span>(root.left,  val)
+    <span class="kw">return</span> <span class="fn">searchBST</span>(root.right, val)
+</pre>
+
+    <div class="alert"><strong>Common mistake:</strong> Checking only the immediate children to validate a BST. A node can violate the BST property with an ancestor, not just its direct parent. Always use the min/max bounds approach.</div>
+  </div>
+
+  <!-- COMPLEXITY SUMMARY -->
+  <div class="card">
+    <h2>📊 7 · Complexity Summary</h2>
+    <table>
+      <tr><th>Operation</th><th>Time</th><th>Space</th><th>Notes</th></tr>
+      <tr><td>Any traversal</td><td>O(n)</td><td>O(h)</td><td>h = O(log n) balanced, O(n) skewed</td></tr>
+      <tr><td>maxDepth</td><td>O(n)</td><td>O(h)</td><td>Post-order DFS</td></tr>
+      <tr><td>LCA</td><td>O(n)</td><td>O(h)</td><td>Post-order DFS</td></tr>
+      <tr><td>Diameter</td><td>O(n)</td><td>O(h)</td><td>Post-order with nonlocal max</td></tr>
+      <tr><td>BST insert / search</td><td>O(h)</td><td>O(h)</td><td>O(log n) balanced, O(n) skewed</td></tr>
+      <tr><td>BST validate</td><td>O(n)</td><td>O(h)</td><td>Min/max bounds DFS</td></tr>
+    </table>
+  </div>
+
+</main>
+
+<footer><strong>Algoritmia Aplicada y Diseño Moderno de Sistemas</strong> · UDES · Block 2 – Week 7 · Professor: Jorge Galvis</footer>
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 7 Design – Social Systems at Scale | Algoritmia Aplicada</title>
+<style>
+  :root{--udes-blue:#003087;--udes-blue-dark:#001f5c;--udes-blue-light:#1a4fa0;--udes-gold:#C8A028;--udes-gold-light:#f0c84a;--bg:#f4f6fb;--surface:#ffffff;--surface2:#eef2fa;--text:#1a1a2e;--text-muted:#5a6070;--border:#d0d8ea;--code-bg:#1e2340;--code-text:#e8eaf0;--success:#2e7d32;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  .top-nav{background:var(--udes-blue-dark);color:#fff;padding:0.6rem 2rem;display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;}
+  .top-nav .course-label{color:var(--udes-gold);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;}
+  .lesson-breadcrumb{display:flex;gap:1.2rem;align-items:center;}
+  .lesson-breadcrumb .prev{color:#aab4cc;}
+  .lesson-breadcrumb .current{background:var(--udes-gold);color:#000;font-weight:700;padding:0.2rem 0.7rem;border-radius:4px;}
+  header{background:linear-gradient(135deg,var(--udes-blue) 0%,var(--udes-blue-light) 100%);color:#fff;padding:3rem 2rem 2.5rem;text-align:center;border-bottom:4px solid var(--udes-gold);}
+  header .block-tag{display:inline-block;background:var(--udes-gold);color:#000;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:0.25rem 0.9rem;border-radius:20px;margin-bottom:1rem;}
+  header h1{font-size:2.2rem;font-weight:800;margin-bottom:0.4rem;}
+  header p.subtitle{font-size:1.05rem;color:#b8ccee;max-width:660px;margin:0 auto;}
+  .container{max-width:960px;margin:0 auto;padding:2rem 1.5rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.8rem 2rem;margin-bottom:2rem;box-shadow:0 2px 8px rgba(0,48,135,0.06);}
+  .card h2{color:var(--udes-blue);font-size:1.35rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--udes-gold);display:flex;align-items:center;gap:0.5rem;}
+  .card h3{color:var(--udes-blue-dark);font-size:1.1rem;margin:1.4rem 0 0.6rem;}
+  .objectives ul{list-style:none;padding:0;}
+  .objectives li{padding:0.4rem 0 0.4rem 1.8rem;position:relative;}
+  .objectives li::before{content:"✓";position:absolute;left:0;color:var(--udes-gold);font-weight:900;}
+  .concept-box{background:var(--surface2);border-left:4px solid var(--udes-blue);border-radius:0 8px 8px 0;padding:1rem 1.2rem;margin:1rem 0;font-size:0.97rem;}
+  .concept-box.gold{border-left-color:var(--udes-gold);}
+  .concept-box strong{color:var(--udes-blue);}
+  .diagram-wrap{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1.2rem;margin:1.2rem 0;text-align:center;}
+  .diagram-wrap figcaption{font-size:0.82rem;color:var(--text-muted);margin-top:0.6rem;font-style:italic;}
+  .alert{background:#fff8e1;border-left:4px solid var(--udes-gold);border-radius:0 8px 8px 0;padding:0.9rem 1.2rem;margin:1rem 0;font-size:0.95rem;}
+  .alert strong{color:#795500;}
+  table{width:100%;border-collapse:collapse;font-size:0.92rem;margin:1rem 0;}
+  th{background:var(--udes-blue);color:#fff;padding:0.6rem 1rem;text-align:left;}
+  td{padding:0.55rem 1rem;border-bottom:1px solid var(--border);}
+  tr:nth-child(even) td{background:var(--surface2);}
+  .good{color:var(--success);font-weight:700;}
+  .bad{color:#c62828;font-weight:700;}
+  footer{background:var(--udes-blue-dark);color:#8899bb;text-align:center;padding:1.2rem;font-size:0.82rem;margin-top:3rem;}
+  footer strong{color:var(--udes-gold);}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <span class="course-label">Algoritmia Aplicada y Diseño Moderno de Sistemas</span>
+  <div class="lesson-breadcrumb">
+    <span class="prev">⬅ Week 6: Notifications &amp; Rate Limiters</span>
+    <span class="current">Week 7 · Design</span>
+    <span>→ Week 8: Messaging Systems</span>
+  </div>
+</nav>
+
+<header>
+  <div class="block-tag">Block 2 – Design at Scale · Week 7</div>
+  <h1>Social Systems at Scale</h1>
+  <p class="subtitle">Twitter Newsfeed · Fan-out Patterns · WhatsApp Messaging Architecture</p>
+</header>
+
+<main class="container">
+
+  <div class="card objectives">
+    <h2>🎯 Learning Objectives</h2>
+    <ul>
+      <li>Compare fan-out on write vs. fan-out on read and explain when each is appropriate.</li>
+      <li>Design Twitter's newsfeed architecture including the hybrid approach for celebrity accounts.</li>
+      <li>Describe WhatsApp's message delivery flow: WebSocket connections, queues, and delivery receipts.</li>
+      <li>Identify how end-to-end encryption (E2EE) and offline storage affect messaging architecture.</li>
+    </ul>
+  </div>
+
+  <!-- TWITTER CORE PROBLEM -->
+  <div class="card">
+    <h2>🐦 1 · Twitter Newsfeed — The Core Problem</h2>
+    <p><strong>Scale:</strong> 500M registered users, 100M daily active, some celebrities with 100M+ followers. Users expect their feed to load in &lt;200ms.</p>
+
+    <div class="concept-box gold">
+      <strong>The fundamental tension:</strong> When a user posts a tweet, do you <em>immediately push it to all followers' caches</em> (fast reads, slow writes), or do you <em>compute the feed on read</em> (slow reads, fast writes)? This write vs. read amplification tradeoff defines the two approaches.
+    </div>
+
+    <table>
+      <tr><th>Dimension</th><th>Fan-out on Write (Push)</th><th>Fan-out on Read (Pull)</th></tr>
+      <tr><td>Read latency</td><td class="good">Very fast — pre-built feed</td><td class="bad">Slower — compute on demand</td></tr>
+      <tr><td>Write latency</td><td class="bad">Slower — write to all N followers</td><td class="good">Fast — just save the tweet</td></tr>
+      <tr><td>Storage</td><td class="bad">O(followers) copies per tweet</td><td class="good">One copy per tweet</td></tr>
+      <tr><td>Consistency</td><td>Eventual (propagation delay)</td><td>Strong (always fresh)</td></tr>
+      <tr><td>Best for</td><td>Regular users (low follower count)</td><td>Celebrities (100M+ followers)</td></tr>
+    </table>
+  </div>
+
+  <!-- FAN-OUT ON WRITE -->
+  <div class="card">
+    <h2>📤 2 · Fan-out on Write (Push Model)</h2>
+    <p>When a user tweets, a fan-out service pushes the tweet ID into each follower's feed cache (Redis list). On read, the feed is already populated — just fetch and render.</p>
+
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 700 200" width="100%" style="max-width:700px;">
+        <defs><marker id="a" markerWidth="7" markerHeight="7" refX="3" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#003087"/></marker></defs>
+        <!-- boxes -->
+        <rect x="10"  y="80" width="110" height="40" rx="6" fill="#003087"/><text x="65"  y="105" text-anchor="middle" fill="#fff" font-size="12" font-weight="bold">User tweets</text>
+        <rect x="170" y="80" width="110" height="40" rx="6" fill="#1a4fa0"/><text x="225" y="105" text-anchor="middle" fill="#fff" font-size="12">Tweet Service</text>
+        <rect x="340" y="80" width="110" height="40" rx="6" fill="#1a4fa0"/><text x="395" y="105" text-anchor="middle" fill="#fff" font-size="12">Fan-out Queue</text>
+        <rect x="510" y="30" width="110" height="40" rx="6" fill="#C8A028"/><text x="565" y="55" text-anchor="middle" fill="#000" font-size="12" font-weight="bold">Follower Feed</text>
+        <text x="565" y="68" text-anchor="middle" fill="#000" font-size="10">(Redis list)</text>
+        <rect x="510" y="80" width="110" height="40" rx="6" fill="#C8A028"/><text x="565" y="105" text-anchor="middle" fill="#000" font-size="12" font-weight="bold">Follower Feed</text>
+        <rect x="510" y="130" width="110" height="40" rx="6" fill="#C8A028"/><text x="565" y="155" text-anchor="middle" fill="#000" font-size="12" font-weight="bold">Follower Feed</text>
+        <!-- arrows -->
+        <line x1="120" y1="100" x2="168" y2="100" stroke="#003087" stroke-width="2" marker-end="url(#a)"/>
+        <line x1="280" y1="100" x2="338" y2="100" stroke="#003087" stroke-width="2" marker-end="url(#a)"/>
+        <line x1="450" y1="95" x2="508" y2="55" stroke="#C8A028" stroke-width="1.5" marker-end="url(#a)"/>
+        <line x1="450" y1="100" x2="508" y2="100" stroke="#C8A028" stroke-width="1.5" marker-end="url(#a)"/>
+        <line x1="450" y1="105" x2="508" y2="145" stroke="#C8A028" stroke-width="1.5" marker-end="url(#a)"/>
+        <!-- label -->
+        <text x="395" y="148" text-anchor="middle" fill="#003087" font-size="10">fan-out workers</text>
+      </svg>
+      <figcaption>Figure 1 — Fan-out on Write: tweet fans out immediately to all follower caches.</figcaption>
+    </div>
+
+    <h3>The Celebrity Problem</h3>
+    <p>If a celebrity with 10M followers tweets, the fan-out service must write to 10M Redis entries. At scale this can take minutes and overwhelm the workers.</p>
+
+    <div class="concept-box gold">
+      <strong>Hybrid solution:</strong> Apply fan-out on write for regular users (&lt;X followers). For celebrities (above threshold), use fan-out on read — their followers' feeds pull celebrity tweets directly at read time. The feed service merges both sources. Twitter uses ~10,000–50,000 followers as the threshold.
+    </div>
+  </div>
+
+  <!-- FAN-OUT ON READ -->
+  <div class="card">
+    <h2>📥 3 · Fan-out on Read (Pull Model)</h2>
+    <p>When a user requests their feed, the feed service fetches the latest tweets from each followed account and merges them into a ranked timeline.</p>
+
+    <table>
+      <tr><th>Scenario</th><th>Fan-out on Read cost</th></tr>
+      <tr><td>User follows 500 accounts</td><td>500 DB reads per feed refresh — expensive</td></tr>
+      <tr><td>Celebrity tweets to 100M followers</td><td>One write — very cheap</td></tr>
+      <tr><td>Dormant user hasn't opened app in a week</td><td>No wasted write — no pre-built cache to maintain</td></tr>
+    </table>
+
+    <p style="margin-top:0.8rem;">The pull model shines for celebrities and inactive users. It is slow for active users who follow many accounts and need fast feed loads.</p>
+  </div>
+
+  <!-- TWITTER ARCHITECTURE -->
+  <div class="card">
+    <h2>🏗️ 4 · Twitter Architecture Overview</h2>
+
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 720 280" width="100%" style="max-width:720px;">
+        <defs><marker id="b" markerWidth="7" markerHeight="7" refX="3" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#555"/></marker></defs>
+        <!-- client -->
+        <rect x="10" y="120" width="90" height="40" rx="5" fill="#003087"/><text x="55" y="145" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">Client</text>
+        <!-- LB -->
+        <rect x="140" y="120" width="90" height="40" rx="5" fill="#1a4fa0"/><text x="185" y="145" text-anchor="middle" fill="#fff" font-size="11">Load Balancer</text>
+        <!-- services row -->
+        <rect x="280" y="60" width="100" height="36" rx="5" fill="#eef2fa" stroke="#003087"/><text x="330" y="83" text-anchor="middle" fill="#003087" font-size="11" font-weight="bold">Tweet Service</text>
+        <rect x="280" y="120" width="100" height="36" rx="5" fill="#eef2fa" stroke="#003087"/><text x="330" y="143" text-anchor="middle" fill="#003087" font-size="11" font-weight="bold">Feed Service</text>
+        <rect x="280" y="180" width="100" height="36" rx="5" fill="#eef2fa" stroke="#003087"/><text x="330" y="203" text-anchor="middle" fill="#003087" font-size="11" font-weight="bold">User Service</text>
+        <!-- fan-out -->
+        <rect x="430" y="60" width="100" height="36" rx="5" fill="#fff8e1" stroke="#C8A028"/><text x="480" y="83" text-anchor="middle" fill="#795500" font-size="11" font-weight="bold">Fan-out Worker</text>
+        <!-- storage row -->
+        <rect x="580" y="40" width="110" height="36" rx="5" fill="#C8A028"/><text x="635" y="63" text-anchor="middle" fill="#000" font-size="11" font-weight="bold">Redis Timeline</text>
+        <rect x="580" y="90" width="110" height="36" rx="5" fill="#eef2fa" stroke="#1a4fa0"/><text x="635" y="113" text-anchor="middle" fill="#003087" font-size="11">Tweet DB</text>
+        <text x="635" y="127" text-anchor="middle" fill="#5a6070" font-size="9">(Cassandra)</text>
+        <rect x="580" y="140" width="110" height="36" rx="5" fill="#eef2fa" stroke="#1a4fa0"/><text x="635" y="163" text-anchor="middle" fill="#003087" font-size="11">User Graph DB</text>
+        <rect x="580" y="190" width="110" height="36" rx="5" fill="#eef2fa" stroke="#1a4fa0"/><text x="635" y="213" text-anchor="middle" fill="#003087" font-size="11">CDN</text>
+        <text x="635" y="227" text-anchor="middle" fill="#5a6070" font-size="9">(images/video)</text>
+        <!-- arrows -->
+        <line x1="100" y1="140" x2="138" y2="140" stroke="#555" stroke-width="1.5" marker-end="url(#b)"/>
+        <line x1="230" y1="130" x2="278" y2="80" stroke="#555" stroke-width="1.2" marker-end="url(#b)"/>
+        <line x1="230" y1="140" x2="278" y2="140" stroke="#555" stroke-width="1.2" marker-end="url(#b)"/>
+        <line x1="230" y1="150" x2="278" y2="198" stroke="#555" stroke-width="1.2" marker-end="url(#b)"/>
+        <line x1="380" y1="75" x2="428" y2="75" stroke="#C8A028" stroke-width="1.5" marker-end="url(#b)"/>
+        <line x1="380" y1="75" x2="578" y2="105" stroke="#555" stroke-width="1" marker-end="url(#b)"/>
+        <line x1="480" y1="96" x2="578" y2="55" stroke="#C8A028" stroke-width="1.5" marker-end="url(#b)"/>
+        <line x1="380" y1="140" x2="578" y2="55" stroke="#C8A028" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#b)"/>
+      </svg>
+      <figcaption>Figure 2 — Twitter high-level architecture. Fan-out worker pushes tweet IDs to Redis. Feed service reads from Redis (pre-built) + pulls celebrity tweets.</figcaption>
+    </div>
+  </div>
+
+  <!-- WHATSAPP -->
+  <div class="card">
+    <h2>💬 5 · WhatsApp at Scale</h2>
+    <p><strong>Scale:</strong> 100 billion messages per day, 2 billion users, 50 billion messages stored. Core challenges: reliable delivery, read receipts, and end-to-end encryption.</p>
+
+    <h3>Core Components</h3>
+    <table>
+      <tr><th>Component</th><th>Role</th></tr>
+      <tr><td>WebSocket connections</td><td>Persistent TCP connections between clients and WhatsApp servers. Required because HTTP is stateless — servers cannot push to clients without a persistent connection.</td></tr>
+      <tr><td>Message queue</td><td>Stores messages when recipient is offline. Uses HBase (columnar) for durable message storage.</td></tr>
+      <tr><td>Delivery receipts</td><td>Single check ✓ = sent to server. Double check ✓✓ = delivered to device. Blue ✓✓ = read by recipient.</td></tr>
+      <tr><td>Zookeeper</td><td>Tracks which connection server a user is connected to (user → server mapping).</td></tr>
+    </table>
+
+    <h3>End-to-End Encryption</h3>
+    <div class="concept-box">
+      <strong>Signal protocol:</strong> Each message is encrypted on the sender's device with the recipient's public key. WhatsApp servers only route ciphertext — they cannot read messages. Keys are exchanged during initial contact via the X3DH (Extended Triple Diffie-Hellman) protocol. This is why WhatsApp cannot comply with law enforcement requests to read messages.
+    </div>
+
+    <h3>Message Delivery Flow</h3>
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 680 180" width="100%" style="max-width:680px;">
+        <defs><marker id="c" markerWidth="7" markerHeight="7" refX="3" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#003087"/></marker></defs>
+        <rect x="10"  y="70" width="90" height="40" rx="5" fill="#003087"/><text x="55"  y="95" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">Sender</text>
+        <rect x="150" y="70" width="100" height="40" rx="5" fill="#1a4fa0"/><text x="200" y="90" text-anchor="middle" fill="#fff" font-size="11">Connection</text><text x="200" y="104" text-anchor="middle" fill="#fff" font-size="11">Server A</text>
+        <rect x="300" y="40" width="100" height="40" rx="5" fill="#eef2fa" stroke="#003087"/><text x="350" y="65" text-anchor="middle" fill="#003087" font-size="11" font-weight="bold">Message</text><text x="350" y="79" text-anchor="middle" fill="#003087" font-size="11">Queue (HBase)</text>
+        <rect x="300" y="100" width="100" height="40" rx="5" fill="#eef2fa" stroke="#C8A028"/><text x="350" y="125" text-anchor="middle" fill="#795500" font-size="11" font-weight="bold">Zookeeper</text>
+        <rect x="450" y="70" width="100" height="40" rx="5" fill="#1a4fa0"/><text x="500" y="90" text-anchor="middle" fill="#fff" font-size="11">Connection</text><text x="500" y="104" text-anchor="middle" fill="#fff" font-size="11">Server B</text>
+        <rect x="590" y="70" width="80" height="40" rx="5" fill="#003087"/><text x="630" y="95" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">Recipient</text>
+        <!-- arrows -->
+        <line x1="100" y1="90" x2="148" y2="90" stroke="#003087" stroke-width="2" marker-end="url(#c)"/>
+        <line x1="200" y1="70" x2="300" y2="62" stroke="#555" stroke-width="1.5" marker-end="url(#c)"/>
+        <line x1="200" y1="95" x2="298" y2="118" stroke="#C8A028" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#c)"/>
+        <line x1="400" y1="118" x2="498" y2="95" stroke="#C8A028" stroke-width="1.2" stroke-dasharray="4,3" marker-end="url(#c)"/>
+        <line x1="400" y1="60" x2="448" y2="80" stroke="#555" stroke-width="1.5" marker-end="url(#c)"/>
+        <line x1="550" y1="90" x2="588" y2="90" stroke="#003087" stroke-width="2" marker-end="url(#c)"/>
+        <!-- receipt arrow back -->
+        <line x1="590" y1="115" x2="102" y2="115" stroke="#56b6c2" stroke-width="1.5" marker-end="url(#c)"/>
+        <text x="346" y="165" text-anchor="middle" fill="#56b6c2" font-size="10">delivery receipt propagates back to sender</text>
+      </svg>
+      <figcaption>Figure 3 — WhatsApp message path. Zookeeper tells server A which connection server the recipient is on. If offline, message queues until recipient reconnects.</figcaption>
+    </div>
+
+    <h3>Group Chat</h3>
+    <div class="concept-box">
+      <strong>Server-side fan-out:</strong> In a group of N members, when a user sends a message, the server fans it out to all N-1 other members. WhatsApp limits groups to 1,024 members to keep fan-out manageable. Each member's device still decrypts independently using their own key.
+    </div>
+  </div>
+
+</main>
+
+<footer><strong>Algoritmia Aplicada y Diseño Moderno de Sistemas</strong> · UDES · Block 2 – Week 7 · Professor: Jorge Galvis</footer>
+</body>
+</html>

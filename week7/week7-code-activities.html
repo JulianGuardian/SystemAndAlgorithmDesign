@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 7 Activities – Binary Trees &amp; BST | Algoritmia Aplicada</title>
+<style>
+  :root{--udes-blue:#003087;--udes-blue-dark:#001f5c;--udes-blue-light:#1a4fa0;--udes-gold:#C8A028;--bg:#f4f6fb;--surface:#fff;--surface2:#eef2fa;--text:#1a1a2e;--text-muted:#5a6070;--border:#d0d8ea;--code-bg:#1e2340;--code-text:#e8eaf0;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  .top-nav{background:var(--udes-blue-dark);color:#fff;padding:0.6rem 2rem;display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;}
+  .top-nav .course-label{color:var(--udes-gold);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;}
+  .lesson-breadcrumb{display:flex;gap:1.2rem;align-items:center;}
+  .lesson-breadcrumb .prev{color:#aab4cc;}
+  .lesson-breadcrumb .current{background:var(--udes-gold);color:#000;font-weight:700;padding:0.2rem 0.7rem;border-radius:4px;}
+  header{background:linear-gradient(135deg,var(--udes-blue) 0%,var(--udes-blue-light) 100%);color:#fff;padding:2.5rem 2rem;text-align:center;border-bottom:4px solid var(--udes-gold);}
+  header .block-tag{display:inline-block;background:var(--udes-gold);color:#000;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:0.25rem 0.9rem;border-radius:20px;margin-bottom:1rem;}
+  header h1{font-size:2rem;font-weight:800;margin-bottom:0.4rem;}
+  header p.subtitle{font-size:1rem;color:#b8ccee;}
+  .container{max-width:900px;margin:0 auto;padding:2rem 1.5rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.8rem 2rem;margin-bottom:2rem;box-shadow:0 2px 8px rgba(0,48,135,0.06);}
+  .card h2{color:var(--udes-blue);font-size:1.3rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--udes-gold);}
+  .card h3{color:var(--udes-blue-dark);font-size:1.05rem;margin:1.3rem 0 0.5rem;}
+  .quiz-q{background:var(--surface2);border-left:4px solid var(--udes-blue);border-radius:0 8px 8px 0;padding:1rem 1.2rem;margin:1.2rem 0;}
+  .quiz-q .q-num{font-size:0.78rem;font-weight:700;color:var(--udes-gold);text-transform:uppercase;letter-spacing:0.08em;}
+  .options{list-style:none;padding:0;margin-top:0.8rem;}
+  .options li{padding:0.45rem 0.8rem;margin:0.3rem 0;border-radius:6px;border:1px solid var(--border);cursor:pointer;transition:background 0.15s;}
+  .options li:hover{background:var(--surface2);}
+  .options li.selected{background:#ddeaff;border-color:var(--udes-blue);}
+  .options li.correct{background:#e8f5e9;border-color:#2e7d32;color:#1b5e20;font-weight:600;}
+  .options li.wrong{background:#ffebee;border-color:#c62828;color:#b71c1c;}
+  .reveal-btn{margin-top:0.8rem;padding:0.4rem 1.1rem;background:var(--udes-blue);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:0.87rem;font-weight:600;}
+  .explanation{display:none;margin-top:0.8rem;padding:0.8rem 1rem;background:#fffde7;border-left:3px solid var(--udes-gold);border-radius:0 6px 6px 0;font-size:0.92rem;}
+  .problem{border:1px solid var(--border);border-radius:8px;margin:1rem 0;overflow:hidden;}
+  .problem-header{background:var(--udes-blue);color:#fff;padding:0.7rem 1.2rem;display:flex;justify-content:space-between;align-items:center;}
+  .problem-header h4{font-size:1rem;font-weight:700;}
+  .difficulty{font-size:0.75rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:12px;}
+  .easy{background:#c8e6c9;color:#1b5e20;} .medium{background:#fff3e0;color:#e65100;}
+  .problem-body{padding:1.2rem;}
+  .problem-body p{margin-bottom:0.8rem;font-size:0.95rem;}
+  .lc-link{display:inline-block;background:var(--udes-gold);color:#000;font-weight:700;font-size:0.82rem;padding:0.3rem 0.9rem;border-radius:5px;text-decoration:none;margin-top:0.5rem;}
+  .hint-box{background:#e3f2fd;border-left:3px solid #1565c0;border-radius:0 6px 6px 0;padding:0.7rem 1rem;margin-top:0.8rem;font-size:0.9rem;}
+  .hint-toggle{cursor:pointer;color:var(--udes-blue);font-weight:600;font-size:0.88rem;border:none;background:none;padding:0;}
+  .hint-content{display:none;margin-top:0.5rem;}
+  .tag{display:inline-block;background:#e3ebfa;color:var(--udes-blue);border-radius:4px;padding:0.15rem 0.55rem;font-size:0.78rem;font-weight:600;margin:0.15rem;}
+  .checklist{list-style:none;padding:0;}
+  .checklist li{padding:0.5rem 0.8rem;margin:0.3rem 0;display:flex;align-items:flex-start;gap:0.7rem;border-radius:6px;background:var(--surface2);}
+  .checklist input[type=checkbox]{margin-top:0.3rem;accent-color:var(--udes-blue);width:16px;height:16px;flex-shrink:0;}
+  .code-block{background:var(--code-bg);color:var(--code-text);border-radius:8px;padding:1rem 1.2rem;overflow-x:auto;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:0.87rem;line-height:1.65;margin:0.8rem 0;position:relative;}
+  .code-block .label{position:absolute;top:0.4rem;right:0.7rem;font-size:0.7rem;background:var(--udes-gold);color:#000;padding:0.1rem 0.5rem;border-radius:4px;font-weight:700;font-family:sans-serif;}
+  .kw{color:#c678dd;} .fn{color:#61afef;} .cm{color:#7f848e;font-style:italic;} .nu{color:#d19a66;} .st{color:#98c379;}
+  #score-bar{background:var(--udes-blue-dark);color:#fff;text-align:center;padding:1rem;position:sticky;top:0;z-index:100;font-size:0.95rem;}
+  #score-bar span{color:var(--udes-gold);font-weight:800;font-size:1.1rem;}
+  footer{background:var(--udes-blue-dark);color:#8899bb;text-align:center;padding:1.2rem;font-size:0.82rem;margin-top:3rem;}
+  footer strong{color:var(--udes-gold);}
+</style>
+</head>
+<body>
+<nav class="top-nav">
+  <span class="course-label">Algoritmia Aplicada y Diseño Moderno de Sistemas</span>
+  <div class="lesson-breadcrumb">
+    <span class="prev">⬅ Week 6: Stacks &amp; Queues</span>
+    <span class="current">Week 7 · Activities</span>
+    <span>→ Week 8: Heaps</span>
+  </div>
+</nav>
+<div id="score-bar">Quiz score: <span id="score">0 / 0</span> correct</div>
+<header>
+  <div class="block-tag">Block 2 – Advanced Structures · Week 7 Activities</div>
+  <h1>Trees &amp; BST Activities</h1>
+  <p class="subtitle">Traversal Tracing · LCA · Diameter · BST Validation · LeetCode Practice</p>
+</header>
+
+<main class="container">
+
+  <!-- QUIZ -->
+  <div class="card">
+    <h2>⚡ Part A — Concept Quiz</h2>
+
+    <div class="quiz-q" id="q1">
+      <div class="q-num">Question 1</div>
+      <p><strong>In-order traversal of a valid Binary Search Tree always produces output in which order?</strong></p>
+      <ul class="options" data-correct="b">
+        <li data-val="a">Descending (largest first)</li>
+        <li data-val="b">Ascending (smallest first)</li>
+        <li data-val="c">Level order (breadth-first)</li>
+        <li data-val="d">Random — depends on insertion order</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q1')">Reveal</button>
+      <div class="explanation" id="q1-exp"><strong>Ascending.</strong> The BST invariant (left &lt; root &lt; right) means in-order traversal visits nodes in sorted order. This property is used to verify BSTs and to find the k-th smallest element in O(n).</div>
+    </div>
+
+    <div class="quiz-q" id="q2">
+      <div class="q-num">Question 2</div>
+      <p><strong>The LCA algorithm for a general binary tree uses which traversal order?</strong></p>
+      <ul class="options" data-correct="c">
+        <li data-val="a">Pre-order (root → left → right)</li>
+        <li data-val="b">In-order (left → root → right)</li>
+        <li data-val="c">Post-order (left → right → root)</li>
+        <li data-val="d">Level-order (BFS)</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q2')">Reveal</button>
+      <div class="explanation" id="q2-exp"><strong>Post-order.</strong> We must gather information from both subtrees before deciding whether the current node is the LCA. Post-order processes children before the parent, enabling the "if both subtrees return non-null → this is the LCA" logic.</div>
+    </div>
+
+    <div class="quiz-q" id="q3">
+      <div class="q-num">Question 3</div>
+      <p><strong>What is the space complexity of maxDepth on a completely skewed (linked-list-like) binary tree with n nodes?</strong></p>
+      <ul class="options" data-correct="d">
+        <li data-val="a">O(1)</li>
+        <li data-val="b">O(log n)</li>
+        <li data-val="c">O(n log n)</li>
+        <li data-val="d">O(n)</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q3')">Reveal</button>
+      <div class="explanation" id="q3-exp"><strong>O(n).</strong> The recursion stack depth equals the tree height. For a balanced tree that's O(log n), but a skewed tree (all nodes in one direction) has height n, so the call stack grows to O(n).</div>
+    </div>
+
+    <div class="quiz-q" id="q4">
+      <div class="q-num">Question 4</div>
+      <p><strong>Why is checking only the immediate children insufficient to validate a BST?</strong></p>
+      <ul class="options" data-correct="a">
+        <li data-val="a">A descendant node can violate the BST property with an ancestor, not just its direct parent</li>
+        <li data-val="b">In-order traversal is always faster for validation</li>
+        <li data-val="c">Children cannot be compared without first sorting them</li>
+        <li data-val="d">The root node has no parent to compare against</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q4')">Reveal</button>
+      <div class="explanation" id="q4-exp"><strong>Descendants can violate ancestor constraints.</strong> For example, a right child of a left subtree must be less than the root — not just less than its direct parent. The min/max bounds approach tracks these inherited constraints as you recurse.</div>
+    </div>
+
+    <div class="quiz-q" id="q5">
+      <div class="q-num">Question 5</div>
+      <p><strong>In the iterative in-order stack algorithm, after popping a node, what do you do next?</strong></p>
+      <ul class="options" data-correct="c">
+        <li data-val="a">Push the node's left child and stop</li>
+        <li data-val="b">Push the node's right child and loop left again from it</li>
+        <li data-val="c">Append the node's value to the result, then move current to the node's right child</li>
+        <li data-val="d">Re-push the node and move to its left child</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q5')">Reveal</button>
+      <div class="explanation" id="q5-exp"><strong>Visit, then go right.</strong> Popping means we've exhausted the left subtree. We record the value (visit), then set <code>curr = node.right</code> to start the process for the right subtree. The outer while loop then drives left as far as possible from there.</div>
+    </div>
+  </div>
+
+  <!-- LEETCODE PROBLEMS -->
+  <div class="card">
+    <h2>💻 Part B — LeetCode Problems</h2>
+
+    <div class="problem">
+      <div class="problem-header">
+        <h4>#104 · Maximum Depth of Binary Tree</h4>
+        <span class="difficulty easy">Easy</span>
+      </div>
+      <div class="problem-body">
+        <p>Given the root of a binary tree, return its maximum depth (the number of nodes along the longest path from root to the farthest leaf node).</p>
+        <p><span class="tag">DFS</span> <span class="tag">Recursion</span> <span class="tag">O(n) time</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h1')">💡 Show hint</button>
+        <div class="hint-content hint-box" id="h1">Base case: <code>if not root: return 0</code>. Recurse on left and right, return <code>1 + max(left, right)</code>.</div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/maximum-depth-of-binary-tree/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+
+    <div class="problem">
+      <div class="problem-header">
+        <h4>#543 · Diameter of Binary Tree</h4>
+        <span class="difficulty easy">Easy</span>
+      </div>
+      <div class="problem-body">
+        <p>Return the length (number of edges) of the longest path between any two nodes in a binary tree.</p>
+        <p><span class="tag">DFS</span> <span class="tag">Post-order</span> <span class="tag">nonlocal</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h2')">💡 Show hint</button>
+        <div class="hint-content hint-box" id="h2">Use a nested function that returns height. Update a <code>nonlocal</code> diameter with <code>left_h + right_h</code> at each node.</div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/diameter-of-binary-tree/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+
+    <div class="problem">
+      <div class="problem-header">
+        <h4>#235 · Lowest Common Ancestor of a BST</h4>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="problem-body">
+        <p>Given a BST and two nodes p and q, find their LCA. You can exploit the BST property for a cleaner O(h) solution.</p>
+        <p><span class="tag">BST</span> <span class="tag">O(h) time</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h3')">💡 Show hint</button>
+        <div class="hint-content hint-box" id="h3">If both p and q are less than root, go left. If both are greater, go right. Otherwise, root is the LCA.</div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+
+    <div class="problem">
+      <div class="problem-header">
+        <h4>#236 · Lowest Common Ancestor of a Binary Tree</h4>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="problem-body">
+        <p>Same problem but for a general binary tree — you cannot use BST ordering.</p>
+        <p><span class="tag">Post-order DFS</span> <span class="tag">O(n) time</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h4')">💡 Show hint</button>
+        <div class="hint-content hint-box" id="h4">If root is None, p, or q — return root. Recurse left and right. If both return non-null, root is the LCA. Otherwise, return whichever side is non-null.</div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+
+    <div class="problem">
+      <div class="problem-header">
+        <h4>#98 · Validate Binary Search Tree</h4>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="problem-body">
+        <p>Given the root of a binary tree, determine if it is a valid BST.</p>
+        <p><span class="tag">DFS</span> <span class="tag">Min/Max bounds</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h5')">💡 Show hint</button>
+        <div class="hint-content hint-box" id="h5">Use a helper <code>check(node, lo, hi)</code>. Each node must satisfy <code>lo &lt; node.val &lt; hi</code>. Pass updated bounds when recursing: left gets <code>hi=node.val</code>, right gets <code>lo=node.val</code>.</div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/validate-binary-search-tree/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRACE EXERCISE -->
+  <div class="card">
+    <h2>✏️ Part C — Traversal Trace Exercise</h2>
+    <p style="margin-bottom:1rem;">Consider the binary search tree built by inserting values <strong>4, 2, 7, 1, 3, 6, 9</strong> in that order. The resulting tree:</p>
+<pre class="code-block">
+<span class="label">Python</span><span class="cm">#         4</span>
+<span class="cm">#        / \</span>
+<span class="cm">#       2   7</span>
+<span class="cm">#      / \ / \</span>
+<span class="cm">#     1  3 6  9</span>
+</pre>
+    <p style="margin-top:1rem;">Manually trace each traversal <em>without running code</em>. Write the output sequence for:</p>
+    <ol style="margin:0.8rem 0 0.8rem 1.5rem;line-height:2.2;">
+      <li><strong>In-order:</strong> ______ ______ ______ ______ ______ ______ ______</li>
+      <li><strong>Pre-order:</strong> ______ ______ ______ ______ ______ ______ ______</li>
+      <li><strong>Post-order:</strong> ______ ______ ______ ______ ______ ______ ______</li>
+      <li><strong>LCA(1, 3) = ______</strong>&nbsp;&nbsp;<strong>LCA(6, 9) = ______</strong>&nbsp;&nbsp;<strong>LCA(1, 9) = ______</strong></li>
+      <li><strong>maxDepth = ______</strong>&nbsp;&nbsp;<strong>diameter = ______</strong></li>
+    </ol>
+    <p style="font-size:0.88rem;color:var(--text-muted);">Answers: In-order: 1 2 3 4 6 7 9 | Pre-order: 4 2 1 3 7 6 9 | Post-order: 1 3 2 6 9 7 4 | LCA(1,3)=2, LCA(6,9)=7, LCA(1,9)=4 | maxDepth=3, diameter=4</p>
+  </div>
+
+  <!-- PEER REVIEW -->
+  <div class="card">
+    <h2>🤝 Part D — Peer Review Checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span><strong>Base case correct:</strong> Does the recursion return the right value for <code>None</code> nodes (0 for depth, None for LCA)?</span></li>
+      <li><input type="checkbox"><span><strong>nonlocal used:</strong> In the diameter problem, is the max updated via <code>nonlocal</code> or a mutable container (list)?</span></li>
+      <li><input type="checkbox"><span><strong>BST bounds tightened correctly:</strong> Does left recursion pass <code>hi=node.val</code> and right recursion pass <code>lo=node.val</code>?</span></li>
+      <li><input type="checkbox"><span><strong>LCA early return:</strong> Does the code return early when the node IS p or q, rather than continuing to search unnecessarily?</span></li>
+      <li><input type="checkbox"><span><strong>Iterative in-order terminates:</strong> Does the while condition check both <code>curr</code> AND <code>stack</code> to handle the rightmost node?</span></li>
+      <li><input type="checkbox"><span><strong>Complexity stated:</strong> Are both time and space complexities identified, distinguishing balanced vs. skewed trees?</span></li>
+    </ul>
+  </div>
+
+</main>
+
+<footer><strong>Algoritmia Aplicada y Diseño Moderno de Sistemas</strong> · UDES · Block 2 – Week 7 Activities · Professor: Jorge Galvis</footer>
+
+<script>
+  let answered=0,correct=0;
+  function revealQuiz(qid){
+    const block=document.getElementById(qid);
+    const correctVal=block.querySelector('.options').dataset.correct;
+    const selected=block.querySelector('li.selected');
+    if(!selected){alert('Please select an answer first.');return;}
+    block.querySelectorAll('.options li').forEach(li=>{
+      if(li.dataset.val===correctVal)li.classList.add('correct');
+      else if(li.classList.contains('selected'))li.classList.add('wrong');
+    });
+    document.getElementById(qid+'-exp').style.display='block';
+    if(!block.dataset.counted){
+      answered++;
+      if(selected.dataset.val===correctVal)correct++;
+      block.dataset.counted='1';
+      document.getElementById('score').textContent=correct+' / '+answered;
+    }
+    block.querySelector('.reveal-btn').disabled=true;
+  }
+  document.querySelectorAll('.options').forEach(ul=>{
+    ul.querySelectorAll('li').forEach(li=>{
+      li.addEventListener('click',()=>{
+        if(ul.closest('.quiz-q').dataset.counted)return;
+        ul.querySelectorAll('li').forEach(x=>x.classList.remove('selected'));
+        li.classList.add('selected');
+      });
+    });
+  });
+  function toggleHint(id){
+    const el=document.getElementById(id);
+    el.style.display=el.style.display==='block'?'none':'block';
+  }
+  document.querySelectorAll('.checklist input').forEach((cb,i)=>{
+    cb.checked=sessionStorage.getItem('w7c-cb-'+i)==='1';
+    cb.addEventListener('change',()=>sessionStorage.setItem('w7c-cb-'+i,cb.checked?'1':'0'));
+  });
+</script>
+</body>
+</html>
