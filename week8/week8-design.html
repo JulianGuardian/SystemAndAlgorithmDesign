@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 8 Design – Distributed Messaging &amp; Event-Driven Systems | Algoritmia Aplicada</title>
+<style>
+  :root{--udes-blue:#003087;--udes-blue-dark:#001f5c;--udes-blue-light:#1a4fa0;--udes-gold:#C8A028;--udes-gold-light:#f0c84a;--bg:#f4f6fb;--surface:#ffffff;--surface2:#eef2fa;--text:#1a1a2e;--text-muted:#5a6070;--border:#d0d8ea;--code-bg:#1e2340;--code-text:#e8eaf0;--success:#2e7d32;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  .top-nav{background:var(--udes-blue-dark);color:#fff;padding:0.6rem 2rem;display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;}
+  .top-nav .course-label{color:var(--udes-gold);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;}
+  .lesson-breadcrumb{display:flex;gap:1.2rem;align-items:center;}
+  .lesson-breadcrumb .prev{color:#aab4cc;}
+  .lesson-breadcrumb .current{background:var(--udes-gold);color:#000;font-weight:700;padding:0.2rem 0.7rem;border-radius:4px;}
+  header{background:linear-gradient(135deg,var(--udes-blue) 0%,var(--udes-blue-light) 100%);color:#fff;padding:3rem 2rem 2.5rem;text-align:center;border-bottom:4px solid var(--udes-gold);}
+  header .block-tag{display:inline-block;background:var(--udes-gold);color:#000;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:0.25rem 0.9rem;border-radius:20px;margin-bottom:1rem;}
+  header h1{font-size:2.2rem;font-weight:800;margin-bottom:0.4rem;}
+  header p.subtitle{font-size:1.05rem;color:#b8ccee;max-width:680px;margin:0 auto;}
+  .container{max-width:960px;margin:0 auto;padding:2rem 1.5rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.8rem 2rem;margin-bottom:2rem;box-shadow:0 2px 8px rgba(0,48,135,0.06);}
+  .card h2{color:var(--udes-blue);font-size:1.35rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--udes-gold);display:flex;align-items:center;gap:0.5rem;}
+  .card h3{color:var(--udes-blue-dark);font-size:1.1rem;margin:1.4rem 0 0.6rem;}
+  .objectives ul{list-style:none;padding:0;}
+  .objectives li{padding:0.4rem 0 0.4rem 1.8rem;position:relative;}
+  .objectives li::before{content:"✓";position:absolute;left:0;color:var(--udes-gold);font-weight:900;}
+  .concept-box{background:var(--surface2);border-left:4px solid var(--udes-blue);border-radius:0 8px 8px 0;padding:1rem 1.2rem;margin:1rem 0;font-size:0.97rem;}
+  .concept-box.gold{border-left-color:var(--udes-gold);}
+  .concept-box strong{color:var(--udes-blue);}
+  .diagram-wrap{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1.2rem;margin:1.2rem 0;text-align:center;}
+  .diagram-wrap figcaption{font-size:0.82rem;color:var(--text-muted);margin-top:0.6rem;font-style:italic;}
+  .alert{background:#fff8e1;border-left:4px solid var(--udes-gold);border-radius:0 8px 8px 0;padding:0.9rem 1.2rem;margin:1rem 0;font-size:0.95rem;}
+  .alert strong{color:#795500;}
+  table{width:100%;border-collapse:collapse;font-size:0.92rem;margin:1rem 0;}
+  th{background:var(--udes-blue);color:#fff;padding:0.6rem 1rem;text-align:left;}
+  td{padding:0.55rem 1rem;border-bottom:1px solid var(--border);}
+  tr:nth-child(even) td{background:var(--surface2);}
+  .good{color:var(--success);font-weight:700;}
+  .bad{color:#c62828;font-weight:700;}
+  footer{background:var(--udes-blue-dark);color:#8899bb;text-align:center;padding:1.2rem;font-size:0.82rem;margin-top:3rem;}
+  footer strong{color:var(--udes-gold);}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <span class="course-label">Algoritmia Aplicada y Diseño Moderno de Sistemas</span>
+  <div class="lesson-breadcrumb">
+    <span class="prev">⬅ Week 7: Social Systems</span>
+    <span class="current">Week 8 · Design</span>
+    <span>→ Week 9: Storage Systems</span>
+  </div>
+</nav>
+
+<header>
+  <div class="block-tag">Block 2 – Design at Scale · Week 8</div>
+  <h1>Distributed Messaging &amp; Event-Driven Systems</h1>
+  <p class="subtitle">Apache Kafka · RabbitMQ · Event-Driven Architecture · Delivery Guarantees · Outbox Pattern</p>
+</header>
+
+<main class="container">
+
+  <div class="card objectives">
+    <h2>🎯 Learning Objectives</h2>
+    <ul>
+      <li>Explain how message queues decouple producers and consumers, providing buffering and durability.</li>
+      <li>Describe Kafka's core concepts: topics, partitions, offsets, consumer groups, and retention.</li>
+      <li>Compare Kafka (log-based) vs. RabbitMQ (queue-based) and select the right tool for a scenario.</li>
+      <li>Define at-most-once, at-least-once, and exactly-once delivery, and explain how idempotency solves duplicate processing.</li>
+    </ul>
+  </div>
+
+  <!-- WHY MESSAGE QUEUES -->
+  <div class="card">
+    <h2>📬 1 · Why Message Queues?</h2>
+
+    <table>
+      <tr><th>Problem</th><th>Without MQ</th><th>With MQ</th></tr>
+      <tr><td>Service coupling</td><td>Order service calls inventory directly — both must be up</td><td>Order publishes event — inventory consumes when ready</td></tr>
+      <tr><td>Traffic spikes</td><td>Downstream overwhelmed, requests dropped</td><td>Queue absorbs spikes — consumer processes at own pace</td></tr>
+      <tr><td>Service failure</td><td>If inventory is down, order fails</td><td>Messages persist in queue until inventory recovers</td></tr>
+      <tr><td>Scalability</td><td>Order service must know all downstream services</td><td>Producers and consumers independently scalable</td></tr>
+    </table>
+
+    <div class="concept-box gold">
+      <strong>Core benefits:</strong> <em>Decoupling</em> (producers and consumers don't know each other), <em>buffering</em> (absorb traffic spikes), <em>durability</em> (messages survive server restarts), <em>async processing</em> (producer doesn't wait for consumer to finish).
+    </div>
+  </div>
+
+  <!-- KAFKA -->
+  <div class="card">
+    <h2>🔥 2 · Apache Kafka</h2>
+
+    <p>Kafka is a <strong>distributed, append-only log</strong>. Unlike a traditional queue, messages are not deleted after consumption — they are retained for a configurable period (default 7 days). Multiple consumers can independently read the same messages.</p>
+
+    <h3>Core Concepts</h3>
+    <table>
+      <tr><th>Concept</th><th>Description</th></tr>
+      <tr><td><strong>Topic</strong></td><td>A named stream (like a table name). Producers write to topics; consumers read from topics.</td></tr>
+      <tr><td><strong>Partition</strong></td><td>A topic is split into N partitions for parallelism. Each partition is an ordered, immutable log.</td></tr>
+      <tr><td><strong>Offset</strong></td><td>Sequential ID of each message within a partition. Consumers track their own offset — they control their read position.</td></tr>
+      <tr><td><strong>Producer</strong></td><td>Writes messages to a topic. Can specify a partition key (hash determines partition) for ordering guarantees.</td></tr>
+      <tr><td><strong>Consumer Group</strong></td><td>A group of consumers sharing the work. Each partition is assigned to exactly one consumer in the group.</td></tr>
+      <tr><td><strong>Broker</strong></td><td>A Kafka server. A cluster has multiple brokers; partitions are distributed across them for fault tolerance.</td></tr>
+    </table>
+
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 700 220" width="100%" style="max-width:700px;">
+        <defs><marker id="a" markerWidth="7" markerHeight="7" refX="3" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#555"/></marker></defs>
+        <!-- Producers -->
+        <rect x="10"  y="50"  width="90" height="36" rx="5" fill="#003087"/><text x="55" y="73" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">Producer A</text>
+        <rect x="10"  y="100" width="90" height="36" rx="5" fill="#003087"/><text x="55" y="123" text-anchor="middle" fill="#fff" font-size="11" font-weight="bold">Producer B</text>
+        <!-- Topic partitions -->
+        <rect x="150" y="20" width="280" height="180" rx="8" fill="none" stroke="#C8A028" stroke-width="1.5" stroke-dasharray="5,3"/>
+        <text x="290" y="14" text-anchor="middle" fill="#C8A028" font-size="11" font-weight="bold">Topic: orders</text>
+        <rect x="165" y="35" width="250" height="40" rx="5" fill="#1a4fa0"/><text x="290" y="60" text-anchor="middle" fill="#fff" font-size="11">Partition 0: [0] [1] [2] [3] ...</text>
+        <rect x="165" y="85" width="250" height="40" rx="5" fill="#1a4fa0"/><text x="290" y="110" text-anchor="middle" fill="#fff" font-size="11">Partition 1: [0] [1] [2] ...</text>
+        <rect x="165" y="135" width="250" height="40" rx="5" fill="#1a4fa0"/><text x="290" y="160" text-anchor="middle" fill="#fff" font-size="11">Partition 2: [0] [1] ...</text>
+        <!-- Consumer Group -->
+        <rect x="490" y="30"  width="100" height="36" rx="5" fill="#C8A028"/><text x="540" y="53" text-anchor="middle" fill="#000" font-size="11" font-weight="bold">Consumer 0</text>
+        <text x="540" y="66" text-anchor="middle" fill="#000" font-size="9">(reads P0)</text>
+        <rect x="490" y="85"  width="100" height="36" rx="5" fill="#C8A028"/><text x="540" y="108" text-anchor="middle" fill="#000" font-size="11" font-weight="bold">Consumer 1</text>
+        <text x="540" y="121" text-anchor="middle" fill="#000" font-size="9">(reads P1)</text>
+        <rect x="490" y="140" width="100" height="36" rx="5" fill="#C8A028"/><text x="540" y="163" text-anchor="middle" fill="#000" font-size="11" font-weight="bold">Consumer 2</text>
+        <text x="540" y="176" text-anchor="middle" fill="#000" font-size="9">(reads P2)</text>
+        <rect x="470" y="10" width="140" height="175" rx="8" fill="none" stroke="#003087" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="540" y="200" text-anchor="middle" fill="#003087" font-size="10" font-weight="bold">Consumer Group A</text>
+        <!-- arrows -->
+        <line x1="100" y1="68" x2="148" y2="55" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+        <line x1="100" y1="118" x2="148" y2="155" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+        <line x1="415" y1="55" x2="468" y2="48" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+        <line x1="415" y1="105" x2="468" y2="103" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+        <line x1="415" y1="155" x2="468" y2="158" stroke="#555" stroke-width="1.5" marker-end="url(#a)"/>
+      </svg>
+      <figcaption>Figure 1 — Kafka: producers write to topic partitions; each consumer in a group reads from exactly one partition, enabling parallel processing.</figcaption>
+    </div>
+
+    <div class="concept-box gold">
+      <strong>Kafka ordering guarantee:</strong> Messages within a single partition are ordered. Across partitions, there is no ordering. To guarantee all events from a specific user are processed in order, use the user's ID as the partition key — all their events land in the same partition.
+    </div>
+  </div>
+
+  <!-- RABBITMQ VS KAFKA -->
+  <div class="card">
+    <h2>⚖️ 3 · RabbitMQ vs. Kafka</h2>
+
+    <table>
+      <tr><th>Dimension</th><th>RabbitMQ</th><th>Apache Kafka</th></tr>
+      <tr><td><strong>Model</strong></td><td>Message queue (push to consumer)</td><td>Distributed log (consumers pull)</td></tr>
+      <tr><td><strong>After consumption</strong></td><td>Message deleted (consumed once)</td><td>Message retained (multiple consumers can re-read)</td></tr>
+      <tr><td><strong>Ordering</strong></td><td>FIFO per queue</td><td>Ordered within partition</td></tr>
+      <tr><td><strong>Throughput</strong></td><td>High, but Kafka is higher at scale</td><td>Very high (millions of msgs/sec)</td></tr>
+      <tr><td><strong>Routing</strong></td><td>Rich routing (exchanges, bindings)</td><td>Simple pub-sub by topic</td></tr>
+      <tr><td><strong>Replay</strong></td><td class="bad">No — message deleted after ack</td><td class="good">Yes — rewind offset to replay</td></tr>
+      <tr><td><strong>Best for</strong></td><td>Task queues, complex routing, RPC</td><td>Event streaming, audit logs, data pipelines</td></tr>
+    </table>
+
+    <div class="concept-box">
+      <strong>Choose RabbitMQ</strong> when you need: point-to-point task distribution (e.g., email sending), complex routing (topic exchanges), or request-reply patterns. <strong>Choose Kafka</strong> when you need: high throughput, event replay, multiple independent consumer groups, or building an event-sourced system.
+    </div>
+  </div>
+
+  <!-- EVENT-DRIVEN -->
+  <div class="card">
+    <h2>⚡ 4 · Event-Driven Architecture</h2>
+
+    <h3>Events vs. Commands vs. Queries</h3>
+    <table>
+      <tr><th>Type</th><th>Meaning</th><th>Example</th></tr>
+      <tr><td><strong>Command</strong></td><td>Request to do something (directed)</td><td>PlaceOrder(userId, items)</td></tr>
+      <tr><td><strong>Event</strong></td><td>Notification that something happened (broadcast)</td><td>OrderPlaced{orderId, timestamp}</td></tr>
+      <tr><td><strong>Query</strong></td><td>Request for data (no side effects)</td><td>GetOrderStatus(orderId)</td></tr>
+    </table>
+
+    <h3>Choreography vs. Orchestration</h3>
+    <div class="concept-box">
+      <strong>Choreography:</strong> Each service reacts to events independently. No central coordinator. Loose coupling, but hard to trace the overall flow.<br><br>
+      <strong>Orchestration:</strong> A central saga orchestrator tells services what to do via commands. Easier to understand flow, but the orchestrator is a coupling point.
+    </div>
+
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 680 200" width="100%" style="max-width:680px;">
+        <defs><marker id="b" markerWidth="7" markerHeight="7" refX="3" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#003087"/></marker></defs>
+        <!-- Order service -->
+        <rect x="10"  y="80" width="110" height="40" rx="5" fill="#003087"/><text x="65" y="105" text-anchor="middle" fill="#fff" font-size="12" font-weight="bold">Order Service</text>
+        <!-- Kafka -->
+        <rect x="175" y="75" width="120" height="50" rx="5" fill="#1a4fa0"/><text x="235" y="97" text-anchor="middle" fill="#fff" font-size="12" font-weight="bold">Kafka</text>
+        <text x="235" y="113" text-anchor="middle" fill="#aab4cc" font-size="10">topic: order-events</text>
+        <!-- consumers -->
+        <rect x="355" y="20"  width="110" height="40" rx="5" fill="#C8A028"/><text x="410" y="45" text-anchor="middle" fill="#000" font-size="11" font-weight="bold">Inventory Service</text>
+        <rect x="355" y="80"  width="110" height="40" rx="5" fill="#C8A028"/><text x="410" y="105" text-anchor="middle" fill="#000" font-size="11" font-weight="bold">Billing Service</text>
+        <rect x="355" y="140" width="110" height="40" rx="5" fill="#C8A028"/><text x="410" y="165" text-anchor="middle" fill="#000" font-size="11" font-weight="bold">Notification Svc</text>
+        <!-- arrows -->
+        <line x1="120" y1="100" x2="173" y2="100" stroke="#003087" stroke-width="2" marker-end="url(#b)"/>
+        <line x1="295" y1="90" x2="353" y2="40" stroke="#C8A028" stroke-width="1.5" marker-end="url(#b)"/>
+        <line x1="295" y1="100" x2="353" y2="100" stroke="#C8A028" stroke-width="1.5" marker-end="url(#b)"/>
+        <line x1="295" y1="110" x2="353" y2="160" stroke="#C8A028" stroke-width="1.5" marker-end="url(#b)"/>
+        <!-- event label -->
+        <text x="148" y="75" fill="#5a6070" font-size="10">OrderPlaced</text>
+        <!-- downstream DB -->
+        <rect x="520" y="20"  width="90" height="40" rx="5" fill="#eef2fa" stroke="#1a4fa0"/><text x="565" y="45" text-anchor="middle" fill="#003087" font-size="10">Inventory DB</text>
+        <rect x="520" y="80"  width="90" height="40" rx="5" fill="#eef2fa" stroke="#1a4fa0"/><text x="565" y="105" text-anchor="middle" fill="#003087" font-size="10">Billing DB</text>
+        <rect x="520" y="140" width="90" height="40" rx="5" fill="#eef2fa" stroke="#1a4fa0"/><text x="565" y="165" text-anchor="middle" fill="#003087" font-size="10">Email/SMS</text>
+        <line x1="465" y1="40" x2="518" y2="40" stroke="#555" stroke-width="1.2" marker-end="url(#b)"/>
+        <line x1="465" y1="100" x2="518" y2="100" stroke="#555" stroke-width="1.2" marker-end="url(#b)"/>
+        <line x1="465" y1="160" x2="518" y2="160" stroke="#555" stroke-width="1.2" marker-end="url(#b)"/>
+      </svg>
+      <figcaption>Figure 2 — Choreography: Order Service publishes one event; three independent consumer groups each react without knowing each other.</figcaption>
+    </div>
+
+    <h3>Outbox Pattern — Reliable Event Publishing</h3>
+    <div class="concept-box gold">
+      <strong>Problem:</strong> Writing to DB and publishing an event are two operations — one can fail. If the DB write succeeds but the Kafka publish fails, the event is lost silently.<br><br>
+      <strong>Solution:</strong> Write the event to an <code>outbox</code> table in the SAME DB transaction as the business data. A separate relay process (or Debezium CDC) reads the outbox and publishes to Kafka. If the relay fails, it retries from the outbox — guaranteed at-least-once delivery.
+    </div>
+  </div>
+
+  <!-- DELIVERY GUARANTEES -->
+  <div class="card">
+    <h2>📦 5 · Delivery Guarantees</h2>
+
+    <table>
+      <tr><th>Guarantee</th><th>Meaning</th><th>How</th><th>Risk</th></tr>
+      <tr><td><strong>At-most-once</strong></td><td>Delivered 0 or 1 times</td><td>Fire and forget; ack before processing</td><td>Message loss if consumer crashes</td></tr>
+      <tr><td><strong>At-least-once</strong></td><td>Delivered 1+ times</td><td>Retry on failure; ack after processing</td><td>Duplicate messages — consumer must be idempotent</td></tr>
+      <tr><td><strong>Exactly-once</strong></td><td>Delivered exactly 1 time</td><td>Kafka transactions + idempotent producers</td><td>Complex; not always necessary</td></tr>
+    </table>
+
+    <div class="concept-box">
+      <strong>Idempotency:</strong> An operation is idempotent if applying it multiple times has the same effect as applying it once. Example: <code>UPDATE orders SET status = 'shipped' WHERE id = 42</code> is idempotent — running it 10 times doesn't change anything after the first run. Design consumers to be idempotent to handle at-least-once delivery safely.
+    </div>
+
+    <div class="alert"><strong>Interview insight:</strong> When asked "how do you guarantee exactly-once?", the honest answer is: "Use at-least-once delivery + idempotent consumers." True exactly-once is expensive and rarely necessary. Most real systems (Kafka, SQS) operate at-least-once and require idempotent downstream processing.</div>
+  </div>
+
+</main>
+
+<footer><strong>Algoritmia Aplicada y Diseño Moderno de Sistemas</strong> · UDES · Block 2 – Week 8 · Professor: Jorge Galvis</footer>
+</body>
+</html>

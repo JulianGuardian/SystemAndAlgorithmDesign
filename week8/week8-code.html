@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 8 – Heaps &amp; Priority Queues | Algoritmia Aplicada</title>
+<style>
+  :root{--udes-blue:#003087;--udes-blue-dark:#001f5c;--udes-blue-light:#1a4fa0;--udes-gold:#C8A028;--udes-gold-light:#f0c84a;--bg:#f4f6fb;--surface:#ffffff;--surface2:#eef2fa;--text:#1a1a2e;--text-muted:#5a6070;--border:#d0d8ea;--code-bg:#1e2340;--code-text:#e8eaf0;--success:#2e7d32;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  .top-nav{background:var(--udes-blue-dark);color:#fff;padding:0.6rem 2rem;display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;}
+  .top-nav .course-label{color:var(--udes-gold);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;}
+  .lesson-breadcrumb{display:flex;gap:1.2rem;align-items:center;}
+  .lesson-breadcrumb .prev{color:#aab4cc;}
+  .lesson-breadcrumb .current{background:var(--udes-gold);color:#000;font-weight:700;padding:0.2rem 0.7rem;border-radius:4px;}
+  header{background:linear-gradient(135deg,var(--udes-blue) 0%,var(--udes-blue-light) 100%);color:#fff;padding:3rem 2rem 2.5rem;text-align:center;border-bottom:4px solid var(--udes-gold);}
+  header .block-tag{display:inline-block;background:var(--udes-gold);color:#000;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:0.25rem 0.9rem;border-radius:20px;margin-bottom:1rem;}
+  header h1{font-size:2.2rem;font-weight:800;margin-bottom:0.4rem;}
+  header p.subtitle{font-size:1.05rem;color:#b8ccee;max-width:620px;margin:0 auto;}
+  .container{max-width:960px;margin:0 auto;padding:2rem 1.5rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.8rem 2rem;margin-bottom:2rem;box-shadow:0 2px 8px rgba(0,48,135,0.06);}
+  .card h2{color:var(--udes-blue);font-size:1.35rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--udes-gold);display:flex;align-items:center;gap:0.5rem;}
+  .card h3{color:var(--udes-blue-dark);font-size:1.1rem;margin:1.4rem 0 0.6rem;}
+  .objectives ul{list-style:none;padding:0;}
+  .objectives li{padding:0.4rem 0 0.4rem 1.8rem;position:relative;}
+  .objectives li::before{content:"✓";position:absolute;left:0;color:var(--udes-gold);font-weight:900;}
+  .concept-box{background:var(--surface2);border-left:4px solid var(--udes-blue);border-radius:0 8px 8px 0;padding:1rem 1.2rem;margin:1rem 0;font-size:0.97rem;}
+  .concept-box.gold{border-left-color:var(--udes-gold);}
+  .concept-box strong{color:var(--udes-blue);}
+  .code-block{background:var(--code-bg);color:var(--code-text);border-radius:8px;padding:1.2rem 1.4rem;overflow-x:auto;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:0.88rem;line-height:1.65;margin:1rem 0;position:relative;}
+  .code-block .label{position:absolute;top:0.5rem;right:0.8rem;font-size:0.7rem;background:var(--udes-gold);color:#000;padding:0.1rem 0.5rem;border-radius:4px;font-weight:700;font-family:sans-serif;}
+  .kw{color:#c678dd;} .fn{color:#61afef;} .cm{color:#7f848e;font-style:italic;} .st{color:#98c379;} .nu{color:#d19a66;} .op{color:#56b6c2;}
+  .diagram-wrap{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1.2rem;margin:1.2rem 0;text-align:center;}
+  .diagram-wrap figcaption{font-size:0.82rem;color:var(--text-muted);margin-top:0.6rem;font-style:italic;}
+  .alert{background:#fff8e1;border-left:4px solid var(--udes-gold);border-radius:0 8px 8px 0;padding:0.9rem 1.2rem;margin:1rem 0;font-size:0.95rem;}
+  .alert strong{color:#795500;}
+  .tag{display:inline-block;background:#e3ebfa;color:var(--udes-blue);border-radius:4px;padding:0.15rem 0.55rem;font-size:0.78rem;font-weight:600;margin:0.15rem;}
+  table{width:100%;border-collapse:collapse;font-size:0.92rem;margin:1rem 0;}
+  th{background:var(--udes-blue);color:#fff;padding:0.6rem 1rem;text-align:left;}
+  td{padding:0.55rem 1rem;border-bottom:1px solid var(--border);}
+  tr:nth-child(even) td{background:var(--surface2);}
+  .good{color:var(--success);font-weight:700;}
+  .bad{color:#c62828;font-weight:700;}
+  footer{background:var(--udes-blue-dark);color:#8899bb;text-align:center;padding:1.2rem;font-size:0.82rem;margin-top:3rem;}
+  footer strong{color:var(--udes-gold);}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <span class="course-label">Algoritmia Aplicada y Diseño Moderno de Sistemas</span>
+  <div class="lesson-breadcrumb">
+    <span class="prev">⬅ Week 7: Trees &amp; BST</span>
+    <span class="current">Week 8 · Code</span>
+    <span>→ Week 9: Graphs</span>
+  </div>
+</nav>
+
+<header>
+  <div class="block-tag">Block 2 – Advanced Structures · Week 8</div>
+  <h1>Heaps &amp; Priority Queues</h1>
+  <p class="subtitle">Min-Heap · Max-Heap · K-th Largest · Merge K Sorted · Top K Elements</p>
+</header>
+
+<main class="container">
+
+  <div class="card objectives">
+    <h2>🎯 Learning Objectives</h2>
+    <ul>
+      <li>Explain heap structure, the parent/child index formulas, and how Python's <code>heapq</code> module implements a min-heap.</li>
+      <li>Apply the "min-heap of size k" pattern to solve k-th largest and top-k problems in O(n log k).</li>
+      <li>Merge k sorted lists efficiently using a heap as a k-way priority queue.</li>
+      <li>Recognise when to reach for a heap vs. sorting vs. a different approach.</li>
+    </ul>
+  </div>
+
+  <!-- FUNDAMENTALS -->
+  <div class="card">
+    <h2>🏔️ 1 · Heap Fundamentals</h2>
+    <p>A <strong>min-heap</strong> is a complete binary tree where every parent is ≤ both children. This guarantees the minimum element is always at the root, giving O(1) min access and O(log n) push/pop.</p>
+
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 580 230" width="100%" style="max-width:580px;">
+        <!-- Tree view -->
+        <text x="145" y="20" text-anchor="middle" fill="#003087" font-size="12" font-weight="bold">Heap as Tree</text>
+        <circle cx="145" cy="45" r="22" fill="#003087"/><text x="145" y="51" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">1</text>
+        <circle cx="80"  cy="110" r="22" fill="#1a4fa0"/><text x="80"  y="116" text-anchor="middle" fill="#fff" font-size="13">3</text>
+        <circle cx="210" cy="110" r="22" fill="#1a4fa0"/><text x="210" y="116" text-anchor="middle" fill="#fff" font-size="13">5</text>
+        <circle cx="45"  cy="175" r="20" fill="#C8A028"/><text x="45"  y="181" text-anchor="middle" fill="#000" font-size="12">6</text>
+        <circle cx="115" cy="175" r="20" fill="#C8A028"/><text x="115" y="181" text-anchor="middle" fill="#000" font-size="12">9</text>
+        <circle cx="180" cy="175" r="20" fill="#C8A028"/><text x="180" y="181" text-anchor="middle" fill="#000" font-size="12">7</text>
+        <line x1="128" y1="60" x2="96"  y2="92" stroke="#003087" stroke-width="2"/>
+        <line x1="162" y1="60" x2="194" y2="92" stroke="#003087" stroke-width="2"/>
+        <line x1="64"  y1="126" x2="57" y2="157" stroke="#1a4fa0" stroke-width="1.5"/>
+        <line x1="96"  y1="126" x2="103" y2="157" stroke="#1a4fa0" stroke-width="1.5"/>
+        <line x1="194" y1="126" x2="186" y2="157" stroke="#1a4fa0" stroke-width="1.5"/>
+        <!-- Array view -->
+        <text x="440" y="20" text-anchor="middle" fill="#003087" font-size="12" font-weight="bold">Heap as Array</text>
+        <text x="300" y="58" fill="#5a6070" font-size="11">Index:</text>
+        <text x="300" y="78" fill="#5a6070" font-size="11">Value:</text>
+        <rect x="340" y="42" width="36" height="22" fill="#003087"/><text x="358" y="58" text-anchor="middle" fill="#fff" font-size="12">0</text>
+        <rect x="340" y="65" width="36" height="22" fill="#003087"/><text x="358" y="81" text-anchor="middle" fill="#fff" font-size="12">1</text>
+        <rect x="378" y="42" width="36" height="22" fill="#1a4fa0"/><text x="396" y="58" text-anchor="middle" fill="#fff" font-size="12">1</text>
+        <rect x="378" y="65" width="36" height="22" fill="#1a4fa0"/><text x="396" y="81" text-anchor="middle" fill="#fff" font-size="12">3</text>
+        <rect x="416" y="42" width="36" height="22" fill="#1a4fa0"/><text x="434" y="58" text-anchor="middle" fill="#fff" font-size="12">2</text>
+        <rect x="416" y="65" width="36" height="22" fill="#1a4fa0"/><text x="434" y="81" text-anchor="middle" fill="#fff" font-size="12">5</text>
+        <rect x="454" y="42" width="36" height="22" fill="#C8A028"/><text x="472" y="58" text-anchor="middle" fill="#000" font-size="12">3</text>
+        <rect x="454" y="65" width="36" height="22" fill="#C8A028"/><text x="472" y="81" text-anchor="middle" fill="#000" font-size="12">6</text>
+        <rect x="492" y="42" width="36" height="22" fill="#C8A028"/><text x="510" y="58" text-anchor="middle" fill="#000" font-size="12">4</text>
+        <rect x="492" y="65" width="36" height="22" fill="#C8A028"/><text x="510" y="81" text-anchor="middle" fill="#000" font-size="12">9</text>
+        <rect x="530" y="42" width="36" height="22" fill="#C8A028"/><text x="548" y="58" text-anchor="middle" fill="#000" font-size="12">5</text>
+        <rect x="530" y="65" width="36" height="22" fill="#C8A028"/><text x="548" y="81" text-anchor="middle" fill="#000" font-size="12">7</text>
+        <!-- formulas -->
+        <text x="440" y="115" text-anchor="middle" fill="#003087" font-size="11" font-weight="bold">Parent/Child Formulas</text>
+        <text x="440" y="135" text-anchor="middle" fill="#1a1a2e" font-size="11">parent(i)  = (i − 1) // 2</text>
+        <text x="440" y="153" text-anchor="middle" fill="#1a1a2e" font-size="11">left(i)   = 2i + 1</text>
+        <text x="440" y="171" text-anchor="middle" fill="#1a1a2e" font-size="11">right(i)  = 2i + 2</text>
+        <!-- heap properties -->
+        <text x="145" y="215" text-anchor="middle" fill="#5a6070" font-size="10.5">Min-heap: parent ≤ both children at every node</text>
+      </svg>
+      <figcaption>Figure 1 — Heap stored as an array. Parent/child positions computable by index arithmetic — no pointers needed.</figcaption>
+    </div>
+
+    <h3>Python heapq — always a min-heap</h3>
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">import</span> heapq
+
+h = []
+heapq.<span class="fn">heappush</span>(h, <span class="nu">5</span>)
+heapq.<span class="fn">heappush</span>(h, <span class="nu">1</span>)
+heapq.<span class="fn">heappush</span>(h, <span class="nu">3</span>)
+
+print(heapq.<span class="fn">heappop</span>(h))   <span class="cm"># 1 — always pops the minimum</span>
+print(h[<span class="nu">0</span>])               <span class="cm"># peek at min without popping</span>
+
+<span class="cm"># Max-heap: negate all values</span>
+max_h = []
+<span class="kw">for</span> v <span class="kw">in</span> [<span class="nu">5</span>, <span class="nu">1</span>, <span class="nu">3</span>]:
+    heapq.<span class="fn">heappush</span>(max_h, <span class="op">-</span>v)
+
+print(<span class="op">-</span>heapq.<span class="fn">heappop</span>(max_h))  <span class="cm"># 5 — largest element</span>
+
+<span class="cm"># Build heap in O(n) from a list</span>
+nums = [<span class="nu">3</span>, <span class="nu">1</span>, <span class="nu">4</span>, <span class="nu">1</span>, <span class="nu">5</span>]
+heapq.<span class="fn">heapify</span>(nums)
+</pre>
+  </div>
+
+  <!-- K-TH LARGEST -->
+  <div class="card">
+    <h2>🎯 2 · Pattern: K-th Largest Element</h2>
+    <p>LeetCode #215. Find the k-th largest element in an unsorted array.</p>
+    <div class="concept-box gold">
+      <strong>Key insight:</strong> Maintain a <em>min</em>-heap of size exactly k. After processing all elements, the root (minimum of the heap) is the k-th largest overall — everything in the heap is bigger than the rest of the array.
+    </div>
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">import</span> heapq
+
+<span class="kw">def</span> <span class="fn">findKthLargest</span>(nums: list[int], k: int) -> int:
+    <span class="cm"># Min-heap of size k — root is the k-th largest so far</span>
+    min_h = nums[<span class="op">:</span>k]
+    heapq.<span class="fn">heapify</span>(min_h)              <span class="cm"># O(k)</span>
+
+    <span class="kw">for</span> n <span class="kw">in</span> nums[k<span class="op">:</span>]:
+        <span class="kw">if</span> n > min_h[<span class="nu">0</span>]:              <span class="cm"># larger than current k-th</span>
+            heapq.<span class="fn">heapreplace</span>(min_h, n) <span class="cm"># pop min, push n — O(log k)</span>
+
+    <span class="kw">return</span> min_h[<span class="nu">0</span>]                   <span class="cm"># O(n log k) total</span>
+</pre>
+    <div class="concept-box"><strong>Complexity:</strong> O(n log k) time — far better than O(n log n) sort when k ≪ n. O(k) space.</div>
+  </div>
+
+  <!-- MERGE K SORTED -->
+  <div class="card">
+    <h2>🔗 3 · Pattern: Merge K Sorted Lists</h2>
+    <p>LeetCode #23. Given k sorted linked lists, merge them into one sorted list. Brute force: collect all values, sort, rebuild — O(N log N). Heap approach: O(N log k).</p>
+
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">import</span> heapq
+
+<span class="kw">class</span> <span class="fn">ListNode</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, val=<span class="nu">0</span>, next=<span class="kw">None</span>):
+        <span class="kw">self</span>.val, <span class="kw">self</span>.next = val, next
+
+<span class="kw">def</span> <span class="fn">mergeKLists</span>(lists: list[ListNode]) -> ListNode:
+    dummy = <span class="fn">ListNode</span>()
+    curr  = dummy
+    heap  = []                         <span class="cm"># (value, index, node)</span>
+
+    <span class="kw">for</span> i, node <span class="kw">in</span> <span class="fn">enumerate</span>(lists):
+        <span class="kw">if</span> node:
+            heapq.<span class="fn">heappush</span>(heap, (node.val, i, node))
+
+    <span class="kw">while</span> heap:
+        val, i, node = heapq.<span class="fn">heappop</span>(heap)
+        curr.next = node
+        curr = curr.next
+        <span class="kw">if</span> node.next:
+            heapq.<span class="fn">heappush</span>(heap, (node.next.val, i, node.next))
+
+    <span class="kw">return</span> dummy.next                  <span class="cm"># O(N log k), N = total nodes</span>
+</pre>
+
+    <div class="alert"><strong>Python gotcha:</strong> When two nodes have the same value, Python tries to compare the second tuple element (the ListNode) — this causes a TypeError. Always include a tiebreaker index <code>i</code> as shown above.</div>
+  </div>
+
+  <!-- TOP K FREQUENT -->
+  <div class="card">
+    <h2>📊 4 · Pattern: Top K Frequent Elements</h2>
+    <p>LeetCode #347. Given a list of integers, return the k most frequent elements.</p>
+
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">from</span> collections <span class="kw">import</span> Counter
+<span class="kw">import</span> heapq
+
+<span class="kw">def</span> <span class="fn">topKFrequent</span>(nums: list[int], k: int) -> list[int]:
+    count = <span class="fn">Counter</span>(nums)              <span class="cm"># {value: frequency}</span>
+    <span class="cm"># nlargest: O(n log k) using an internal heap</span>
+    <span class="kw">return</span> heapq.<span class="fn">nlargest</span>(k, count.keys(), key=<span class="kw">lambda</span> x: count[x])
+</pre>
+
+    <div class="concept-box">
+      <strong>Alternative — bucket sort:</strong> Create an array of size n+1 where index = frequency. Iterate from high to low frequency. O(n) time, O(n) space.
+    </div>
+  </div>
+
+  <!-- K CLOSEST -->
+  <div class="card">
+    <h2>📍 5 · Pattern: K Closest Points to Origin</h2>
+    <p>LeetCode #973. Find the k closest points to (0,0) by Euclidean distance.</p>
+
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">import</span> heapq
+
+<span class="kw">def</span> <span class="fn">kClosest</span>(points: list[list[int]], k: int) -> list[list[int]]:
+    <span class="cm"># Max-heap of size k: pop when a closer point is found</span>
+    heap = []
+    <span class="kw">for</span> x, y <span class="kw">in</span> points:
+        dist = x<span class="op">**</span><span class="nu">2</span> + y<span class="op">**</span><span class="nu">2</span>               <span class="cm"># no need for sqrt</span>
+        heapq.<span class="fn">heappush</span>(heap, (<span class="op">-</span>dist, x, y))  <span class="cm"># negate = max-heap</span>
+        <span class="kw">if</span> <span class="fn">len</span>(heap) > k:
+            heapq.<span class="fn">heappop</span>(heap)          <span class="cm"># remove farthest of the k+1</span>
+    <span class="kw">return</span> [[x, y] <span class="kw">for</span> _, x, y <span class="kw">in</span> heap]  <span class="cm"># O(n log k)</span>
+</pre>
+  </div>
+
+  <!-- WHEN TO USE -->
+  <div class="card">
+    <h2>📋 6 · When to Use a Heap</h2>
+    <table>
+      <tr><th>Problem pattern</th><th>Data structure</th><th>Complexity</th></tr>
+      <tr><td>Find k-th largest / smallest</td><td>Min/Max-heap of size k</td><td>O(n log k)</td></tr>
+      <tr><td>Top k frequent</td><td>Heap + Counter</td><td>O(n log k)</td></tr>
+      <tr><td>Merge k sorted streams</td><td>Min-heap of size k</td><td>O(N log k)</td></tr>
+      <tr><td>Sliding window maximum</td><td>Deque (monotonic)</td><td>O(n)</td></tr>
+      <tr><td>Median from data stream</td><td>Two heaps (min + max)</td><td>O(log n) per insert</td></tr>
+      <tr><td>Dijkstra's shortest path</td><td>Min-heap</td><td>O((V + E) log V)</td></tr>
+    </table>
+    <div class="concept-box gold">
+      <strong>Rule of thumb:</strong> Reach for a heap when the problem says "k largest", "k smallest", "streaming top-k", or "merge multiple sorted sources". The word <em>k</em> is the hint — the heap size is k, so complexity is O(n log k).
+    </div>
+  </div>
+
+</main>
+
+<footer><strong>Algoritmia Aplicada y Diseño Moderno de Sistemas</strong> · UDES · Block 2 – Week 8 · Professor: Jorge Galvis</footer>
+</body>
+</html>

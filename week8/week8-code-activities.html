@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 8 Activities – Heaps &amp; Priority Queues | Algoritmia Aplicada</title>
+<style>
+  :root{--udes-blue:#003087;--udes-blue-dark:#001f5c;--udes-blue-light:#1a4fa0;--udes-gold:#C8A028;--bg:#f4f6fb;--surface:#fff;--surface2:#eef2fa;--text:#1a1a2e;--text-muted:#5a6070;--border:#d0d8ea;--code-bg:#1e2340;--code-text:#e8eaf0;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  .top-nav{background:var(--udes-blue-dark);color:#fff;padding:0.6rem 2rem;display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;}
+  .top-nav .course-label{color:var(--udes-gold);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;}
+  .lesson-breadcrumb{display:flex;gap:1.2rem;align-items:center;}
+  .lesson-breadcrumb .prev{color:#aab4cc;}
+  .lesson-breadcrumb .current{background:var(--udes-gold);color:#000;font-weight:700;padding:0.2rem 0.7rem;border-radius:4px;}
+  header{background:linear-gradient(135deg,var(--udes-blue) 0%,var(--udes-blue-light) 100%);color:#fff;padding:2.5rem 2rem;text-align:center;border-bottom:4px solid var(--udes-gold);}
+  header .block-tag{display:inline-block;background:var(--udes-gold);color:#000;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:0.25rem 0.9rem;border-radius:20px;margin-bottom:1rem;}
+  header h1{font-size:2rem;font-weight:800;margin-bottom:0.4rem;}
+  header p.subtitle{font-size:1rem;color:#b8ccee;}
+  .container{max-width:900px;margin:0 auto;padding:2rem 1.5rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.8rem 2rem;margin-bottom:2rem;box-shadow:0 2px 8px rgba(0,48,135,0.06);}
+  .card h2{color:var(--udes-blue);font-size:1.3rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--udes-gold);}
+  .card h3{color:var(--udes-blue-dark);font-size:1.05rem;margin:1.3rem 0 0.5rem;}
+  .quiz-q{background:var(--surface2);border-left:4px solid var(--udes-blue);border-radius:0 8px 8px 0;padding:1rem 1.2rem;margin:1.2rem 0;}
+  .quiz-q .q-num{font-size:0.78rem;font-weight:700;color:var(--udes-gold);text-transform:uppercase;letter-spacing:0.08em;}
+  .options{list-style:none;padding:0;margin-top:0.8rem;}
+  .options li{padding:0.45rem 0.8rem;margin:0.3rem 0;border-radius:6px;border:1px solid var(--border);cursor:pointer;transition:background 0.15s;}
+  .options li:hover{background:var(--surface2);}
+  .options li.selected{background:#ddeaff;border-color:var(--udes-blue);}
+  .options li.correct{background:#e8f5e9;border-color:#2e7d32;color:#1b5e20;font-weight:600;}
+  .options li.wrong{background:#ffebee;border-color:#c62828;color:#b71c1c;}
+  .reveal-btn{margin-top:0.8rem;padding:0.4rem 1.1rem;background:var(--udes-blue);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:0.87rem;font-weight:600;}
+  .explanation{display:none;margin-top:0.8rem;padding:0.8rem 1rem;background:#fffde7;border-left:3px solid var(--udes-gold);border-radius:0 6px 6px 0;font-size:0.92rem;}
+  .problem{border:1px solid var(--border);border-radius:8px;margin:1rem 0;overflow:hidden;}
+  .problem-header{background:var(--udes-blue);color:#fff;padding:0.7rem 1.2rem;display:flex;justify-content:space-between;align-items:center;}
+  .problem-header h4{font-size:1rem;font-weight:700;}
+  .difficulty{font-size:0.75rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:12px;}
+  .easy{background:#c8e6c9;color:#1b5e20;} .medium{background:#fff3e0;color:#e65100;} .hard{background:#ffcdd2;color:#b71c1c;}
+  .problem-body{padding:1.2rem;}
+  .problem-body p{margin-bottom:0.8rem;font-size:0.95rem;}
+  .lc-link{display:inline-block;background:var(--udes-gold);color:#000;font-weight:700;font-size:0.82rem;padding:0.3rem 0.9rem;border-radius:5px;text-decoration:none;margin-top:0.5rem;}
+  .hint-box{background:#e3f2fd;border-left:3px solid #1565c0;border-radius:0 6px 6px 0;padding:0.7rem 1rem;margin-top:0.8rem;font-size:0.9rem;}
+  .hint-toggle{cursor:pointer;color:var(--udes-blue);font-weight:600;font-size:0.88rem;border:none;background:none;padding:0;}
+  .hint-content{display:none;margin-top:0.5rem;}
+  .tag{display:inline-block;background:#e3ebfa;color:var(--udes-blue);border-radius:4px;padding:0.15rem 0.55rem;font-size:0.78rem;font-weight:600;margin:0.15rem;}
+  .checklist{list-style:none;padding:0;}
+  .checklist li{padding:0.5rem 0.8rem;margin:0.3rem 0;display:flex;align-items:flex-start;gap:0.7rem;border-radius:6px;background:var(--surface2);}
+  .checklist input[type=checkbox]{margin-top:0.3rem;accent-color:var(--udes-blue);width:16px;height:16px;flex-shrink:0;}
+  .code-block{background:var(--code-bg);color:var(--code-text);border-radius:8px;padding:1rem 1.2rem;overflow-x:auto;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:0.87rem;line-height:1.65;margin:0.8rem 0;position:relative;}
+  .code-block .label{position:absolute;top:0.4rem;right:0.7rem;font-size:0.7rem;background:var(--udes-gold);color:#000;padding:0.1rem 0.5rem;border-radius:4px;font-weight:700;font-family:sans-serif;}
+  .kw{color:#c678dd;} .fn{color:#61afef;} .cm{color:#7f848e;font-style:italic;} .nu{color:#d19a66;}
+  #score-bar{background:var(--udes-blue-dark);color:#fff;text-align:center;padding:1rem;position:sticky;top:0;z-index:100;font-size:0.95rem;}
+  #score-bar span{color:var(--udes-gold);font-weight:800;font-size:1.1rem;}
+  footer{background:var(--udes-blue-dark);color:#8899bb;text-align:center;padding:1.2rem;font-size:0.82rem;margin-top:3rem;}
+  footer strong{color:var(--udes-gold);}
+</style>
+</head>
+<body>
+<nav class="top-nav">
+  <span class="course-label">Algoritmia Aplicada y Diseño Moderno de Sistemas</span>
+  <div class="lesson-breadcrumb">
+    <span class="prev">⬅ Week 7: Trees &amp; BST</span>
+    <span class="current">Week 8 · Activities</span>
+    <span>→ Week 9: Graphs</span>
+  </div>
+</nav>
+<div id="score-bar">Quiz score: <span id="score">0 / 0</span> correct</div>
+<header>
+  <div class="block-tag">Block 2 – Advanced Structures · Week 8 Activities</div>
+  <h1>Heaps &amp; Priority Queues Activities</h1>
+  <p class="subtitle">Heap Tracing · K-th Largest · Merge K Sorted · Top K Frequent · LeetCode Practice</p>
+</header>
+
+<main class="container">
+
+  <div class="card">
+    <h2>⚡ Part A — Concept Quiz</h2>
+
+    <div class="quiz-q" id="q1">
+      <div class="q-num">Question 1</div>
+      <p><strong>Python's <code>heapq</code> module implements which kind of heap by default?</strong></p>
+      <ul class="options" data-correct="a">
+        <li data-val="a">Min-heap (root is the smallest element)</li>
+        <li data-val="b">Max-heap (root is the largest element)</li>
+        <li data-val="c">It adapts based on the data type</li>
+        <li data-val="d">Neither — it requires explicit comparators</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q1')">Reveal</button>
+      <div class="explanation" id="q1-exp"><strong>Min-heap.</strong> <code>heapq.heappop()</code> always returns the smallest element. To simulate a max-heap, negate values: push <code>-x</code> and negate the result on pop. This is a common Python interview trick.</div>
+    </div>
+
+    <div class="quiz-q" id="q2">
+      <div class="q-num">Question 2</div>
+      <p><strong>To find the k-th largest element in an array of n elements, you maintain a min-heap of size k. What is the time complexity?</strong></p>
+      <ul class="options" data-correct="c">
+        <li data-val="a">O(n)</li>
+        <li data-val="b">O(n log n)</li>
+        <li data-val="c">O(n log k)</li>
+        <li data-val="d">O(k log n)</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q2')">Reveal</button>
+      <div class="explanation" id="q2-exp"><strong>O(n log k).</strong> Each of the n elements may trigger a heap push or replace, each costing O(log k) since the heap size stays bounded at k. When k ≪ n, this is much faster than sorting at O(n log n).</div>
+    </div>
+
+    <div class="quiz-q" id="q3">
+      <div class="q-num">Question 3</div>
+      <p><strong>In a heap stored as an array, what is the index of the right child of the node at index i?</strong></p>
+      <ul class="options" data-correct="b">
+        <li data-val="a">2i + 1</li>
+        <li data-val="b">2i + 2</li>
+        <li data-val="c">i // 2 + 1</li>
+        <li data-val="d">(i + 1) * 2</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q3')">Reveal</button>
+      <div class="explanation" id="q3-exp"><strong>2i + 2.</strong> Left child = 2i + 1, right child = 2i + 2. Parent of node at index i = (i − 1) // 2. These formulas enable the heap to be stored as a flat array without pointer overhead.</div>
+    </div>
+
+    <div class="quiz-q" id="q4">
+      <div class="q-num">Question 4</div>
+      <p><strong>Merging k sorted lists with N total nodes using a heap costs O(N log k). Why log k and not log N?</strong></p>
+      <ul class="options" data-correct="d">
+        <li data-val="a">The heap is rebuilt from scratch for each of the N nodes</li>
+        <li data-val="b">Each push/pop operates on a heap of size N</li>
+        <li data-val="c">The k lists are first sorted, adding a log N factor</li>
+        <li data-val="d">The heap never exceeds size k — one entry per list — so heap operations cost log k</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q4')">Reveal</button>
+      <div class="explanation" id="q4-exp"><strong>Heap size = k, not N.</strong> The heap holds exactly one node per list (the current front). At any point there are at most k nodes in the heap, so push/pop is O(log k). We do this N times total → O(N log k).</div>
+    </div>
+
+    <div class="quiz-q" id="q5">
+      <div class="q-num">Question 5</div>
+      <p><strong>When should you prefer <code>heapq.nlargest(k, iterable)</code> over sorting the entire array?</strong></p>
+      <ul class="options" data-correct="b">
+        <li data-val="a">Always — nlargest is always faster</li>
+        <li data-val="b">When k is much smaller than n — O(n log k) vs. O(n log n)</li>
+        <li data-val="c">Only when the input is already partially sorted</li>
+        <li data-val="d">Never — sorted() is always more readable</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q5')">Reveal</button>
+      <div class="explanation" id="q5-exp"><strong>When k ≪ n.</strong> <code>nlargest</code> uses a heap internally and costs O(n log k). When k approaches n, full sort at O(n log n) becomes competitive (and simpler). For k = 1, use max() at O(n).</div>
+    </div>
+  </div>
+
+  <!-- LEETCODE -->
+  <div class="card">
+    <h2>💻 Part B — LeetCode Problems</h2>
+
+    <div class="problem">
+      <div class="problem-header">
+        <h4>#215 · Kth Largest Element in an Array</h4>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="problem-body">
+        <p>Find the k-th largest element in an unsorted array. Note: it is the k-th largest in sorted order, not the k-th distinct.</p>
+        <p><span class="tag">Min-Heap size k</span> <span class="tag">O(n log k)</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h1')">💡 Show hint</button>
+        <div class="hint-content hint-box" id="h1">Build a min-heap of the first k elements. For each remaining element, if it's larger than the heap root, replace the root. At the end, the root is the k-th largest.</div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/kth-largest-element-in-an-array/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+
+    <div class="problem">
+      <div class="problem-header">
+        <h4>#347 · Top K Frequent Elements</h4>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="problem-body">
+        <p>Return the k most frequent elements. You may return the answer in any order. Your algorithm's time complexity must be better than O(n log n).</p>
+        <p><span class="tag">Counter</span> <span class="tag">Heap</span> <span class="tag">O(n log k)</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h2')">💡 Show hint</button>
+        <div class="hint-content hint-box" id="h2">Count frequencies with <code>Counter</code>. Use <code>heapq.nlargest(k, count, key=count.get)</code> — or build your own min-heap of size k keyed on frequency.</div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/top-k-frequent-elements/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+
+    <div class="problem">
+      <div class="problem-header">
+        <h4>#23 · Merge K Sorted Lists</h4>
+        <span class="difficulty hard">Hard</span>
+      </div>
+      <div class="problem-body">
+        <p>Merge k sorted linked lists into one sorted list. Return the merged list.</p>
+        <p><span class="tag">Min-Heap size k</span> <span class="tag">O(N log k)</span> <span class="tag">Tiebreaker index</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h3')">💡 Show hint</button>
+        <div class="hint-content hint-box" id="h3">Push <code>(node.val, i, node)</code> for each list head into a heap. Pop the minimum, advance that list, push the next node. Include index <code>i</code> to avoid comparing ListNode objects.</div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/merge-k-sorted-lists/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+
+    <div class="problem">
+      <div class="problem-header">
+        <h4>#973 · K Closest Points to Origin</h4>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="problem-body">
+        <p>Return the k closest points to the origin (0,0) in 2D space. Distance = √(x² + y²).</p>
+        <p><span class="tag">Max-Heap size k</span> <span class="tag">Negated distance</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h4')">💡 Show hint</button>
+        <div class="hint-content hint-box" id="h4">Use a max-heap of size k (negate the squared distance). When the heap exceeds k, pop the farthest. No need to take the square root — squared distance preserves ordering.</div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/k-closest-points-to-origin/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+
+    <div class="problem">
+      <div class="problem-header">
+        <h4>#1046 · Last Stone Weight</h4>
+        <span class="difficulty easy">Easy</span>
+      </div>
+      <div class="problem-body">
+        <p>Stones: each turn smash the two heaviest. If equal, both destroyed; otherwise, remainder survives. Return the last stone weight (or 0).</p>
+        <p><span class="tag">Max-Heap</span> <span class="tag">Simulation</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h5')">💡 Show hint</button>
+        <div class="hint-content hint-box" id="h5">Push all stones negated into a min-heap (simulating max-heap). Each turn pop two, compute remainder, push back if nonzero.</div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/last-stone-weight/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRACE -->
+  <div class="card">
+    <h2>✏️ Part C — Heap Trace Exercise</h2>
+    <p style="margin-bottom:1rem;">Trace the state of the heap after each <code>heappush</code> on the sequence <strong>[3, 1, 4, 1, 5, 9, 2]</strong>. Draw the heap as an array after each insertion.</p>
+
+    <table>
+      <tr><th>Operation</th><th>Array state (heap)</th><th>Root (min)</th></tr>
+      <tr><td>push(3)</td><td>[3]</td><td>3</td></tr>
+      <tr><td>push(1)</td><td>____________</td><td>____</td></tr>
+      <tr><td>push(4)</td><td>____________</td><td>____</td></tr>
+      <tr><td>push(1)</td><td>____________</td><td>____</td></tr>
+      <tr><td>push(5)</td><td>____________</td><td>____</td></tr>
+      <tr><td>push(9)</td><td>____________</td><td>____</td></tr>
+      <tr><td>push(2)</td><td>____________</td><td>____</td></tr>
+    </table>
+    <p style="margin-top:0.8rem;font-size:0.88rem;color:var(--text-muted);">Answers: [1,3] | [1,3,4] | [1,1,4,3] | [1,1,4,3,5] | [1,1,4,3,5,9] | [1,1,2,3,5,9,4] — verify with Python!</p>
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">import</span> heapq
+h = []
+<span class="kw">for</span> v <span class="kw">in</span> [<span class="nu">3</span>, <span class="nu">1</span>, <span class="nu">4</span>, <span class="nu">1</span>, <span class="nu">5</span>, <span class="nu">9</span>, <span class="nu">2</span>]:
+    heapq.<span class="fn">heappush</span>(h, v)
+    <span class="fn">print</span>(h)
+</pre>
+  </div>
+
+  <!-- CHECKLIST -->
+  <div class="card">
+    <h2>🤝 Part D — Peer Review Checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span><strong>Heap type correct:</strong> Is a min-heap used for k-th largest (not max-heap), and vice versa for k-th smallest?</span></li>
+      <li><input type="checkbox"><span><strong>Tiebreaker in merge:</strong> Does the solution include an index or counter to avoid comparing custom objects?</span></li>
+      <li><input type="checkbox"><span><strong>heapify vs. repeated push:</strong> Does the solution use <code>heapify</code> when converting a full list, rather than pushing one by one (O(n) vs O(n log n))?</span></li>
+      <li><input type="checkbox"><span><strong>Squared distance:</strong> Does K Closest Points avoid computing sqrt (unnecessary for comparisons)?</span></li>
+      <li><input type="checkbox"><span><strong>Complexity stated:</strong> Are both time O(n log k) and space O(k) identified for heap-based solutions?</span></li>
+      <li><input type="checkbox"><span><strong>Edge cases:</strong> Is k = 1 (use max/min), k = n (sort entire array), or empty input handled?</span></li>
+    </ul>
+  </div>
+
+</main>
+
+<footer><strong>Algoritmia Aplicada y Diseño Moderno de Sistemas</strong> · UDES · Block 2 – Week 8 Activities · Professor: Jorge Galvis</footer>
+<script>
+  let answered=0,correct=0;
+  function revealQuiz(qid){
+    const block=document.getElementById(qid);
+    const correctVal=block.querySelector('.options').dataset.correct;
+    const selected=block.querySelector('li.selected');
+    if(!selected){alert('Please select an answer first.');return;}
+    block.querySelectorAll('.options li').forEach(li=>{
+      if(li.dataset.val===correctVal)li.classList.add('correct');
+      else if(li.classList.contains('selected'))li.classList.add('wrong');
+    });
+    document.getElementById(qid+'-exp').style.display='block';
+    if(!block.dataset.counted){
+      answered++;
+      if(selected.dataset.val===correctVal)correct++;
+      block.dataset.counted='1';
+      document.getElementById('score').textContent=correct+' / '+answered;
+    }
+    block.querySelector('.reveal-btn').disabled=true;
+  }
+  document.querySelectorAll('.options').forEach(ul=>{
+    ul.querySelectorAll('li').forEach(li=>{
+      li.addEventListener('click',()=>{
+        if(ul.closest('.quiz-q').dataset.counted)return;
+        ul.querySelectorAll('li').forEach(x=>x.classList.remove('selected'));
+        li.classList.add('selected');
+      });
+    });
+  });
+  function toggleHint(id){
+    const el=document.getElementById(id);
+    el.style.display=el.style.display==='block'?'none':'block';
+  }
+  document.querySelectorAll('.checklist input').forEach((cb,i)=>{
+    cb.checked=sessionStorage.getItem('w8c-cb-'+i)==='1';
+    cb.addEventListener('change',()=>sessionStorage.setItem('w8c-cb-'+i,cb.checked?'1':'0'));
+  });
+</script>
+</body>
+</html>
