@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 9 – Graph Algorithms | Algoritmia Aplicada</title>
+<style>
+  :root{--udes-blue:#003087;--udes-blue-dark:#001f5c;--udes-blue-light:#1a4fa0;--udes-gold:#C8A028;--udes-gold-light:#f0c84a;--bg:#f4f6fb;--surface:#ffffff;--surface2:#eef2fa;--text:#1a1a2e;--text-muted:#5a6070;--border:#d0d8ea;--code-bg:#1e2340;--code-text:#e8eaf0;--success:#2e7d32;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  .top-nav{background:var(--udes-blue-dark);color:#fff;padding:0.6rem 2rem;display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;}
+  .top-nav .course-label{color:var(--udes-gold);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;}
+  .lesson-breadcrumb{display:flex;gap:1.2rem;align-items:center;}
+  .lesson-breadcrumb .prev{color:#aab4cc;}
+  .lesson-breadcrumb .current{background:var(--udes-gold);color:#000;font-weight:700;padding:0.2rem 0.7rem;border-radius:4px;}
+  header{background:linear-gradient(135deg,var(--udes-blue) 0%,var(--udes-blue-light) 100%);color:#fff;padding:3rem 2rem 2.5rem;text-align:center;border-bottom:4px solid var(--udes-gold);}
+  header .block-tag{display:inline-block;background:var(--udes-gold);color:#000;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:0.25rem 0.9rem;border-radius:20px;margin-bottom:1rem;}
+  header h1{font-size:2.2rem;font-weight:800;margin-bottom:0.4rem;}
+  header p.subtitle{font-size:1.05rem;color:#b8ccee;max-width:620px;margin:0 auto;}
+  .container{max-width:960px;margin:0 auto;padding:2rem 1.5rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.8rem 2rem;margin-bottom:2rem;box-shadow:0 2px 8px rgba(0,48,135,0.06);}
+  .card h2{color:var(--udes-blue);font-size:1.35rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--udes-gold);display:flex;align-items:center;gap:0.5rem;}
+  .card h3{color:var(--udes-blue-dark);font-size:1.1rem;margin:1.4rem 0 0.6rem;}
+  .objectives ul{list-style:none;padding:0;}
+  .objectives li{padding:0.4rem 0 0.4rem 1.8rem;position:relative;}
+  .objectives li::before{content:"✓";position:absolute;left:0;color:var(--udes-gold);font-weight:900;}
+  .concept-box{background:var(--surface2);border-left:4px solid var(--udes-blue);border-radius:0 8px 8px 0;padding:1rem 1.2rem;margin:1rem 0;font-size:0.97rem;}
+  .concept-box.gold{border-left-color:var(--udes-gold);}
+  .concept-box strong{color:var(--udes-blue);}
+  .code-block{background:var(--code-bg);color:var(--code-text);border-radius:8px;padding:1.2rem 1.4rem;overflow-x:auto;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:0.88rem;line-height:1.65;margin:1rem 0;position:relative;}
+  .code-block .label{position:absolute;top:0.5rem;right:0.8rem;font-size:0.7rem;background:var(--udes-gold);color:#000;padding:0.1rem 0.5rem;border-radius:4px;font-weight:700;font-family:sans-serif;}
+  .kw{color:#c678dd;} .fn{color:#61afef;} .cm{color:#7f848e;font-style:italic;} .st{color:#98c379;} .nu{color:#d19a66;} .op{color:#56b6c2;}
+  .diagram-wrap{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:1.2rem;margin:1.2rem 0;text-align:center;}
+  .diagram-wrap figcaption{font-size:0.82rem;color:var(--text-muted);margin-top:0.6rem;font-style:italic;}
+  .alert{background:#fff8e1;border-left:4px solid var(--udes-gold);border-radius:0 8px 8px 0;padding:0.9rem 1.2rem;margin:1rem 0;font-size:0.95rem;}
+  .alert strong{color:#795500;}
+  .tag{display:inline-block;background:#e3ebfa;color:var(--udes-blue);border-radius:4px;padding:0.15rem 0.55rem;font-size:0.78rem;font-weight:600;margin:0.15rem;}
+  table{width:100%;border-collapse:collapse;font-size:0.92rem;margin:1rem 0;}
+  th{background:var(--udes-blue);color:#fff;padding:0.6rem 1rem;text-align:left;}
+  td{padding:0.55rem 1rem;border-bottom:1px solid var(--border);}
+  tr:nth-child(even) td{background:var(--surface2);}
+  footer{background:var(--udes-blue-dark);color:#8899bb;text-align:center;padding:1.2rem;font-size:0.82rem;margin-top:3rem;}
+  footer strong{color:var(--udes-gold);}
+</style>
+</head>
+<body>
+
+<nav class="top-nav">
+  <span class="course-label">Algoritmia Aplicada y Diseño Moderno de Sistemas</span>
+  <div class="lesson-breadcrumb">
+    <span class="prev">⬅ Week 8: Heaps &amp; Messaging</span>
+    <span class="current">Week 9 · Code</span>
+    <span>→ Week 10: Exam Prep</span>
+  </div>
+</nav>
+
+<header>
+  <div class="block-tag">Block 2 – Advanced Structures · Week 9</div>
+  <h1>Graph Algorithms</h1>
+  <p class="subtitle">DFS · BFS · Cycle Detection · Connected Components · Topological Sort · Union-Find</p>
+</header>
+
+<main class="container">
+
+  <!-- OBJECTIVES -->
+  <div class="card objectives">
+    <h2>🎯 Learning Objectives</h2>
+    <ul>
+      <li>Represent graphs with adjacency lists and traverse them with DFS and BFS.</li>
+      <li>Detect cycles in undirected and directed graphs using visited-state coloring.</li>
+      <li>Compute topological orderings of DAGs with Kahn's algorithm.</li>
+      <li>Implement Union-Find with path compression and union by rank for connectivity queries.</li>
+    </ul>
+  </div>
+
+  <!-- GRAPH FUNDAMENTALS -->
+  <div class="card">
+    <h2>🗺️ 1 · Graph Fundamentals</h2>
+    <p>A graph G = (V, E) consists of vertices V and edges E. Almost every real-world network — social connections, road maps, package dependencies, web links — is a graph.</p>
+
+    <h3>Graph Taxonomy</h3>
+    <table>
+      <tr><th>Property</th><th>Variant A</th><th>Variant B</th><th>Impact</th></tr>
+      <tr><td>Edge direction</td><td>Undirected (A–B)</td><td>Directed (A→B)</td><td>Directed: edges only flow one way</td></tr>
+      <tr><td>Edge weight</td><td>Unweighted</td><td>Weighted</td><td>Weighted needs Dijkstra/Bellman-Ford for shortest path</td></tr>
+      <tr><td>Cycles</td><td>Acyclic (DAG)</td><td>Cyclic</td><td>DAGs allow topological sort</td></tr>
+      <tr><td>Connectivity</td><td>Connected</td><td>Disconnected</td><td>Must iterate all nodes, not just one start</td></tr>
+    </table>
+
+    <h3>Representations</h3>
+    <p><strong>Adjacency List</strong> (preferred for sparse graphs): O(V+E) space, O(degree) to find neighbours.</p>
+    <p><strong>Adjacency Matrix</strong>: O(V²) space, O(1) edge lookup. Use only for dense graphs or when O(1) edge queries matter.</p>
+
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">from</span> collections <span class="kw">import</span> defaultdict
+
+<span class="cm"># Build adjacency list from edge list</span>
+<span class="kw">def</span> <span class="fn">build_graph</span>(n: int, edges: list[list[int]], directed=<span class="kw">False</span>) -> dict:
+    graph = defaultdict(list)
+    <span class="kw">for</span> u, v <span class="kw">in</span> edges:
+        graph[u].append(v)
+        <span class="kw">if</span> <span class="kw">not</span> directed:
+            graph[v].append(u)
+    <span class="kw">return</span> graph
+
+<span class="cm"># Example: 4 nodes, edges 0-1, 0-2, 1-3, 2-3</span>
+g = <span class="fn">build_graph</span>(<span class="nu">4</span>, [[<span class="nu">0</span>,<span class="nu">1</span>],[<span class="nu">0</span>,<span class="nu">2</span>],[<span class="nu">1</span>,<span class="nu">3</span>],[<span class="nu">2</span>,<span class="nu">3</span>]])
+<span class="cm"># g = {0:[1,2], 1:[0,3], 2:[0,3], 3:[1,2]}</span>
+</pre>
+  </div>
+
+  <!-- DFS -->
+  <div class="card">
+    <h2>🔍 2 · DFS — Depth-First Search</h2>
+    <p>DFS explores as far as possible along each branch before backtracking. Time: O(V+E). Use for: connected components, cycle detection, topological sort, path existence.</p>
+
+    <h3>Recursive Template</h3>
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">def</span> <span class="fn">dfs_recursive</span>(graph: dict, node: int, visited: set) -> <span class="kw">None</span>:
+    visited.add(node)
+    <span class="kw">for</span> neighbour <span class="kw">in</span> graph[node]:
+        <span class="kw">if</span> neighbour <span class="kw">not</span> <span class="kw">in</span> visited:
+            <span class="fn">dfs_recursive</span>(graph, neighbour, visited)
+
+<span class="cm"># Count connected components</span>
+<span class="kw">def</span> <span class="fn">count_components</span>(n: int, graph: dict) -> int:
+    visited = set()
+    count = <span class="nu">0</span>
+    <span class="kw">for</span> node <span class="kw">in</span> range(n):
+        <span class="kw">if</span> node <span class="kw">not</span> <span class="kw">in</span> visited:
+            <span class="fn">dfs_recursive</span>(graph, node, visited)
+            count <span class="op">+=</span> <span class="nu">1</span>
+    <span class="kw">return</span> count
+</pre>
+
+    <h3>Iterative DFS (avoids recursion limit)</h3>
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">def</span> <span class="fn">dfs_iterative</span>(graph: dict, start: int) -> list[int]:
+    visited = set()
+    stack = [start]
+    order = []
+    <span class="kw">while</span> stack:
+        node = stack.pop()
+        <span class="kw">if</span> node <span class="kw">in</span> visited:
+            <span class="kw">continue</span>
+        visited.add(node)
+        order.append(node)
+        <span class="kw">for</span> neighbour <span class="kw">in</span> graph[node]:   <span class="cm"># push in reverse for left-to-right order</span>
+            <span class="kw">if</span> neighbour <span class="kw">not</span> <span class="kw">in</span> visited:
+                stack.append(neighbour)
+    <span class="kw">return</span> order
+</pre>
+
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 560 200" width="100%" xmlns="http://www.w3.org/2000/svg">
+        <defs><marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#003087"/></marker></defs>
+        <!-- nodes -->
+        <circle cx="80" cy="100" r="22" fill="#003087"/>
+        <text x="80" y="105" text-anchor="middle" fill="#fff" font-weight="bold" font-size="14">0</text>
+        <circle cx="220" cy="50" r="22" fill="#1a4fa0"/>
+        <text x="220" y="55" text-anchor="middle" fill="#fff" font-weight="bold" font-size="14">1</text>
+        <circle cx="220" cy="150" r="22" fill="#1a4fa0"/>
+        <text x="220" y="155" text-anchor="middle" fill="#fff" font-weight="bold" font-size="14">2</text>
+        <circle cx="360" cy="50" r="22" fill="#C8A028"/>
+        <text x="360" y="55" text-anchor="middle" fill="#000" font-weight="bold" font-size="14">3</text>
+        <circle cx="360" cy="150" r="22" fill="#C8A028"/>
+        <text x="360" y="155" text-anchor="middle" fill="#000" font-weight="bold" font-size="14">4</text>
+        <circle cx="490" cy="100" r="22" fill="#5a6070"/>
+        <text x="490" y="105" text-anchor="middle" fill="#fff" font-weight="bold" font-size="14">5</text>
+        <!-- edges -->
+        <line x1="100" y1="88" x2="198" y2="60" stroke="#003087" stroke-width="2"/>
+        <line x1="100" y1="112" x2="198" y2="140" stroke="#003087" stroke-width="2"/>
+        <line x1="242" y1="50" x2="338" y2="50" stroke="#003087" stroke-width="2"/>
+        <line x1="242" y1="150" x2="338" y2="150" stroke="#003087" stroke-width="2"/>
+        <line x1="360" y1="72" x2="468" y2="88" stroke="#003087" stroke-width="2"/>
+        <line x1="360" y1="128" x2="468" y2="112" stroke="#003087" stroke-width="2"/>
+        <!-- DFS order labels -->
+        <text x="80" y="132" text-anchor="middle" fill="#C8A028" font-size="11" font-weight="bold">①</text>
+        <text x="220" y="30" text-anchor="middle" fill="#C8A028" font-size="11" font-weight="bold">②</text>
+        <text x="360" y="30" text-anchor="middle" fill="#C8A028" font-size="11" font-weight="bold">③</text>
+        <text x="490" y="78" text-anchor="middle" fill="#C8A028" font-size="11" font-weight="bold">④</text>
+        <text x="360" y="130" text-anchor="middle" fill="#C8A028" font-size="11" font-weight="bold">⑤</text>
+        <text x="220" y="130" text-anchor="middle" fill="#C8A028" font-size="11" font-weight="bold">⑥</text>
+        <text x="280" y="185" text-anchor="middle" fill="#003087" font-size="12">DFS visit order: 0 → 1 → 3 → 5 → 4 → 2</text>
+      </svg>
+      <figcaption>Figure 1 — DFS traversal visits deep paths first. Gold circles show visit order.</figcaption>
+    </div>
+  </div>
+
+  <!-- BFS -->
+  <div class="card">
+    <h2>🔄 3 · BFS — Breadth-First Search</h2>
+    <p>BFS explores all neighbours at distance k before visiting nodes at distance k+1. It guarantees the shortest path in unweighted graphs. Time: O(V+E).</p>
+
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">from</span> collections <span class="kw">import</span> deque
+
+<span class="kw">def</span> <span class="fn">bfs</span>(graph: dict, start: int) -> list[int]:
+    visited = {start}
+    queue = deque([start])
+    order = []
+    <span class="kw">while</span> queue:
+        node = queue.popleft()
+        order.append(node)
+        <span class="kw">for</span> neighbour <span class="kw">in</span> graph[node]:
+            <span class="kw">if</span> neighbour <span class="kw">not</span> <span class="kw">in</span> visited:
+                visited.add(neighbour)
+                queue.append(neighbour)
+    <span class="kw">return</span> order
+
+<span class="kw">def</span> <span class="fn">shortest_path</span>(graph: dict, start: int, end: int) -> int:
+    <span class="cm">"""Returns hop count of shortest path, or -1 if unreachable."""</span>
+    visited = {start}
+    queue = deque([(start, <span class="nu">0</span>)])
+    <span class="kw">while</span> queue:
+        node, dist = queue.popleft()
+        <span class="kw">if</span> node <span class="op">==</span> end:
+            <span class="kw">return</span> dist
+        <span class="kw">for</span> neighbour <span class="kw">in</span> graph[node]:
+            <span class="kw">if</span> neighbour <span class="kw">not</span> <span class="kw">in</span> visited:
+                visited.add(neighbour)
+                queue.append((neighbour, dist <span class="op">+</span> <span class="nu">1</span>))
+    <span class="kw">return</span> <span class="op">-</span><span class="nu">1</span>
+</pre>
+
+    <div class="concept-box gold">
+      <strong>BFS vs DFS — Decision Guide</strong><br>
+      Use <strong>BFS</strong> when: shortest path (unweighted), level-order traversal, "minimum steps" problems.<br>
+      Use <strong>DFS</strong> when: connectivity, cycle detection, topological sort, exhaustive path exploration.
+    </div>
+  </div>
+
+  <!-- CYCLE DETECTION -->
+  <div class="card">
+    <h2>🔁 4 · Cycle Detection</h2>
+
+    <h3>Undirected Graph — Parent Tracking</h3>
+    <p>An undirected graph has a cycle if DFS finds a visited neighbour that is NOT the node we came from.</p>
+
+    <h3>Directed Graph — Color States</h3>
+    <p>Use three states: <strong>WHITE</strong> (unvisited), <strong>GRAY</strong> (in current DFS path), <strong>BLACK</strong> (fully explored). A back-edge to a GRAY node = cycle.</p>
+
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">def</span> <span class="fn">has_cycle_directed</span>(n: int, graph: dict) -> bool:
+    <span class="cm"># 0=white, 1=gray (in stack), 2=black (done)</span>
+    color = [<span class="nu">0</span>] * n
+
+    <span class="kw">def</span> <span class="fn">dfs</span>(node: int) -> bool:
+        color[node] = <span class="nu">1</span>                        <span class="cm"># mark gray</span>
+        <span class="kw">for</span> neighbour <span class="kw">in</span> graph[node]:
+            <span class="kw">if</span> color[neighbour] <span class="op">==</span> <span class="nu">1</span>:          <span class="cm"># back-edge → cycle</span>
+                <span class="kw">return</span> <span class="kw">True</span>
+            <span class="kw">if</span> color[neighbour] <span class="op">==</span> <span class="nu">0</span> <span class="kw">and</span> <span class="fn">dfs</span>(neighbour):
+                <span class="kw">return</span> <span class="kw">True</span>
+        color[node] = <span class="nu">2</span>                        <span class="cm"># mark black</span>
+        <span class="kw">return</span> <span class="kw">False</span>
+
+    <span class="kw">for</span> node <span class="kw">in</span> range(n):
+        <span class="kw">if</span> color[node] <span class="op">==</span> <span class="nu">0</span> <span class="kw">and</span> <span class="fn">dfs</span>(node):
+            <span class="kw">return</span> <span class="kw">True</span>
+    <span class="kw">return</span> <span class="kw">False</span>
+</pre>
+  </div>
+
+  <!-- CONNECTED COMPONENTS / ISLANDS -->
+  <div class="card">
+    <h2>🏝️ 5 · Connected Components — Count Islands</h2>
+    <p>LeetCode #200 "Number of Islands" is the canonical connected-components problem: a 2D grid treated as a graph where adjacent '1' cells are connected.</p>
+
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">def</span> <span class="fn">numIslands</span>(grid: list[list[str]]) -> int:
+    <span class="kw">if</span> <span class="kw">not</span> grid:
+        <span class="kw">return</span> <span class="nu">0</span>
+    rows, cols = len(grid), len(grid[<span class="nu">0</span>])
+    count = <span class="nu">0</span>
+
+    <span class="kw">def</span> <span class="fn">dfs</span>(r: int, c: int) -> <span class="kw">None</span>:
+        <span class="kw">if</span> r <span class="kw">not</span> <span class="kw">in</span> range(rows) <span class="kw">or</span> c <span class="kw">not</span> <span class="kw">in</span> range(cols) <span class="kw">or</span> grid[r][c] <span class="op">!=</span> <span class="st">'1'</span>:
+            <span class="kw">return</span>
+        grid[r][c] = <span class="st">'0'</span>                    <span class="cm"># mark visited by sinking</span>
+        <span class="fn">dfs</span>(r<span class="op">+</span><span class="nu">1</span>,c); <span class="fn">dfs</span>(r<span class="op">-</span><span class="nu">1</span>,c); <span class="fn">dfs</span>(r,c<span class="op">+</span><span class="nu">1</span>); <span class="fn">dfs</span>(r,c<span class="op">-</span><span class="nu">1</span>)
+
+    <span class="kw">for</span> r <span class="kw">in</span> range(rows):
+        <span class="kw">for</span> c <span class="kw">in</span> range(cols):
+            <span class="kw">if</span> grid[r][c] <span class="op">==</span> <span class="st">'1'</span>:
+                <span class="fn">dfs</span>(r, c)
+                count <span class="op">+=</span> <span class="nu">1</span>
+    <span class="kw">return</span> count
+
+<span class="cm"># Time: O(rows × cols), Space: O(rows × cols) call stack</span>
+</pre>
+  </div>
+
+  <!-- TOPOLOGICAL SORT -->
+  <div class="card">
+    <h2>📋 6 · Topological Sort</h2>
+    <p>A topological ordering of a DAG places node u before v for every directed edge u→v. Only valid for Directed Acyclic Graphs (DAGs). Use case: package dependency resolution, course scheduling.</p>
+
+    <h3>Kahn's Algorithm (BFS + In-Degree)</h3>
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">from</span> collections <span class="kw">import</span> deque
+
+<span class="kw">def</span> <span class="fn">topological_sort</span>(n: int, edges: list[list[int]]) -> list[int]:
+    <span class="cm">"""Returns topological order, or [] if cycle detected."""</span>
+    graph = defaultdict(list)
+    in_degree = [<span class="nu">0</span>] * n
+    <span class="kw">for</span> u, v <span class="kw">in</span> edges:
+        graph[u].append(v)
+        in_degree[v] <span class="op">+=</span> <span class="nu">1</span>
+
+    queue = deque(node <span class="kw">for</span> node <span class="kw">in</span> range(n) <span class="kw">if</span> in_degree[node] <span class="op">==</span> <span class="nu">0</span>)
+    order = []
+
+    <span class="kw">while</span> queue:
+        node = queue.popleft()
+        order.append(node)
+        <span class="kw">for</span> neighbour <span class="kw">in</span> graph[node]:
+            in_degree[neighbour] <span class="op">-=</span> <span class="nu">1</span>
+            <span class="kw">if</span> in_degree[neighbour] <span class="op">==</span> <span class="nu">0</span>:
+                queue.append(neighbour)
+
+    <span class="kw">return</span> order <span class="kw">if</span> len(order) <span class="op">==</span> n <span class="kw">else</span> []  <span class="cm"># [] means cycle exists</span>
+</pre>
+
+    <div class="diagram-wrap">
+      <svg viewBox="0 0 560 180" width="100%" xmlns="http://www.w3.org/2000/svg">
+        <defs><marker id="a2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6 Z" fill="#003087"/></marker></defs>
+        <!-- nodes labeled with topo order -->
+        <circle cx="70" cy="90" r="22" fill="#003087"/>
+        <text x="70" y="85" text-anchor="middle" fill="#fff" font-weight="bold" font-size="12">A</text>
+        <text x="70" y="97" text-anchor="middle" fill="#C8A028" font-size="10">①</text>
+        <circle cx="190" cy="45" r="22" fill="#003087"/>
+        <text x="190" y="40" text-anchor="middle" fill="#fff" font-weight="bold" font-size="12">B</text>
+        <text x="190" y="52" text-anchor="middle" fill="#C8A028" font-size="10">②</text>
+        <circle cx="190" cy="135" r="22" fill="#003087"/>
+        <text x="190" y="130" text-anchor="middle" fill="#fff" font-weight="bold" font-size="12">C</text>
+        <text x="190" y="142" text-anchor="middle" fill="#C8A028" font-size="10">③</text>
+        <circle cx="320" cy="45" r="22" fill="#1a4fa0"/>
+        <text x="320" y="40" text-anchor="middle" fill="#fff" font-weight="bold" font-size="12">D</text>
+        <text x="320" y="52" text-anchor="middle" fill="#C8A028" font-size="10">④</text>
+        <circle cx="320" cy="135" r="22" fill="#1a4fa0"/>
+        <text x="320" y="130" text-anchor="middle" fill="#fff" font-weight="bold" font-size="12">E</text>
+        <text x="320" y="142" text-anchor="middle" fill="#C8A028" font-size="10">⑤</text>
+        <circle cx="450" cy="90" r="22" fill="#C8A028"/>
+        <text x="450" y="85" text-anchor="middle" fill="#000" font-weight="bold" font-size="12">F</text>
+        <text x="450" y="97" text-anchor="middle" fill="#003087" font-size="10">⑥</text>
+        <!-- directed edges -->
+        <line x1="92" y1="78" x2="168" y2="55" stroke="#003087" stroke-width="2" marker-end="url(#a2)"/>
+        <line x1="92" y1="102" x2="168" y2="125" stroke="#003087" stroke-width="2" marker-end="url(#a2)"/>
+        <line x1="212" y1="45" x2="298" y2="45" stroke="#003087" stroke-width="2" marker-end="url(#a2)"/>
+        <line x1="212" y1="135" x2="298" y2="135" stroke="#003087" stroke-width="2" marker-end="url(#a2)"/>
+        <line x1="342" y1="57" x2="428" y2="80" stroke="#003087" stroke-width="2" marker-end="url(#a2)"/>
+        <line x1="342" y1="123" x2="428" y2="100" stroke="#003087" stroke-width="2" marker-end="url(#a2)"/>
+        <text x="280" y="168" text-anchor="middle" fill="#5a6070" font-size="12">Topo order: A → B → C → D → E → F</text>
+      </svg>
+      <figcaption>Figure 2 — Topological sort of a DAG. Kahn's processes nodes with in-degree 0 first.</figcaption>
+    </div>
+  </div>
+
+  <!-- UNION-FIND -->
+  <div class="card">
+    <h2>🔗 7 · Union-Find (Disjoint Set Union)</h2>
+    <p>Union-Find answers connectivity queries in near-constant time. Operations: <strong>find(x)</strong> — which set does x belong to? <strong>union(x,y)</strong> — merge two sets.</p>
+    <p>With <strong>path compression</strong> + <strong>union by rank</strong>, both operations are O(α(n)) — effectively O(1).</p>
+
+<pre class="code-block">
+<span class="label">Python</span><span class="kw">class</span> <span class="fn">UnionFind</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, n: int):
+        self.parent = list(range(n))
+        self.rank = [<span class="nu">0</span>] * n
+
+    <span class="kw">def</span> <span class="fn">find</span>(self, x: int) -> int:
+        <span class="kw">if</span> self.parent[x] <span class="op">!=</span> x:
+            self.parent[x] = self.<span class="fn">find</span>(self.parent[x])  <span class="cm"># path compression</span>
+        <span class="kw">return</span> self.parent[x]
+
+    <span class="kw">def</span> <span class="fn">union</span>(self, x: int, y: int) -> bool:
+        px, py = self.<span class="fn">find</span>(x), self.<span class="fn">find</span>(y)
+        <span class="kw">if</span> px <span class="op">==</span> py:
+            <span class="kw">return</span> <span class="kw">False</span>              <span class="cm"># already connected</span>
+        <span class="kw">if</span> self.rank[px] <span class="op"><</span> self.rank[py]:
+            px, py = py, px
+        self.parent[py] = px          <span class="cm"># union by rank</span>
+        <span class="kw">if</span> self.rank[px] <span class="op">==</span> self.rank[py]:
+            self.rank[px] <span class="op">+=</span> <span class="nu">1</span>
+        <span class="kw">return</span> <span class="kw">True</span>
+
+    <span class="kw">def</span> <span class="fn">connected</span>(self, x: int, y: int) -> bool:
+        <span class="kw">return</span> self.<span class="fn">find</span>(x) <span class="op">==</span> self.<span class="fn">find</span>(y)
+</pre>
+
+    <div class="alert">
+      <strong>When to use Union-Find vs DFS/BFS:</strong> Union-Find is ideal for <em>offline</em> connectivity queries (process all edges, then answer queries). DFS/BFS is better for <em>online</em> traversal when you need the actual path.
+    </div>
+  </div>
+
+  <!-- COMPLEXITY SUMMARY -->
+  <div class="card">
+    <h2>📊 8 · Complexity Summary</h2>
+    <table>
+      <tr><th>Algorithm</th><th>Time</th><th>Space</th><th>Key Use Case</th></tr>
+      <tr><td>DFS (recursive)</td><td>O(V+E)</td><td>O(V) stack</td><td>Connectivity, cycle detect, topo sort</td></tr>
+      <tr><td>DFS (iterative)</td><td>O(V+E)</td><td>O(V)</td><td>Same; avoids recursion limit</td></tr>
+      <tr><td>BFS</td><td>O(V+E)</td><td>O(V)</td><td>Shortest path (unweighted), level-order</td></tr>
+      <tr><td>Topological Sort (Kahn's)</td><td>O(V+E)</td><td>O(V)</td><td>DAG ordering, dependency resolution</td></tr>
+      <tr><td>Union-Find</td><td>O(α(n)) per op</td><td>O(V)</td><td>Offline connectivity, Kruskal's MST</td></tr>
+    </table>
+  </div>
+
+</main>
+<footer><strong>Algoritmia Aplicada y Diseño Moderno de Sistemas</strong> · UDES · Block 2 – Week 9 · Professor: Jorge Galvis</footer>
+</body>
+</html>

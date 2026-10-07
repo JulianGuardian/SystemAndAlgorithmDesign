@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 9 Design Activities – Distributed Storage | Algoritmia Aplicada</title>
+<style>
+  :root{--udes-blue:#003087;--udes-blue-dark:#001f5c;--udes-blue-light:#1a4fa0;--udes-gold:#C8A028;--bg:#f4f6fb;--surface:#fff;--surface2:#eef2fa;--text:#1a1a2e;--text-muted:#5a6070;--border:#d0d8ea;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  .top-nav{background:var(--udes-blue-dark);color:#fff;padding:0.6rem 2rem;display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;}
+  .top-nav .course-label{color:var(--udes-gold);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;}
+  .lesson-breadcrumb{display:flex;gap:1.2rem;align-items:center;}
+  .lesson-breadcrumb .prev{color:#aab4cc;}
+  .lesson-breadcrumb .current{background:var(--udes-gold);color:#000;font-weight:700;padding:0.2rem 0.7rem;border-radius:4px;}
+  header{background:linear-gradient(135deg,var(--udes-blue) 0%,var(--udes-blue-light) 100%);color:#fff;padding:2.5rem 2rem;text-align:center;border-bottom:4px solid var(--udes-gold);}
+  header .block-tag{display:inline-block;background:var(--udes-gold);color:#000;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:0.25rem 0.9rem;border-radius:20px;margin-bottom:1rem;}
+  header h1{font-size:2rem;font-weight:800;margin-bottom:0.4rem;}
+  header p.subtitle{font-size:1rem;color:#b8ccee;}
+  .container{max-width:900px;margin:0 auto;padding:2rem 1.5rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.8rem 2rem;margin-bottom:2rem;box-shadow:0 2px 8px rgba(0,48,135,0.06);}
+  .card h2{color:var(--udes-blue);font-size:1.3rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--udes-gold);}
+  .card h3{color:var(--udes-blue-dark);font-size:1.05rem;margin:1.3rem 0 0.5rem;}
+  .quiz-q{background:var(--surface2);border-left:4px solid var(--udes-blue);border-radius:0 8px 8px 0;padding:1rem 1.2rem;margin:1.2rem 0;}
+  .quiz-q .q-num{font-size:0.78rem;font-weight:700;color:var(--udes-gold);text-transform:uppercase;letter-spacing:0.08em;}
+  .options{list-style:none;padding:0;margin-top:0.8rem;}
+  .options li{padding:0.45rem 0.8rem;margin:0.3rem 0;border-radius:6px;border:1px solid var(--border);cursor:pointer;transition:background 0.15s;}
+  .options li:hover{background:var(--surface2);}
+  .options li.selected{background:#ddeaff;border-color:var(--udes-blue);}
+  .options li.correct{background:#e8f5e9;border-color:#2e7d32;color:#1b5e20;font-weight:600;}
+  .options li.wrong{background:#ffebee;border-color:#c62828;color:#b71c1c;}
+  .reveal-btn{margin-top:0.8rem;padding:0.4rem 1.1rem;background:var(--udes-blue);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:0.87rem;font-weight:600;}
+  .explanation{display:none;margin-top:0.8rem;padding:0.8rem 1rem;background:#fffde7;border-left:3px solid var(--udes-gold);border-radius:0 6px 6px 0;font-size:0.92rem;}
+  .scenario{background:#e3f2fd;border:1px solid #90caf9;border-radius:8px;padding:1.2rem 1.4rem;margin:1rem 0;}
+  .scenario h4{color:#0d47a1;margin-bottom:0.5rem;}
+  .step{display:flex;gap:1rem;margin:0.8rem 0;padding:0.8rem;background:var(--surface2);border-radius:6px;}
+  .step-num{background:var(--udes-blue);color:#fff;border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;flex-shrink:0;}
+  .checklist{list-style:none;padding:0;}
+  .checklist li{padding:0.5rem 0.8rem;margin:0.3rem 0;display:flex;align-items:flex-start;gap:0.7rem;border-radius:6px;background:var(--surface2);}
+  .checklist input[type=checkbox]{margin-top:0.3rem;accent-color:var(--udes-blue);width:16px;height:16px;flex-shrink:0;}
+  #score-bar{background:var(--udes-blue-dark);color:#fff;text-align:center;padding:1rem;position:sticky;top:0;z-index:100;font-size:0.95rem;}
+  #score-bar span{color:var(--udes-gold);font-weight:800;font-size:1.1rem;}
+  footer{background:var(--udes-blue-dark);color:#8899bb;text-align:center;padding:1.2rem;font-size:0.82rem;margin-top:3rem;}
+  footer strong{color:var(--udes-gold);}
+</style>
+</head>
+<body>
+<nav class="top-nav">
+  <span class="course-label">Algoritmia Aplicada y Diseño Moderno de Sistemas</span>
+  <div class="lesson-breadcrumb">
+    <span class="prev">⬅ Week 8: Messaging Systems</span>
+    <span class="current">Week 9 · Design Activities</span>
+    <span>→ Week 10: Exam Prep</span>
+  </div>
+</nav>
+<div id="score-bar">Quiz score: <span id="score">0 / 0</span> correct</div>
+<header>
+  <div class="block-tag">Block 2 – Design at Scale · Week 9 Activities</div>
+  <h1>Distributed Storage Activities</h1>
+  <p class="subtitle">Google Drive · Object Storage · Consistent Hashing · Design Workshop</p>
+</header>
+
+<main class="container">
+
+  <!-- QUIZ -->
+  <div class="card">
+    <h2>⚡ Part A — Quiz</h2>
+
+    <div class="quiz-q" id="q1">
+      <div class="q-num">Question 1</div>
+      <p><strong>What is the PRIMARY benefit of chunked file uploads in a system like Google Drive?</strong></p>
+      <ul class="options" data-correct="c">
+        <li data-val="a">Chunks are encrypted individually, improving security</li>
+        <li data-val="b">Smaller chunks compress better, saving storage</li>
+        <li data-val="c">Resumability — only changed/failed chunks need to be re-uploaded, not the entire file</li>
+        <li data-val="d">Chunking enables parallel encryption keys per chunk</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q1')">Reveal</button>
+      <div class="explanation" id="q1-exp"><strong>Resumability and delta sync</strong>. If a 1 GB upload fails at 900 MB, only the last chunk is re-sent. Also, when a file is edited, only changed chunks are uploaded — not the whole file. Deduplication (same chunk across multiple files stored once) is an additional bonus.</div>
+    </div>
+
+    <div class="quiz-q" id="q2">
+      <div class="q-num">Question 2</div>
+      <p><strong>Consistent hashing primarily solves which problem?</strong></p>
+      <ul class="options" data-correct="b">
+        <li data-val="a">Encrypting data at rest in distributed storage</li>
+        <li data-val="b">Minimizing key redistribution when servers are added or removed</li>
+        <li data-val="c">Ensuring ACID transactions across nodes</li>
+        <li data-val="d">Reducing network latency between servers</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q2')">Reveal</button>
+      <div class="explanation" id="q2-exp"><strong>Key redistribution</strong>. With naive modulo hashing, changing N causes nearly all keys to remap. Consistent hashing on a ring means only K/N keys move when a server is added or removed — a dramatic improvement for cache and storage clusters.</div>
+    </div>
+
+    <div class="quiz-q" id="q3">
+      <div class="q-num">Question 3</div>
+      <p><strong>What is the purpose of virtual nodes in consistent hashing?</strong></p>
+      <ul class="options" data-correct="a">
+        <li data-val="a">To distribute each physical server across multiple ring positions for more even load distribution</li>
+        <li data-val="b">To create backup servers that take over during failures</li>
+        <li data-val="c">To encrypt keys at multiple ring positions</li>
+        <li data-val="d">To reduce the number of hash computations needed</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q3')">Reveal</button>
+      <div class="explanation" id="q3-exp"><strong>Load distribution</strong>. With a single position per server, one server might own a large arc of the ring (holding more keys). Virtual nodes (e.g., 150 per server) spread each server across the ring, giving a more even distribution. They also smooth out the impact of adding/removing a server.</div>
+    </div>
+
+    <div class="quiz-q" id="q4">
+      <div class="q-num">Question 4</div>
+      <p><strong>You need to store 5 billion product images for an e-commerce site. Each image is write-once, never updated. Which storage type is most appropriate?</strong></p>
+      <ul class="options" data-correct="c">
+        <li data-val="a">Block storage (EBS) — fastest random access</li>
+        <li data-val="b">File storage (NFS) — familiar filesystem interface</li>
+        <li data-val="c">Object storage (S3) — immutable objects, cheap at scale, CDN-friendly</li>
+        <li data-val="d">Relational database — easy querying by product ID</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q4')">Reveal</button>
+      <div class="explanation" id="q4-exp"><strong>Object storage</strong>. Images are immutable (write-once), there are billions of them, and they integrate natively with CDNs via presigned URLs. S3-class storage is orders of magnitude cheaper per GB than block or file storage at this scale.</div>
+    </div>
+
+    <div class="quiz-q" id="q5">
+      <div class="q-num">Question 5</div>
+      <p><strong>Google Docs uses Operational Transform for conflict resolution. What makes this approach different from Dropbox's "conflict copy"?</strong></p>
+      <ul class="options" data-correct="b">
+        <li data-val="a">OT uses a central server to serialize all writes; conflict copy allows concurrent offline writes</li>
+        <li data-val="b">OT merges concurrent edits automatically without user intervention; conflict copy requires the user to manually merge two file versions</li>
+        <li data-val="c">OT is simpler to implement but has lower conflict resolution accuracy</li>
+        <li data-val="d">OT only works for binary files; conflict copy works for text</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q5')">Reveal</button>
+      <div class="explanation" id="q5-exp"><strong>Automatic merge vs manual merge</strong>. OT transforms concurrent insert/delete operations against each other, allowing two users to type simultaneously without conflicts. It's extremely complex to implement correctly. Dropbox's conflict copy is simpler: both versions survive and the user sees them side-by-side.</div>
+    </div>
+  </div>
+
+  <!-- WORKSHOP: DESIGN GOOGLE DRIVE -->
+  <div class="card">
+    <h2>🖊️ Part B — Design Workshop: Build Google Drive</h2>
+    <p style="font-size:0.93rem;margin-bottom:1rem;">Walk through the 6-step system design interview process for Google Drive. Work in pairs: one person drives, one asks clarifying questions.</p>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div><strong>Clarify Requirements (3 min)</strong><br>
+        <em>Functional:</em> Upload/download files, sync across devices, share with permissions, versioning?<br>
+        <em>Non-functional:</em> What's the maximum file size? How many users? What availability SLA?<br>
+        <em>Out of scope:</em> Real-time collaborative editing (Google Docs feature, not Drive itself).
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div><strong>Capacity Estimation (2 min)</strong><br>
+        500M users, 10% DAU (50M). Average 10 upload actions/day per DAU = 500M uploads/day.<br>
+        500M / 86,400 ≈ 5,800 uploads/sec. Average file 1MB → 5.8 GB/sec write throughput.<br>
+        5-year storage: 500M × 15GB × 0.3 (compression) = <strong>~2.25 EB</strong>.
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div><strong>API Design (2 min)</strong><br>
+        <code>POST /files/upload</code> — initiate chunked upload, returns upload_session_id<br>
+        <code>PUT /files/upload/{session_id}/chunks/{idx}</code> — upload a single chunk<br>
+        <code>POST /files/upload/{session_id}/complete</code> — finalize, assemble chunks<br>
+        <code>GET /files/{file_id}</code> — get metadata + download URL<br>
+        <code>GET /files/{file_id}/versions</code> — list versions
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div><strong>High-Level Design (5 min)</strong><br>
+        Draw: Client → Load Balancer → API Servers → Block Server (chunking + dedup) → Blob Storage (S3).<br>
+        Metadata: MySQL with read replicas. Cache: Redis for file metadata hot reads.<br>
+        Sync: WebSocket server (or Server-Sent Events) for real-time change notifications.
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">5</div>
+      <div><strong>Deep Dive: Sync Service (3 min)</strong><br>
+        How does Device B know Device A uploaded a new file version?<br>
+        Options: polling (simple, high load), long-polling, WebSockets (bi-directional), Server-Sent Events (one-way push).<br>
+        At scale: separate notification service (similar to Week 6 design).
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">6</div>
+      <div><strong>Failure &amp; Scale (2 min)</strong><br>
+        Blob storage failure → S3 has 11 nines durability (multi-zone replication built-in).<br>
+        Metadata DB failure → primary-replica failover; read replicas for query scale.<br>
+        Block server bottleneck → stateless, horizontally scalable; dedup index in Redis.
+      </div>
+    </div>
+  </div>
+
+  <!-- WORKSHOP 2: SHARING -->
+  <div class="card">
+    <h2>🤝 Part C — Extension: Add Sharing &amp; Collaboration</h2>
+    <p style="font-size:0.93rem;margin-bottom:1rem;">Your Google Drive design from Part B supports personal file storage. Now extend it to handle file sharing and collaborative access.</p>
+
+    <div class="scenario">
+      <h4>Scenario: Shared Folder with 10,000 collaborators</h4>
+      <p style="font-size:0.94rem;">A university creates a shared Drive folder for all students. 10,000 students can read files; 50 faculty can upload/edit. Design the permission model and the notification flow when a faculty member adds a new file.</p>
+      <p style="font-size:0.93rem;"><strong>Questions to answer:</strong></p>
+      <ul style="margin-left:1.4rem;line-height:2;font-size:0.93rem;">
+        <li>How do you model permissions? (ACL table? Role-based?)</li>
+        <li>When a faculty member uploads a file, do you notify all 10,000 students? (Fan-out problem!)</li>
+        <li>How does your sync service scale to 10,000 concurrent WebSocket connections for one folder?</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- PEER REVIEW -->
+  <div class="card">
+    <h2>🔍 Part D — Peer Review Checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span>Chunking strategy defined — chunk size justified (e.g., 4–8 MB) and resumability explained?</span></li>
+      <li><input type="checkbox"><span>Blob storage separated from metadata DB with a clear reason?</span></li>
+      <li><input type="checkbox"><span>Consistent hashing explained with a concrete benefit (not just "it balances load")?</span></li>
+      <li><input type="checkbox"><span>Sync notification mechanism named (WebSocket/SSE/long-poll) and its trade-offs acknowledged?</span></li>
+      <li><input type="checkbox"><span>Storage scale estimated (not just "a lot of data") — actual numbers in PB/EB?</span></li>
+      <li><input type="checkbox"><span>At least one failure scenario addressed (blob storage down, metadata DB failover)?</span></li>
+    </ul>
+  </div>
+
+  <!-- REFLECTION -->
+  <div class="card">
+    <h2>📝 Part E — Weekly Reflection</h2>
+    <ol style="margin-left:1.4rem;line-height:2.2;font-size:0.95rem;">
+      <li>Dropbox uses a content-addressable store (chunks are named by their SHA-256 hash). How does this enable global deduplication across ALL users' files — not just within one user's account?</li>
+      <li>Research: how does S3 achieve 11 nines durability (99.999999999%)? What replication strategy does AWS use internally?</li>
+      <li>Design a "recycle bin" feature for Google Drive: files deleted by a user are recoverable for 30 days. What schema changes are needed, and how do you handle storage cost for deleted files?</li>
+    </ol>
+  </div>
+
+</main>
+<footer><strong>Algoritmia Aplicada y Diseño Moderno de Sistemas</strong> · UDES · Block 2 – Week 9 Design Activities · Professor: Jorge Galvis</footer>
+<script>
+  let answered=0,correct=0;
+  function revealQuiz(qid){
+    const block=document.getElementById(qid);
+    const correctVal=block.querySelector('.options').dataset.correct;
+    const selected=block.querySelector('li.selected');
+    if(!selected){alert('Please select an answer first.');return;}
+    block.querySelectorAll('.options li').forEach(li=>{
+      if(li.dataset.val===correctVal)li.classList.add('correct');
+      else if(li.classList.contains('selected'))li.classList.add('wrong');
+    });
+    document.getElementById(qid+'-exp').style.display='block';
+    if(!block.dataset.counted){
+      answered++;
+      if(selected.dataset.val===correctVal)correct++;
+      block.dataset.counted='1';
+      document.getElementById('score').textContent=correct+' / '+answered;
+    }
+    block.querySelector('.reveal-btn').disabled=true;
+  }
+  document.querySelectorAll('.options').forEach(ul=>{
+    ul.querySelectorAll('li').forEach(li=>{
+      li.addEventListener('click',()=>{
+        if(ul.closest('.quiz-q').dataset.counted)return;
+        ul.querySelectorAll('li').forEach(x=>x.classList.remove('selected'));
+        li.classList.add('selected');
+      });
+    });
+  });
+  document.querySelectorAll('.checklist input').forEach((cb,i)=>{
+    cb.checked=sessionStorage.getItem('w9da-cb-'+i)==='1';
+    cb.addEventListener('change',()=>sessionStorage.setItem('w9da-cb-'+i,cb.checked?'1':'0'));
+  });
+</script>
+</body>
+</html>

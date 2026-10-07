@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Week 9 Activities – Graph Algorithms | Algoritmia Aplicada</title>
+<style>
+  :root{--udes-blue:#003087;--udes-blue-dark:#001f5c;--udes-blue-light:#1a4fa0;--udes-gold:#C8A028;--bg:#f4f6fb;--surface:#fff;--surface2:#eef2fa;--text:#1a1a2e;--text-muted:#5a6070;--border:#d0d8ea;--code-bg:#1e2340;--code-text:#e8eaf0;}
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.7;}
+  .top-nav{background:var(--udes-blue-dark);color:#fff;padding:0.6rem 2rem;display:flex;justify-content:space-between;align-items:center;font-size:0.82rem;}
+  .top-nav .course-label{color:var(--udes-gold);font-weight:700;text-transform:uppercase;letter-spacing:0.08em;}
+  .lesson-breadcrumb{display:flex;gap:1.2rem;align-items:center;}
+  .lesson-breadcrumb .prev{color:#aab4cc;}
+  .lesson-breadcrumb .current{background:var(--udes-gold);color:#000;font-weight:700;padding:0.2rem 0.7rem;border-radius:4px;}
+  header{background:linear-gradient(135deg,var(--udes-blue) 0%,var(--udes-blue-light) 100%);color:#fff;padding:2.5rem 2rem;text-align:center;border-bottom:4px solid var(--udes-gold);}
+  header .block-tag{display:inline-block;background:var(--udes-gold);color:#000;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;padding:0.25rem 0.9rem;border-radius:20px;margin-bottom:1rem;}
+  header h1{font-size:2rem;font-weight:800;margin-bottom:0.4rem;}
+  header p.subtitle{font-size:1rem;color:#b8ccee;}
+  .container{max-width:900px;margin:0 auto;padding:2rem 1.5rem;}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.8rem 2rem;margin-bottom:2rem;box-shadow:0 2px 8px rgba(0,48,135,0.06);}
+  .card h2{color:var(--udes-blue);font-size:1.3rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--udes-gold);}
+  .card h3{color:var(--udes-blue-dark);font-size:1.05rem;margin:1.3rem 0 0.5rem;}
+  .quiz-q{background:var(--surface2);border-left:4px solid var(--udes-blue);border-radius:0 8px 8px 0;padding:1rem 1.2rem;margin:1.2rem 0;}
+  .quiz-q .q-num{font-size:0.78rem;font-weight:700;color:var(--udes-gold);text-transform:uppercase;letter-spacing:0.08em;}
+  .options{list-style:none;padding:0;margin-top:0.8rem;}
+  .options li{padding:0.45rem 0.8rem;margin:0.3rem 0;border-radius:6px;border:1px solid var(--border);cursor:pointer;transition:background 0.15s;}
+  .options li:hover{background:var(--surface2);}
+  .options li.selected{background:#ddeaff;border-color:var(--udes-blue);}
+  .options li.correct{background:#e8f5e9;border-color:#2e7d32;color:#1b5e20;font-weight:600;}
+  .options li.wrong{background:#ffebee;border-color:#c62828;color:#b71c1c;}
+  .reveal-btn{margin-top:0.8rem;padding:0.4rem 1.1rem;background:var(--udes-blue);color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:0.87rem;font-weight:600;}
+  .explanation{display:none;margin-top:0.8rem;padding:0.8rem 1rem;background:#fffde7;border-left:3px solid var(--udes-gold);border-radius:0 6px 6px 0;font-size:0.92rem;}
+  .problem{border:1px solid var(--border);border-radius:8px;margin:1rem 0;overflow:hidden;}
+  .problem-header{background:var(--udes-blue);color:#fff;padding:0.7rem 1.2rem;display:flex;justify-content:space-between;align-items:center;}
+  .problem-header h4{font-size:1rem;font-weight:700;}
+  .difficulty{font-size:0.75rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:12px;}
+  .medium{background:#fff3e0;color:#e65100;}
+  .problem-body{padding:1.2rem;}
+  .problem-body p{margin-bottom:0.8rem;font-size:0.95rem;}
+  .lc-link{display:inline-block;background:var(--udes-gold);color:#000;font-weight:700;font-size:0.82rem;padding:0.3rem 0.9rem;border-radius:5px;text-decoration:none;margin-top:0.5rem;}
+  .hint-box{background:#e3f2fd;border-left:3px solid #1565c0;border-radius:0 6px 6px 0;padding:0.7rem 1rem;margin-top:0.8rem;font-size:0.9rem;}
+  .hint-toggle{cursor:pointer;color:var(--udes-blue);font-weight:600;font-size:0.88rem;border:none;background:none;padding:0;}
+  .hint-content{display:none;margin-top:0.5rem;}
+  .tag{display:inline-block;background:#e3ebfa;color:var(--udes-blue);border-radius:4px;padding:0.15rem 0.55rem;font-size:0.78rem;font-weight:600;margin:0.15rem;}
+  .checklist{list-style:none;padding:0;}
+  .checklist li{padding:0.5rem 0.8rem;margin:0.3rem 0;display:flex;align-items:flex-start;gap:0.7rem;border-radius:6px;background:var(--surface2);}
+  .checklist input[type=checkbox]{margin-top:0.3rem;accent-color:var(--udes-blue);width:16px;height:16px;flex-shrink:0;}
+  .code-block{background:var(--code-bg);color:var(--code-text);border-radius:8px;padding:1rem 1.2rem;overflow-x:auto;font-family:'Cascadia Code','Fira Code','Consolas',monospace;font-size:0.87rem;line-height:1.65;margin:0.8rem 0;position:relative;}
+  .code-block .label{position:absolute;top:0.5rem;right:0.8rem;font-size:0.7rem;background:var(--udes-gold);color:#000;padding:0.1rem 0.5rem;border-radius:4px;font-weight:700;font-family:sans-serif;}
+  .kw{color:#c678dd;} .fn{color:#61afef;} .cm{color:#7f848e;font-style:italic;} .nu{color:#d19a66;} .st{color:#98c379;}
+  #score-bar{background:var(--udes-blue-dark);color:#fff;text-align:center;padding:1rem;position:sticky;top:0;z-index:100;font-size:0.95rem;}
+  #score-bar span{color:var(--udes-gold);font-weight:800;font-size:1.1rem;}
+  footer{background:var(--udes-blue-dark);color:#8899bb;text-align:center;padding:1.2rem;font-size:0.82rem;margin-top:3rem;}
+  footer strong{color:var(--udes-gold);}
+</style>
+</head>
+<body>
+<nav class="top-nav">
+  <span class="course-label">Algoritmia Aplicada y Diseño Moderno de Sistemas</span>
+  <div class="lesson-breadcrumb">
+    <span class="prev">⬅ Week 8: Heaps &amp; Messaging</span>
+    <span class="current">Week 9 · Activities</span>
+    <span>→ Week 10: Exam Prep</span>
+  </div>
+</nav>
+<div id="score-bar">Quiz score: <span id="score">0 / 0</span> correct</div>
+<header>
+  <div class="block-tag">Block 2 – Advanced Structures · Week 9 Activities</div>
+  <h1>Graph Algorithms — Activities</h1>
+  <p class="subtitle">DFS · BFS · Topological Sort · Union-Find · LeetCode Practice</p>
+</header>
+
+<main class="container">
+
+  <!-- QUIZ -->
+  <div class="card">
+    <h2>⚡ Part A — Concept Quiz</h2>
+
+    <div class="quiz-q" id="q1">
+      <div class="q-num">Question 1</div>
+      <p><strong>You need to find the SHORTEST path between two nodes in an unweighted graph. Which algorithm should you use?</strong></p>
+      <ul class="options" data-correct="b">
+        <li data-val="a">DFS — goes deep, explores the shortest path naturally</li>
+        <li data-val="b">BFS — explores nodes level by level, guaranteeing the shortest hop count</li>
+        <li data-val="c">Union-Find — answers connectivity in O(α(n))</li>
+        <li data-val="d">Topological Sort — orders nodes by dependency</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q1')">Reveal</button>
+      <div class="explanation" id="q1-exp"><strong>BFS</strong> guarantees the shortest path in unweighted graphs because it visits nodes in order of increasing distance from the source. DFS may find a path, but not necessarily the shortest one.</div>
+    </div>
+
+    <div class="quiz-q" id="q2">
+      <div class="q-num">Question 2</div>
+      <p><strong>For a sparse graph (V nodes, E ≪ V²), which representation is more memory-efficient?</strong></p>
+      <ul class="options" data-correct="a">
+        <li data-val="a">Adjacency list — stores only existing edges, O(V+E) space</li>
+        <li data-val="b">Adjacency matrix — O(1) edge lookup justifies the space</li>
+        <li data-val="c">Both are equivalent for sparse graphs</li>
+        <li data-val="d">Edge list is always better than both</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q2')">Reveal</button>
+      <div class="explanation" id="q2-exp"><strong>Adjacency list</strong> uses O(V+E) space and is ideal for sparse graphs. An adjacency matrix always uses O(V²) space regardless of edge density — wasteful when E ≪ V².</div>
+    </div>
+
+    <div class="quiz-q" id="q3">
+      <div class="q-num">Question 3</div>
+      <p><strong>Topological sort is ONLY valid for which type of graph?</strong></p>
+      <ul class="options" data-correct="c">
+        <li data-val="a">Any undirected graph</li>
+        <li data-val="b">Any directed graph</li>
+        <li data-val="c">Directed Acyclic Graphs (DAGs) only</li>
+        <li data-val="d">Weighted directed graphs only</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q3')">Reveal</button>
+      <div class="explanation" id="q3-exp"><strong>DAGs only</strong>. If the graph has a cycle, no valid topological ordering exists (Kahn's algorithm detects this: the output length will be less than V). Course Schedule II (LeetCode #210) is exactly this problem.</div>
+    </div>
+
+    <div class="quiz-q" id="q4">
+      <div class="q-num">Question 4</div>
+      <p><strong>What does path compression do in Union-Find?</strong></p>
+      <ul class="options" data-correct="b">
+        <li data-val="a">It sorts nodes alphabetically for faster lookup</li>
+        <li data-val="b">It makes every node on a find() path point directly to the root, flattening the tree</li>
+        <li data-val="c">It compresses the edge list to save memory</li>
+        <li data-val="d">It merges two trees by always making the left tree the root</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q4')">Reveal</button>
+      <div class="explanation" id="q4-exp"><strong>Path compression</strong> makes all nodes on the path from x to the root point directly to the root after a find() call. This dramatically flattens trees over time, giving amortized O(α(n)) per operation.</div>
+    </div>
+
+    <div class="quiz-q" id="q5">
+      <div class="q-num">Question 5</div>
+      <p><strong>In cycle detection for DIRECTED graphs using DFS, you track nodes as WHITE/GRAY/BLACK. What does finding a GRAY neighbour mean?</strong></p>
+      <ul class="options" data-correct="a">
+        <li data-val="a">A back-edge to an ancestor in the current DFS path — a cycle exists</li>
+        <li data-val="b">The neighbour has already been fully explored — safe to skip</li>
+        <li data-val="c">The neighbour is in a different connected component</li>
+        <li data-val="d">The graph is undirected, not directed</li>
+      </ul>
+      <button class="reveal-btn" onclick="revealQuiz('q5')">Reveal</button>
+      <div class="explanation" id="q5-exp"><strong>Back-edge = cycle</strong>. GRAY means the node is currently on the active DFS recursion stack. Encountering a GRAY neighbour means we've found a path back to an ancestor — a directed cycle. BLACK = fully done, safe to skip.</div>
+    </div>
+  </div>
+
+  <!-- LEETCODE PROBLEMS -->
+  <div class="card">
+    <h2>💻 Part B — LeetCode Practice</h2>
+
+    <div class="problem">
+      <div class="problem-header">
+        <h4>#200 · Number of Islands</h4>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="problem-body">
+        <p>Given a 2D grid of '1's (land) and '0's (water), count the number of islands. An island is formed by adjacent (horizontal/vertical) '1's surrounded by water.</p>
+        <p><span class="tag">DFS</span> <span class="tag">BFS</span> <span class="tag">Connected Components</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h1')">💡 Show hint</button>
+        <div class="hint-content hint-box" id="h1">When you find a '1', run DFS/BFS to mark the entire connected island as visited (sink to '0'). Count how many times you start a new DFS. Time: O(m×n).</div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/number-of-islands/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+
+    <div class="problem">
+      <div class="problem-header">
+        <h4>#207 · Course Schedule</h4>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="problem-body">
+        <p>Given numCourses and a list of prerequisites [a, b] meaning "to take a you must first take b", determine if you can finish all courses.</p>
+        <p><span class="tag">Topological Sort</span> <span class="tag">Cycle Detection</span> <span class="tag">Kahn's Algorithm</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h2')">💡 Show hint</button>
+        <div class="hint-content hint-box" id="h2">Build a directed graph of prerequisites. If it has a cycle, you cannot finish all courses. Use Kahn's algorithm: if the topological order doesn't include all nodes, a cycle exists.</div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/course-schedule/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+
+    <div class="problem">
+      <div class="problem-header">
+        <h4>#133 · Clone Graph</h4>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="problem-body">
+        <p>Given a reference of a node in a connected undirected graph, return a deep copy of the graph. Each node contains a value and a list of its neighbours.</p>
+        <p><span class="tag">DFS</span> <span class="tag">BFS</span> <span class="tag">Hash Map</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h3')">💡 Show hint</button>
+        <div class="hint-content hint-box" id="h3">Use a dict {original_node: cloned_node} as your visited map. When you encounter a node, if it's already in the map return the clone; otherwise create a new node, add to map, then recursively clone all neighbours.</div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/clone-graph/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+
+    <div class="problem">
+      <div class="problem-header">
+        <h4>#547 · Number of Provinces</h4>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="problem-body">
+        <p>Given an n×n adjacency matrix isConnected where isConnected[i][j]=1 means city i and city j are directly connected, find the total number of provinces (connected components).</p>
+        <p><span class="tag">Union-Find</span> <span class="tag">DFS</span> <span class="tag">Connected Components</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h4')">💡 Show hint</button>
+        <div class="hint-content hint-box" id="h4">Either DFS/BFS on the adjacency matrix treating each city as a node, or use Union-Find: iterate all pairs (i,j) where isConnected[i][j]=1 and union them. Count remaining unique roots.</div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/number-of-provinces/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+
+    <div class="problem">
+      <div class="problem-header">
+        <h4>#994 · Rotting Oranges</h4>
+        <span class="difficulty medium">Medium</span>
+      </div>
+      <div class="problem-body">
+        <p>Given a grid where 0=empty, 1=fresh orange, 2=rotten orange. Every minute, any fresh orange adjacent to a rotten one becomes rotten. Return the minimum minutes until no fresh orange remains, or -1 if impossible.</p>
+        <p><span class="tag">Multi-source BFS</span> <span class="tag">Grid Traversal</span></p>
+        <button class="hint-toggle" onclick="toggleHint('h5')">💡 Show hint</button>
+        <div class="hint-content hint-box" id="h5">Multi-source BFS: start BFS from ALL rotten oranges simultaneously (enqueue all '2' cells at the start). Each BFS level = one minute. After BFS, if any '1' remains, return -1.</div>
+        <br><a class="lc-link" href="https://leetcode.com/problems/rotting-oranges/" target="_blank">Open on LeetCode →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRACE EXERCISE -->
+  <div class="card">
+    <h2>✏️ Part C — Trace Exercise</h2>
+    <p style="font-size:0.93rem;margin-bottom:1rem;">Manually trace BFS on the graph below starting from node <strong>0</strong>. Fill in the queue state and visited set after each step. Draw the BFS tree.</p>
+
+<pre class="code-block">
+<span class="label">Python</span>graph = {
+    <span class="nu">0</span>: [<span class="nu">1</span>, <span class="nu">2</span>],
+    <span class="nu">1</span>: [<span class="nu">3</span>],
+    <span class="nu">2</span>: [<span class="nu">3</span>],
+    <span class="nu">3</span>: []
+}
+<span class="cm"># Trace BFS from node 0
+# Step 0: queue=[0], visited={0}
+# Step 1: dequeue 0, enqueue neighbours 1,2 → queue=[1,2], visited={0,1,2}
+# Step 2: dequeue 1, enqueue 3 → queue=[2,3], visited={0,1,2,3}
+# Step 3: dequeue 2, neighbour 3 already visited → queue=[3], visited={0,1,2,3}
+# Step 4: dequeue 3, no new neighbours → queue=[], DONE
+# BFS order: 0 → 1 → 2 → 3
+# Note: nodes 1 and 2 are both at distance 1 from 0; node 3 is at distance 2</span>
+</pre>
+    <p style="font-size:0.9rem;color:var(--text-muted);margin-top:0.8rem;">Question: Why does node 3 appear only once in the BFS order even though both nodes 1 and 2 are connected to it?</p>
+  </div>
+
+  <!-- PEER REVIEW CHECKLIST -->
+  <div class="card">
+    <h2>🤝 Part D — Peer Review Checklist</h2>
+    <ul class="checklist">
+      <li><input type="checkbox"><span><strong>Visited set:</strong> Is the visited set (or mark) initialized before starting traversal to prevent infinite loops?</span></li>
+      <li><input type="checkbox"><span><strong>Add to visited before or at enqueue:</strong> For BFS, are nodes marked visited when enqueued (not when dequeued) to avoid duplicates in queue?</span></li>
+      <li><input type="checkbox"><span><strong>Disconnected graph:</strong> Does the solution iterate over all nodes (not just start from one) to handle disconnected components?</span></li>
+      <li><input type="checkbox"><span><strong>Topological sort cycle check:</strong> Does the solution verify len(order) == n after Kahn's algorithm to confirm no cycle exists?</span></li>
+      <li><input type="checkbox"><span><strong>Union-Find path compression:</strong> Is find() implemented recursively with parent[x] = find(parent[x]) assignment?</span></li>
+      <li><input type="checkbox"><span><strong>Complexity stated:</strong> Are both time O(V+E) and space O(V) complexities correctly identified and justified?</span></li>
+    </ul>
+  </div>
+
+</main>
+<footer><strong>Algoritmia Aplicada y Diseño Moderno de Sistemas</strong> · UDES · Block 2 – Week 9 Activities · Professor: Jorge Galvis</footer>
+<script>
+  let answered=0,correct=0;
+  function revealQuiz(qid){
+    const block=document.getElementById(qid);
+    const correctVal=block.querySelector('.options').dataset.correct;
+    const selected=block.querySelector('li.selected');
+    if(!selected){alert('Please select an answer first.');return;}
+    block.querySelectorAll('.options li').forEach(li=>{
+      if(li.dataset.val===correctVal)li.classList.add('correct');
+      else if(li.classList.contains('selected'))li.classList.add('wrong');
+    });
+    document.getElementById(qid+'-exp').style.display='block';
+    if(!block.dataset.counted){
+      answered++;
+      if(selected.dataset.val===correctVal)correct++;
+      block.dataset.counted='1';
+      document.getElementById('score').textContent=correct+' / '+answered;
+    }
+    block.querySelector('.reveal-btn').disabled=true;
+  }
+  document.querySelectorAll('.options').forEach(ul=>{
+    ul.querySelectorAll('li').forEach(li=>{
+      li.addEventListener('click',()=>{
+        if(ul.closest('.quiz-q').dataset.counted)return;
+        ul.querySelectorAll('li').forEach(x=>x.classList.remove('selected'));
+        li.classList.add('selected');
+      });
+    });
+  });
+  function toggleHint(id){
+    const el=document.getElementById(id);
+    el.style.display=el.style.display==='block'?'none':'block';
+  }
+  document.querySelectorAll('.checklist input').forEach((cb,i)=>{
+    cb.checked=sessionStorage.getItem('w9ca-cb-'+i)==='1';
+    cb.addEventListener('change',()=>sessionStorage.setItem('w9ca-cb-'+i,cb.checked?'1':'0'));
+  });
+</script>
+</body>
+</html>
